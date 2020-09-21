@@ -9,29 +9,26 @@ class HomeScreen extends React.Component {
         return (
             <Page breadCrumb="Dashboard">
                 <Flex flexDirection="row">
-                    <Flex className="mr-4">
-                        <Card
-                            className="shadow"
-                            style={{
-                                borderLeft: '.25rem solid #1cc88a',
-                                width: '18rem',
-                            }}
-                        >
-                            <Card.Header>Today Attendance</Card.Header>
-                            <Card.Body></Card.Body>
+                    <Flex flex={1} className="mr-4">
+                        <Card className="shadow bl-green">
+                            <Card.Body>
+                                <Card.Title>Today Attendance</Card.Title>
+                            </Card.Body>
                         </Card>
                     </Flex>
-                    <Flex className="mr-4">
-                        <Card
-                            className="shadow"
-                            style={{
-                                borderLeft: '.25rem solid #1cc88a',
-                                width: '18rem',
-                            }}
-                        >
+                    <Flex flex={1} className="mr-4">
+                        <Card className="shadow bl-warning">
                             <Card.Body>
-                                {/* <Card.Title>Test</Card.Title> */}
-                                <Card.Text>Test</Card.Text>
+                                <Card.Title>Today Task</Card.Title>
+                                <Card.Text>5</Card.Text>
+                            </Card.Body>
+                        </Card>
+                    </Flex>
+                    <Flex flex={1} className="mr-4">
+                        <Card className="shadow bl-info">
+                            <Card.Body>
+                                <Card.Title>Today Task</Card.Title>
+                                <Card.Text>5</Card.Text>
                             </Card.Body>
                         </Card>
                     </Flex>

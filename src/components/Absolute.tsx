@@ -84,14 +84,15 @@ class Absolute extends React.Component<Props> {
             <div
                 id={
                     typeof this.props.id !== 'undefined'
-                        ? `absolute-${this.props.id} ${this.props.id}`
+                        ? `${this.props.id}`
                         : 'absolute'
                 }
                 className={`${
                     typeof this.props.className !== 'undefined'
-                        ? `absolute absolute-${this.props.className} ${this.props.className}`
+                        ? `${this.props.className}`
                         : 'absolute'
                 } ${this.props.onClick ? 'onclick' : ''}`}
+                component-name="absolute"
                 style={styles}
                 {...this.props.attributes}
                 onClick={this.props.onClick}

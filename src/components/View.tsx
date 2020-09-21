@@ -3,7 +3,12 @@ import CSS from 'csstype';
 import { Shadow } from 'themes/styles';
 
 type ViewProps = {
-    children?: React.ReactChild[] | React.ReactChild | Element | Element[];
+    children?:
+        | React.ReactChild[]
+        | React.ReactChild
+        | Element
+        | Element[]
+        | null;
     flex?: CSS.Property.Flex;
     margin?: CSS.Property.Margin;
     marginTop?: CSS.Property.MarginTop;
@@ -84,14 +89,15 @@ class View extends React.Component<Props> {
             <div
                 id={
                     typeof this.props.id !== 'undefined'
-                        ? `view-${this.props.id} ${this.props.id}`
+                        ? `${this.props.id}`
                         : 'view'
                 }
                 className={`${
                     typeof this.props.className !== 'undefined'
-                        ? `view view-${this.props.className} ${this.props.className}`
+                        ? `${this.props.className}`
                         : 'view'
                 } ${this.props.onClick ? 'onclick' : ''}`}
+                component-name="view"
                 style={styles}
                 {...this.props.attributes}
                 onClick={this.props.onClick}

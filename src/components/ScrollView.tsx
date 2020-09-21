@@ -1,5 +1,4 @@
 import React from 'react';
-import CSS from 'csstype';
 
 type ScrollViewProps = {
     children?: React.ReactChild[] | React.ReactChild | Element | Element[];
@@ -14,40 +13,40 @@ type ScrollViewProps = {
 type Props = ScrollViewProps;
 
 class ScrollView extends React.Component<Props> {
+    ScrollEvent: HTMLDivElement | null | undefined;
+    componentDidMount() {
+        this.ScrollEvent?.addEventListener('scroll', (e) => {
+            console.log(e);
+        });
+        console.log(this.ScrollEvent);
+    }
     render() {
-        const styles: CSS.Properties = {
-            position: 'relative',
-            width: '100%',
-            height: '100%',
-        };
-
-        if (
-            typeof this.props.horizontal !== 'undefined' &&
-            this.props.horizontal
-        ) {
-            styles.overflowX = 'auto';
-            styles.overflowY = 'hidden';
-        } else {
-            styles.overflowX = 'hidden';
-            styles.overflowY = 'auto';
-        }
-
         return (
             <div
+                ref={(ref) => (this.ScrollEvent = ref)}
                 id={
                     typeof this.props.id !== 'undefined'
-                        ? `scrollview-${this.props.id}`
+                        ? `${this.props.id}`
                         : 'scrollview'
                 }
                 className={
                     typeof this.props.className !== 'undefined'
-                        ? `scrollview scrollview-${this.props.className}`
+                        ? `${this.props.className}`
                         : 'scrollview'
                 }
-                style={styles}
+                // onScrollCapture={(e) => console.log(e)}
+                component-name={this.props.className}
                 {...this.props.attributes}
             >
                 {this.props.children}
+
+                {this.props.showVerticalScrollIndicator && (
+                    <div className="scrollview-bar-vertical-track"></div>
+                )}
+
+                {this.props.showHorizontalScrollIndicator && (
+                    <div className="scrollview-bar-horizontal-track"></div>
+                )}
             </div>
         );
     }

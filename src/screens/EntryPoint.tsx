@@ -10,11 +10,13 @@ import Icon from 'components/Icon';
 import { DividerVertical } from 'components/Divider';
 import { NavbarLeft } from 'components/Navbar';
 
-import { White, Primary, OpacityHex } from 'themes/styles';
-
 import HomeScreen from 'screens/HomeScreen';
 
-class Header extends React.Component {
+type HeaderProps = {
+    ToggleNavbar: () => void;
+};
+
+class Header extends React.Component<HeaderProps> {
     render() {
         return (
             <Flex
@@ -22,31 +24,22 @@ class Header extends React.Component {
                 className="header mb-4"
                 height="4.375rem"
                 alignItems="center"
-                backgroundColor={White}
                 zIndex={5}
                 shadow
             >
                 <Flex
-                    flex={0.5}
+                    flex={0.7}
                     height="100%"
                     justifyContent="flex-start"
                     alignItems="center"
                 >
+                    <Button className="mr-4" onClick={this.props.ToggleNavbar}>
+                        <Icon name="fas fa-bars" />
+                    </Button>
                     <InputGroup>
-                        <FormControl
-                            placeholder="Search..."
-                            style={{
-                                backgroundColor: `${Primary}${OpacityHex[1]}`,
-                                borderColor: `${Primary}${OpacityHex[1]}`,
-                            }}
-                        />
+                        <FormControl placeholder="Search..." />
                         <InputGroup.Append>
-                            <Button
-                                style={{
-                                    backgroundColor: `${Primary}`,
-                                    borderColor: `${Primary}`,
-                                }}
-                            >
+                            <Button>
                                 <Icon name="fas fa-search" />
                             </Button>
                         </InputGroup.Append>
@@ -82,6 +75,10 @@ class Header extends React.Component {
     }
 }
 
+const AbsoluteScreen = () => {
+    return <View>Absolute</View>;
+};
+
 class Body extends React.Component {
     render() {
         return (
@@ -93,21 +90,40 @@ class Body extends React.Component {
             >
                 <Switch>
                     <Route exact path="/" component={HomeScreen} />
+                    <Route
+                        path="/components/absolute"
+                        component={AbsoluteScreen}
+                    />
                 </Switch>
             </View>
         );
     }
 }
 
-class EntryPoint extends React.Component {
+type EntryPointState = {
+    NavbarOpened: boolean;
+};
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+class EntryPoint extends React.Component<{}, EntryPointState> {
+    state = {
+        NavbarOpened: false,
+    };
+
+    ToggleNavbar() {
+        this.setState((prevState) => {
+            return { NavbarOpened: !prevState.NavbarOpened };
+        });
+    }
+
     render() {
         return (
             <BrowserRouter>
                 <Flex flex={1} flexDirection="column">
                     <Flex flex={1} flexDirection="row">
-                        <NavbarLeft />
-                        <Flex flex={1} flexDirection="column">
-                            <Header />
+                        <NavbarLeft NavbarOpened={this.state.NavbarOpened} />
+                        <Flex flex={1} flexDirection="column" zIndex={5}>
+                            <Header ToggleNavbar={() => this.ToggleNavbar()} />
                             <Body />
                         </Flex>
                     </Flex>

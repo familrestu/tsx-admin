@@ -1,4 +1,5 @@
 import React from 'react';
+import SimpleBar from 'simplebar-react';
 
 import View from 'components/View';
 import Flex from 'components/Flex';
@@ -62,7 +63,9 @@ class Page extends React.Component<PageProps> {
         return (
             <React.Fragment>
                 {this.PrintBreadCrumb()}
-                <View flex={1}>{this.props.children}</View>
+                <SimpleBar id="body-simplebar" className="body-simplebar">
+                    <View flex={1}>{this.props.children}</View>
+                </SimpleBar>
             </React.Fragment>
         );
     }

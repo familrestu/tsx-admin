@@ -8,8 +8,8 @@ import EntryPoint from 'screens/EntryPoint';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'themes/styles.scss';
 import 'simplebar/dist/simplebar.min.css';
+import 'themes/main.scss';
 
 ReactDOM.render(
     <React.StrictMode>

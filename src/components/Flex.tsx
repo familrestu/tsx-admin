@@ -107,14 +107,15 @@ class Flex extends React.Component<Props> {
             <div
                 id={
                     typeof this.props.id !== 'undefined'
-                        ? `flex flex-${this.props.id} ${this.props.id}`
+                        ? `${this.props.id}`
                         : 'flex'
                 }
                 className={
                     typeof this.props.className !== 'undefined'
-                        ? `flex flex-${this.props.className} ${this.props.className}`
+                        ? `${this.props.className}`
                         : 'flex'
                 }
+                component-name="flex"
                 style={styles}
                 {...this.props.attributes}
                 onClick={this.props.onClick}
