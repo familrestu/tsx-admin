@@ -1,126 +1,49 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import CSS from 'csstype';
-import { Shadow } from 'themes/styles';
 
-type FlexProps = {
-    children?: React.ReactChild[] | React.ReactChild | Element | Element[];
-    flex?: CSS.Property.Flex;
-    flexBasis?: CSS.Property.FlexBasis;
-    flexDirection?: CSS.Property.FlexDirection;
-    flexGrow?: CSS.Property.FlexGrow;
-    flexShrink?: CSS.Property.FlexShrink;
-    flexWrap?: CSS.Property.FlexWrap;
-    justifyContent?: CSS.Property.JustifyContent;
-    alignContent?: CSS.Property.AlignContent;
-    alignItems?: CSS.Property.AlignItems;
-    alignSelf?: CSS.Property.AlignSelf;
-    margin?: CSS.Property.Margin;
-    marginTop?: CSS.Property.MarginTop;
-    marginRight?: CSS.Property.MarginRight;
-    marginBottom?: CSS.Property.MarginBottom;
-    marginLeft?: CSS.Property.MarginLeft;
-    padding?: CSS.Property.Padding;
-    paddingTop?: CSS.Property.PaddingTop;
-    paddingRight?: CSS.Property.PaddingRight;
-    paddingBottom?: CSS.Property.PaddingBottom;
-    paddingLeft?: CSS.Property.PaddingLeft;
-    borderRadius?: CSS.Property.BorderRadius;
-    borderTopRightRadius?: CSS.Property.BorderTopRightRadius;
-    borderBottomRightRadius?: CSS.Property.BorderBottomRightRadius;
-    borderBottomLeftRadius?: CSS.Property.BorderBottomLeftRadius;
-    borderTopLeftRadius?: CSS.Property.BorderTopLeftRadius;
-    borderWidth?: CSS.Property.BorderWidth;
-    borderTopWidth?: CSS.Property.BorderTopWidth;
-    borderRightWidth?: CSS.Property.BorderRightWidth;
-    borderBottomWidth?: CSS.Property.BorderBottomWidth;
-    borderLeftWidth?: CSS.Property.BorderLeftWidth;
-    borderTopColor?: CSS.Property.BorderTopColor;
-    borderRightColor?: CSS.Property.BorderRightColor;
-    borderBottomColor?: CSS.Property.BorderBottomColor;
-    borderLeftColor?: CSS.Property.BorderLeftColor;
-    borderColor?: CSS.Property.BorderColor;
-    borderStyle?: CSS.Property.BorderStyle;
-    border?: CSS.Property.Border;
-    height?: CSS.Property.Height;
-    minHeight?: CSS.Property.MinHeight;
-    maxHeight?: CSS.Property.MaxHeight;
-    width?: CSS.Property.Width;
-    minWidth?: CSS.Property.MinWidth;
-    maxWidth?: CSS.Property.MaxWidth;
+type CSSTypes = {
     backgroundColor?: CSS.Property.BackgroundColor;
     backgroundImage?: CSS.Property.BackgroundImage;
     backgroundPosition?: CSS.Property.BackgroundPosition;
     backgroundSize?: CSS.Property.BackgroundSize;
     backgroundRepeat?: CSS.Property.BackgroundRepeat;
     background?: CSS.Property.Background;
-    transition?: CSS.Property.Transition;
-    overflow?: CSS.Property.Overflow;
-    color?: CSS.Property.Color;
-    zIndex?: CSS.Property.ZIndex;
-    transparent?: boolean;
-    shadow?: boolean;
-    inline?: boolean;
-    id?: string;
-    className?: string;
-    attributes?: Record<string, unknown> | undefined;
-    fontWeight?: CSS.Property.FontWeight;
-    textAlign?: CSS.Property.TextAlign;
-    fontFamily?: CSS.Property.FontFamily;
-    fontSize?: CSS.Property.FontSize;
-    lineHeight?: CSS.Property.LineHeight;
-    onClick?: () => void;
-    onMouseOver?: () => void;
-    onMouseOut?: () => void;
 };
 
-type Props = FlexProps;
+type FlexProps = {
+    shadow?: boolean;
+    id?: string;
+    className?: string;
+    children?: ReactNode;
+};
+
+type Props = FlexProps & CSSTypes;
 
 class Flex extends React.Component<Props> {
     render() {
-        let styles: CSS.Properties = {
-            position: 'relative',
-            ...this.props,
+        const styles: CSSTypes = {
+            backgroundColor: this.props.backgroundColor,
+            backgroundImage: this.props.backgroundImage,
+            backgroundPosition: this.props.backgroundPosition,
+            backgroundSize: this.props.backgroundSize,
+            backgroundRepeat: this.props.backgroundRepeat,
+            background: this.props.background,
         };
-
-        if (typeof this.props.inline !== 'undefined' && this.props.inline) {
-            styles.display = 'inline-flex';
-        } else {
-            styles.display = 'flex';
-        }
-
-        if (
-            typeof this.props.transparent !== 'undefined' &&
-            this.props.transparent
-        ) {
-            styles.backgroundColor = 'transparent';
-        }
-
-        if (typeof this.props.shadow !== 'undefined' && this.props.shadow) {
-            styles = { ...styles, ...Shadow };
-        }
-
-        if (typeof this.props.onClick !== 'undefined') {
-            styles.cursor = 'pointer';
-        }
 
         return (
             <div
                 id={
                     typeof this.props.id !== 'undefined'
                         ? `${this.props.id}`
-                        : 'flex'
+                        : ''
                 }
                 className={
                     typeof this.props.className !== 'undefined'
-                        ? `${this.props.className}`
+                        ? `flex ${this.props.className}`
                         : 'flex'
                 }
                 component-name="flex"
-                style={styles}
-                {...this.props.attributes}
-                onClick={this.props.onClick}
-                onMouseOver={this.props.onMouseOver}
-                onMouseOut={this.props.onMouseOut}
+                style={{ ...styles }}
             >
                 {this.props.children}
             </div>

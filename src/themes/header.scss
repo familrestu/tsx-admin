@@ -1,0 +1,155 @@
+.header {
+	height: 4.5rem;
+	padding: 0.5rem 1rem;
+	background-color: color(white);
+	z-index: 1050;
+
+	
+
+	.icon-groups {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 2.5rem;
+		height: 2.5rem;
+		padding: 0.25rem;
+		border-radius: 50%;
+		z-index: 1000;
+
+		.badge, i.fas {
+			pointer-events: none;
+		}
+
+		.badge-counter {
+			transform: scale(0.7);
+			right: -5px;
+			top: 5px;
+			z-index: 2000;
+		}
+
+		.dropdown-menu {
+			top: 100%;
+			right: 1rem;
+			left: unset !important; /* override bootstrap */
+			width: 25rem;
+			border-radius: 7px;
+			overflow: hidden;
+
+			.dropdown-header {
+				background-color: color(primary);
+				color: color(white);
+				font-weight: 800;
+				font-size: .65rem;
+				text-transform: uppercase;
+			}
+
+			.dropdown-header:active {
+				background-color: color(primary) !important;
+				color: color(white) !important;
+			}
+
+			.dropdown-item {
+				display: flex;
+				border-bottom: 1px solid #e3e6f0;
+				flex-direction: row;
+
+				.dropdown-icon {
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					
+					i {
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						color: color(white);
+						background-color: color(primary);
+						width: 3rem;
+						height: 3rem;
+						font-size: 0.8rem;
+						text-align: center;
+						border-radius: 50%;
+					}
+				}
+
+				.dropdown-content {
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					padding: 1rem;
+					flex: 1;
+
+					.dropdown-title {
+						display: flex;
+						font-size: 0.7rem;
+						color: color(gray);
+						font-weight: 700;
+
+						span {
+							flex: 1
+						}
+
+						i {
+							transition: all 0.25s ease-in-out;
+						}
+					}
+
+					.dropdown-body {
+						font-size: 0.9rem;
+						white-space: normal;
+						
+						.preview {
+							display: block;
+						}
+
+						.details {
+							opacity: 0;
+							overflow: hidden;
+
+							transition: all 0.25s;
+						}
+					}
+
+					.dropdown-footer {
+						cursor: pointer;
+						font-size: 0.7rem;
+						display: flex;
+
+						span {
+							flex: 1;
+						}
+
+					}
+
+					&.showdetails {
+						.dropdown-title {
+							i {
+								transform: rotate(-90deg);
+							}
+						}
+
+						.dropdown-body {
+							.details {
+								opacity: 1;
+							}
+						}
+					}
+				}
+			}
+
+			.dropdown-item:active {
+				background-color: transparent;
+				color: unset;
+			}
+
+			&:nth-last-child() {
+				border-bottom: unset;
+			}
+		}
+
+		.dropdown-menu:focus {
+			outline: unset;
+		}
+	}
+}

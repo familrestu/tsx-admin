@@ -1,10 +1,6 @@
 import React from 'react';
-import SimpleBar from 'simplebar-react';
-
-import View from 'components/View';
-import Flex from 'components/Flex';
-import Text from 'components/Text';
 import Icon from 'components/Icon';
+// import SimpleBar from 'simplebar-react';
 
 type PageProps = {
     breadCrumb?: string;
@@ -25,13 +21,9 @@ class Page extends React.Component<PageProps> {
                 for (let i = 0; i < arrBC.length; i++) {
                     const string = arrBC[i];
                     element.push(
-                        <Text
-                            key={`bc-text-${i}`}
-                            lineHeight="1"
-                            className="m-1"
-                        >
+                        <span key={`bc-text-${i}`} className="m-1">
                             {string}
-                        </Text>,
+                        </span>,
                     );
 
                     if (i !== arrBC.length - 1) {
@@ -48,14 +40,9 @@ class Page extends React.Component<PageProps> {
         }
 
         return (
-            <Flex
-                id="Bread Crumb"
-                className="mb-4"
-                fontSize="1.5rem"
-                alignItems="center"
-            >
+            <div id="bread-crumb" className="bread-crumb font-large mt-3 mb-3">
                 {element}
-            </Flex>
+            </div>
         );
     }
 
@@ -63,9 +50,11 @@ class Page extends React.Component<PageProps> {
         return (
             <React.Fragment>
                 {this.PrintBreadCrumb()}
-                <SimpleBar id="body-simplebar" className="body-simplebar">
-                    <View flex={1}>{this.props.children}</View>
-                </SimpleBar>
+                {/* <SimpleBar style={{ maxHeight: '83vh', overflowX: 'hidden' }}> */}
+                <div id="body-content" className="body-content">
+                    {this.props.children}
+                </div>
+                {/* </SimpleBar> */}
             </React.Fragment>
         );
     }

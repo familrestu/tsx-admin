@@ -1,95 +1,9 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-// import SimpleBar from 'simplebar-react';
 
-import View from 'components/View';
-import Flex from 'components/Flex';
-import Icon from 'components/Icon';
 import { DividerHorizontal } from 'components/Divider';
-
-type ArrayMenuTypes = {
-    group?: string | undefined;
-    children: {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        [key: string]: string | any;
-    }[];
-}[];
-
-const ArrMenuNew = [];
-
-const ArrMenu: ArrayMenuTypes = [
-    {
-        group: undefined,
-        children: [
-            {
-                id: 'dashboard',
-                link: '/',
-                name: 'Dashboard',
-                icon: 'fas fa-tachometer-alt',
-            },
-        ],
-    },
-    {
-        group: 'Employee',
-        children: [
-            {
-                id: 'employee.information',
-                link: '/employee/information',
-                name: 'employee information',
-                icon: 'fas fa-user',
-            },
-        ],
-    },
-    {
-        group: 'Time & Attendance',
-        children: [
-            {
-                id: 'attendance.data',
-                link: '/attendance/data',
-                name: 'attendance data',
-                icon: 'fas fa-user-clock',
-            },
-            {
-                id: 'attendance.reports',
-                link: '/attendance/reports',
-                name: 'attendance reports',
-                icon: 'far fa-calendar-alt',
-                children: [
-                    {
-                        id: 'attendance.reports.leave.employee_balance',
-                        link: '/attendance/reports.leave.employee_balance',
-                        name: 'employee balance',
-                        children: [
-                            {
-                                id:
-                                    'attendance.reports.leave.employee_balance_nested',
-                                link:
-                                    '/attendance/reports.leave.employee_balance_nested',
-                                name: 'employee balance nested',
-                            },
-                        ],
-                    },
-                    {
-                        id: 'attendance.reports.long',
-                        link: '/attendance/reports/long',
-                        name: 'reports very very very very long naem',
-                    },
-                ],
-            },
-        ],
-    },
-    {
-        group: 'Payroll',
-        children: [
-            {
-                id: 'payroll.data',
-                link: '/payroll/history',
-                name: 'salary history',
-                icon: 'fas fa-dollar-sign',
-            },
-        ],
-    },
-];
+/* import Flex from 'components/Flex';
+import View from 'components/View'; */
 
 type CompanyDetailsType = {
     name: string;
@@ -115,12 +29,12 @@ class Company extends React.Component<CompanyDetailsType> {
 
         return (
             <li>
-                <View
+                <div
                     id="company-nav-container"
-                    className="company-nav-container"
+                    className="company-nav-container pointer"
                     onClick={() => alert()}
                 >
-                    <View id="company" className="company">
+                    <div id="company" className="company">
                         {this.props.company_logo !== null ? (
                             <img
                                 src={`${imgUrl}/${this.props.company_logo}`}
@@ -129,8 +43,8 @@ class Company extends React.Component<CompanyDetailsType> {
                         ) : (
                             this.props.name
                         )}
-                    </View>
-                    <View id="company-small" className="company-small">
+                    </div>
+                    <div id="company-small" className="company-small">
                         {this.props.company_logo_small !== null ? (
                             <img
                                 src={`${imgUrl}/${this.props.company_logo_small}`}
@@ -139,310 +53,266 @@ class Company extends React.Component<CompanyDetailsType> {
                         ) : (
                             this.props.name_short
                         )}
-                    </View>
-                </View>
+                    </div>
+                </div>
             </li>
         );
     }
 }
 
-type NavitemProps = {
+const OpenChildrenHandler = (id: string) => {
+    const target = document.getElementById(id);
+    const bodyBottomPosition = document.body.getBoundingClientRect().bottom;
+
+    if (typeof target !== 'undefined' && target !== null) {
+        const targetNextSibling = target.nextElementSibling as HTMLUListElement;
+        if (target.classList.contains('open')) {
+            target.classList.add('closing');
+
+            setTimeout(() => {
+                target.classList.remove('open');
+                target.classList.remove('closing');
+                targetNextSibling.removeAttribute('style');
+            }, 100);
+        } else {
+            targetNextSibling.style.display = 'block';
+            setTimeout(() => {
+                target.classList.add('open');
+            }, 100);
+
+            const targetSiblingBottomPosition = targetNextSibling.getBoundingClientRect()
+                .bottom;
+            const targetHeight = (target.nextElementSibling as HTMLUListElement)
+                .offsetHeight;
+
+            if (
+                targetSiblingBottomPosition + targetHeight >
+                bodyBottomPosition
+            ) {
+                targetNextSibling.style.top =
+                    (
+                        (targetSiblingBottomPosition -
+                            bodyBottomPosition +
+                            16) *
+                        -1
+                    ).toString() + 'px';
+            }
+        }
+    }
+};
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const ClickLinkHandler = (id: string) => {
+    const navbarActive = document.querySelectorAll('.navbar-left .open');
+
+    for (let i = 0; i < navbarActive.length; i++) {
+        const element = navbarActive[i];
+        element.classList.add('closing');
+
+        setTimeout(() => {
+            element.classList.remove('open');
+            element.classList.remove('closing');
+
+            const elementSibling = element.nextElementSibling;
+            if (elementSibling !== null) {
+                elementSibling.removeAttribute('style');
+            }
+        }, 100);
+    }
+};
+
+type NavitemPropsType = {
     id: string;
     link: string;
     name: string;
     icon?: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    children?: any;
+    children?: { [key: string]: string }[];
 };
 
-class Navitem extends React.Component<NavitemProps> {
-    OpenChildrenHandler(id: string) {
-        const target = document.getElementById(id);
-        const bodyBottomPosition = document.body.getBoundingClientRect().bottom;
+const Navitem = (props: NavitemPropsType) => {
+    let ReturnElement = null;
 
-        if (typeof target !== 'undefined' && target !== null) {
-            const targetNextSibling = target.nextElementSibling as HTMLUListElement;
-            if (target.classList.contains('open')) {
-                target.classList.add('closing');
+    if (props.children !== undefined && props.children.length > 0) {
+        const ChildrenElement = [];
 
-                setTimeout(() => {
-                    target.classList.remove('open');
-                    target.classList.remove('closing');
-                    targetNextSibling.removeAttribute('style');
-                }, 100);
-            } else {
-                targetNextSibling.style.display = 'block';
-                setTimeout(() => {
-                    target.classList.add('open');
-                }, 100);
-
-                const targetSiblingBottomPosition = targetNextSibling.getBoundingClientRect()
-                    .bottom;
-                const targetHeight = (target.nextElementSibling as HTMLUListElement)
-                    .offsetHeight;
-
-                if (
-                    targetSiblingBottomPosition + targetHeight >
-                    bodyBottomPosition
-                ) {
-                    targetNextSibling.style.top =
-                        (
-                            (targetSiblingBottomPosition -
-                                bodyBottomPosition +
-                                16) *
-                            -1
-                        ).toString() + 'px';
-                }
-            }
-        }
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    ClickLinkHandler(id: string) {
-        const navbarActive = document.querySelectorAll('.navbar-left .open');
-
-        for (let i = 0; i < navbarActive.length; i++) {
-            const element = navbarActive[i];
-            element.classList.add('closing');
-
-            setTimeout(() => {
-                element.classList.remove('open');
-                element.classList.remove('closing');
-
-                const elementSibling = element.nextElementSibling;
-                if (elementSibling !== null) {
-                    elementSibling.removeAttribute('style');
-                }
-            }, 100);
-        }
-    }
-
-    render() {
-        let Element = null;
-        let haveChildren = false;
-        const navs = [];
-        let navsparent = null;
-
-        if (typeof this.props.children !== 'undefined') {
-            if (this.props.children.length > 0) {
-                Element = View;
-                haveChildren = true;
-            } else {
-                Element = NavLink;
-            }
-        } else {
-            Element = NavLink;
-        }
-
-        if (haveChildren) {
-            for (let i = 0; i < this.props.children.length; i++) {
-                const key = this.props.children[i];
-                if (typeof key.children !== 'undefined') {
-                    navs.push(
-                        <Navitem
-                            key={i}
-                            name={key.name}
-                            link={key.link}
-                            icon={key.icon}
-                            id={key.id}
-                        >
-                            {key.children}
-                        </Navitem>,
-                    );
-                } else {
-                    navs.push(
-                        <Navitem
-                            key={i}
-                            name={key.name}
-                            link={key.link}
-                            icon={key.icon}
-                            id={key.id}
-                        />,
-                    );
-                }
-            }
-
-            navsparent = (
-                <Navparent className="navbar-children-parent shadow">
-                    {navs}
-                </Navparent>
+        for (let i = 0; i < props.children.length; i++) {
+            const key = props.children[i];
+            ChildrenElement.push(
+                <Navitem
+                    id={key.id}
+                    link={key.link}
+                    name={key.name}
+                    icon={key.icon}
+                >
+                    {props.children}
+                </Navitem>,
             );
         }
 
-        return (
+        ReturnElement = (
             <li>
-                <Element
-                    exact
-                    to={this.props.link}
-                    className="viewlink"
-                    id={this.props.id}
-                    activeClassName="active"
-                    onClick={
-                        haveChildren
-                            ? () => this.OpenChildrenHandler(this.props.id)
-                            : () => this.ClickLinkHandler(this.props.id)
-                    }
+                <div
+                    id={props.id}
+                    className="navitem-container"
+                    onClick={() => OpenChildrenHandler(props.id)}
                 >
-                    <Flex
-                        id="navitem"
-                        className="navitem"
-                        flexDirection="row"
-                        alignItems="center"
-                        justifyContent="center"
-                    >
-                        {typeof this.props.icon !== 'undefined' ? (
-                            <Icon name={this.props.icon} />
-                        ) : (
-                            <React.Fragment></React.Fragment>
-                        )}
-                        <Flex
-                            flex={1}
-                            id="navstring-group"
-                            className="navstring-group"
-                            alignItems="center"
-                        >
-                            <View flex={1}>{this.props.name}</View>
-                            {haveChildren ? (
-                                <Icon name="fas fa-chevron-right chevron" />
-                            ) : (
-                                <React.Fragment></React.Fragment>
-                            )}
-                        </Flex>
-                    </Flex>
-                </Element>
-                {navsparent}
-                {/* {typeof this.props.children !== 'undefined' ? (
-                    this.props.children ? (
-                        this.props.children.length && (
-                            <Navparent className="navbar-children-parent shadow">
-                                {this.props.children.map(
-                                    (key: NavitemProps, index: number) => {
-                                        return (
-                                            <Navitem
-                                                key={index}
-                                                name={key.name}
-                                                link={key.link}
-                                                icon={key.icon}
-                                                id={key.id}
-                                            />
-                                        );
-                                    },
-                                )}
-                            </Navparent>
-                        )
-                    ) : (
-                        <React.Fragment></React.Fragment>
-                    )
-                ) : (
-                    <React.Fragment></React.Fragment>
-                )} */}
+                    <div className="d-flex navitem-string">
+                        <i className={`${props.icon} mr-2 item-left`}></i>
+                        <div className="item-center">{props.name}</div>
+                        <i className="fas fa-chevron-right item-right"></i>
+                    </div>
+                </div>
+                <ul>{ChildrenElement}</ul>
+            </li>
+        );
+    } else {
+        ReturnElement = (
+            <li>
+                <NavLink
+                    id={props.id}
+                    className="navitem-container"
+                    exact
+                    to={props.link}
+                    onClick={() => ClickLinkHandler(props.id)}
+                >
+                    <div className="d-flex navitem-string">
+                        <i className={`${props.icon} mr-2 item-left`}></i>
+                        <div className="item-center">{props.name}</div>
+                    </div>
+                </NavLink>
             </li>
         );
     }
-}
 
-type NavparentProps = {
-    className?: string;
-    children: React.ReactNode;
+    return ReturnElement;
 };
 
-const Navparent = (props: NavparentProps) => {
-    return <ul className={props.className}>{props.children}</ul>;
-};
-
-type NavbarLeftProps = {
-    NavbarOpened: boolean;
-};
-
-class NavbarLeft extends React.Component<NavbarLeftProps> {
-    NavbarTogglerHandler() {
-        if (this.props.NavbarOpened) {
-            document.getElementById('navbar-left')?.classList.add('closed');
-        } else {
-            document.getElementById('navbar-left')?.classList.remove('closed');
-        }
-    }
-
-    componentDidUpdate() {
-        this.NavbarTogglerHandler();
-    }
-
+class NavbarLeft extends React.Component {
     render() {
-        const navs = [];
-
-        for (let groupIndex = 0; groupIndex < ArrMenu.length; groupIndex++) {
-            const groupKey = ArrMenu[groupIndex];
-            if (typeof groupKey.group !== 'undefined') {
-                navs.push(
-                    <View
-                        key={`${groupKey.group}-${groupIndex}`}
-                        className="navbar-group-heading"
-                    >
-                        {groupKey.group}
-                    </View>,
-                );
-            }
-
-            for (
-                let itemIndex = 0;
-                itemIndex < groupKey.children.length;
-                itemIndex++
-            ) {
-                const itemKey = groupKey.children[itemIndex];
-
-                if (typeof itemKey.children !== 'undefined') {
-                    navs.push(
-                        <Navitem
-                            key={`${itemKey.name}-${itemIndex}`}
-                            name={itemKey.name}
-                            icon={itemKey.icon}
-                            link={itemKey.link}
-                            id={itemKey.id}
-                        >
-                            {itemKey.children}
-                        </Navitem>,
-                    );
-                } else {
-                    navs.push(
-                        <Navitem
-                            key={`${itemKey.name}-${itemIndex}`}
-                            name={itemKey.name}
-                            icon={itemKey.icon}
-                            link={itemKey.link}
-                            id={itemKey.id}
-                        />,
-                    );
-                }
-
-                if (groupKey.children.length - 1 === itemIndex) {
-                    navs.push(
-                        <DividerHorizontal
-                            key={`divider-${itemKey.name}-${itemIndex}`}
-                            marginBottom
-                        />,
-                    );
-                }
-            }
-        }
-
         return (
-            <Flex
-                id="navbar-left"
-                className="navbar-left"
-                width="14.5rem"
-                flexDirection="column"
-                zIndex={6}
-            >
-                <Navparent>
+            <div id="navbar-left" className="d-flex navbar-left shadow">
+                <ul>
                     <Company {...CompanyDetails} />
-                    <DividerHorizontal
-                        marginBottom={typeof ArrMenu[0].group !== 'undefined'}
+                    <DividerHorizontal />
+                    <Navitem
+                        id="dashboard"
+                        icon="fas fa-tachometer-alt"
+                        name="dashboard"
+                        link="/"
                     />
-                    {navs}
-                </Navparent>
-            </Flex>
+                    <Navitem
+                        id="view"
+                        icon="fas fa-square"
+                        name="View"
+                        link="/view"
+                    />
+                    <div className="navitem-group">Divider</div>
+                    <Navitem
+                        id="view"
+                        icon="fas fa-square"
+                        name="Views"
+                        link="/views"
+                    />
+                </ul>
+            </div>
         );
     }
 }
+
+/* {<li>
+    <NavLink exact to="/" className="navitem-container">
+        <Flex className="navitem-string">
+            <i className="fas fa-tachometer-alt mr-2 item-left"></i>
+            <View className="item-center" flex={1}>
+                Dashboard
+            </View>
+            <i className="fas fa-chevron-right item-right"></i>
+        </Flex>
+    </NavLink>
+</li>
+<DividerHorizontal marginBottom />
+<div className="navitem-group">Divider</div>
+<li>
+    <View
+        className="navitem-container"
+        id="1-testing"
+        onClick={() =>
+            this.OpenChildrenHandler('1-testing')
+        }
+    >
+        <Flex className="navitem-string">
+            <i className="fas fa-square mr-2 item-left"></i>
+            <View className="item-center" flex={1}>
+                Dashboard
+            </View>
+            <i className="fas fa-chevron-right item-right"></i>
+        </Flex>
+    </View>
+
+    <ul className="navitem-children-parent shadow">
+        <div className="navitem-group">Divider</div>
+        <li>
+            <NavLink
+                exact
+                to="/component/children"
+                className="navitem-container"
+            >
+                <Flex className="navitem-string">
+                    <i className="fas fa-tachometer-alt mr-2 item-left"></i>
+                    <View className="item-center" flex={1}>
+                        children
+                    </View>
+                    <i className="fas fa-chevron-right item-right"></i>
+                </Flex>
+            </NavLink>
+        </li>
+        <li>
+            <NavLink
+                exact
+                to="/component/children"
+                className="navitem-container"
+            >
+                <Flex className="navitem-string">
+                    <i className="fas fa-tachometer-alt mr-2 item-left"></i>
+                    <View className="item-center" flex={1}>
+                        children huruf nya panjang panjang
+                    </View>
+                    <i className="fas fa-chevron-right item-right"></i>
+                </Flex>
+            </NavLink>
+        </li>
+        <div className="navitem-group">Divider</div>
+        <li>
+            <NavLink
+                exact
+                to="/component/children"
+                className="navitem-container"
+            >
+                <Flex className="navitem-string">
+                    <i className="fas fa-tachometer-alt mr-2 item-left"></i>
+                    <View className="item-center" flex={1}>
+                        children
+                    </View>
+                    <i className="fas fa-chevron-right item-right"></i>
+                </Flex>
+            </NavLink>
+        </li>
+        <li>
+            <NavLink
+                exact
+                to="/component/children"
+                className="navitem-container"
+            >
+                <Flex className="navitem-string">
+                    <i className="fas fa-tachometer-alt mr-2 item-left"></i>
+                    <View className="item-center" flex={1}>
+                        children huruf nya panjang panjang
+                    </View>
+                    <i className="fas fa-chevron-right item-right"></i>
+                </Flex>
+            </NavLink>
+        </li>
+    </ul>
+</li>} */
 
 export { NavbarLeft };

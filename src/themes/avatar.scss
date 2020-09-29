@@ -1,0 +1,64 @@
+.avatar-container {
+	border-radius: 0.25rem;
+	padding: 0.25rem;
+}
+
+.avatar {
+	display: flex;
+	width: 2.5rem;
+	height: 2.5rem;
+	border-radius: 50%;
+	background-color: color(primary);
+	background-position: center;
+	background-size: cover;
+	background-repeat: no-repeat;
+	align-items: center;
+	justify-content: center;
+
+	span {
+		// flex: 1;
+		pointer-events: none;
+		color: color(white);
+		font-weight: 600;
+	}
+
+	.dropdown-menu {
+		top: 100%;
+		right: 0;
+		left: unset !important; /* override bootstrap */
+		border-radius: 7px;
+		min-width: 275px;
+
+		.dropdown-item {
+			border-bottom: 1px solid rgba(0,0,0,.15);
+		}
+
+		.dropdown-item:active {
+			background-color: unset;
+			color: unset;
+		}
+	}
+}
+
+.teamcontainer {
+	width: 75px;
+	text-align: center;
+	font-size: 0.8rem;
+
+	.indicator {
+		width: 18px;
+		height: 18px;
+		bottom: -3px;
+		right: -3px;
+		border: 2px solid color(light);
+		border-radius: 50%;
+
+		&.prs {
+			background-color: color(success);
+		}
+
+		&:not(.prs) {
+			background-color: color(danger);
+		}
+	}
+}

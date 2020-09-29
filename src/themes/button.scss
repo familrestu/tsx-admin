@@ -1,0 +1,39 @@
+/* override bootstrap style */
+.btn-primary, .btn-primary:focus, .btn-primary:hover, .btn-primary:active, .btn-primary:focus {
+	background-color: color(primary) !important;
+	border-color: color(primary) !important;
+}
+
+.btn-open-dropdown:focus {
+	outline: unset;
+}
+
+// .btn-ripple-white {
+// 	background-position: center;
+// 	transition: background 0.8s;
+// }
+
+// .btn-ripple-white:hover {
+// 	background: color(white) radial-gradient(circle, transparent 1%, color(white) 1%) center/15000%;
+// }
+
+// .btn-ripple-white:active {
+// 	background-color: color(dark-grey);
+// 	background-size: 100%;
+// 	transition: background 0s;
+// }
+
+// .btn-ripple-primary {
+// 	background-position: center;
+// 	transition: background 0.8s;
+// }
+
+// .btn-ripple-primary:hover {
+// 	background: color(primary) radial-gradient(circle, transparent 1%, color(primary) 1%) center/15000%;
+// }
+
+// .btn-ripple-primary:active {
+// 	background-color: color(secondary) !important;
+// 	background-size: 100%;
+// 	transition: background 0s;
+// }
