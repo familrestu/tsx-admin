@@ -1,0 +1,57 @@
+.tab-nav-container {
+	.nav-item {
+		position: relative;
+		border: unset;
+		margin: unset;
+		color: unset;
+	}
+
+	.nav-item:active {
+		outline: unset;
+	}
+
+	.nav-item::after {
+		content: "";
+		position: absolute;
+		bottom: 0;
+		border-bottom: 3px solid color(primary);
+		width: 0%;
+
+		transition: all 0.2s linear;
+	}
+
+	.nav-item[inbetween]::after {
+		transition: unset;
+
+		width: 100%;
+		left: 0;
+		right: 0;
+	}
+
+	.nav-item[remove-inbetween]::after {
+		transition: unset;
+		width: 0%;
+		left: 0;
+		// right: 0;
+	}
+
+	.nav-item.active::after {
+		width: 100%;
+	}
+
+	.nav-item[from=left]::after {
+		right: 0;
+	}
+
+	.nav-item.active[to=right]::after {
+		left: 0;
+	}
+
+	.nav-item[from=right]::after {
+		left: 0;
+	}
+
+	.nav-item.active[to=left]::after {
+		right: 0;
+	}
+}

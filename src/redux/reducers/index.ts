@@ -1,11 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { combineReducers } from 'redux';
 
-// import ThemeState from 'redux/reducers/ThemeState';
-// import ModalState from '@redux/reducers/ModalState';
+import UserState from 'redux/reducers/UserState';
+import MenuAuthState from 'redux/reducers/MenuAuthState';
 
-const Reducers = {
-    // ThemeState: ThemeState,
-    // ModalState: ModalState,
+type ReducersType = {
+    UserState?: typeof UserState;
+    MenuAuthState?: typeof MenuAuthState;
+};
+
+const Reducers: ReducersType = {
+    UserState,
+    MenuAuthState,
 };
 
 const rootReducer = combineReducers(Reducers);

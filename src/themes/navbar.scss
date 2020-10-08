@@ -7,7 +7,7 @@
 	// border-top-right-radius: 15px;
     // border-bottom-right-radius: 15px;
 	flex-shrink: 0;
-	overflow: hidden;
+	// overflow: unset;
 	z-index: 1020;
 
 	transition: all 0.2s linear;
@@ -15,12 +15,12 @@
 	ul:not(.navitem-children-parent) {
 		// min-height: 100%;
 		color: color(white);
-
 		li {
 			position: relative;
-			padding: 1rem 1.75rem;
+			// overflow: hidden;
 
 			.company, .company-small {
+				padding: 1rem 1.75rem;
 				font-size: 1.5rem;
 				font-weight: 600;
 			}
@@ -30,6 +30,8 @@
 			}
 
 			.navitem-container {
+				padding: 1rem 1.75rem;
+				display: block;
 				color: color(light);
 				font-size: .85rem;
 				font-weight: normal;
@@ -38,14 +40,17 @@
 				.navitem-string {
 					text-transform: capitalize;
 					align-items: flex-start;
+					.item-center {
+						flex: 1;
+					}
 
 					.item-right, .item-left {
 						// margin-top: 4px;
-						position: relative;
-						top: 4px;
-						// display: flex;
-						// justify-content: center;
-						// align-items: center;
+						// position: relative;
+						// top: 4px;
+						display: flex;
+						justify-content: center;
+						align-items: center;
 						width: 20px;
 						height: 20px;
 					}
@@ -53,6 +58,9 @@
 					.item-right {
 						font-size: 80%;
 						transition: transform 0.2s linear;
+						// position: absolute;
+						// right: 0;
+						justify-content: flex-end;
 					}
 				}
 			}
@@ -87,14 +95,24 @@
 				transition: opacity 0.2s linear, left 0.2s linear;
 
 				li {
-					padding: 0.85rem 1.5rem;
-
 					.navitem-container {
+						padding: 0.85rem 1.5rem;
 						color: rgba(28, 52, 71, 0.6);
+						
+						* {
+							pointer-events: none;
+						}
+
+						div.navitem-string {
+							align-items: flex-start;
+							color: color(primary);
+							font-size: small !important;
+						}
 					}
 				}
 
 				.navitem-group {
+					text-align: left;
 					color: color(primary);
 					padding: 0.85rem 1.5rem;
 					padding-bottom: 0px;
@@ -128,6 +146,13 @@
 			div.navitem-container.closing + ul.navitem-children-parent {
 				left: 0;
 				opacity: 0;
+			}
+		}
+
+		li:hover {
+			a {
+				// background-color: color(primary);
+				filter: brightness(120%)
 			}
 		}
 

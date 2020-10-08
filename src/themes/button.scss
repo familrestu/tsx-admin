@@ -4,6 +4,12 @@
 	border-color: color(primary) !important;
 }
 
+.btn-default, .btn-default:focus, .btn-default:hover, .btn-default:active, .btn-default:focus {
+	background-color: lighten(color(primary), 10%) !important;
+	border-color: lighten(color(primary), 10%) !important;
+	color: color(white);
+}
+
 .btn-open-dropdown:focus {
 	outline: unset;
 }

@@ -6,6 +6,9 @@ import Avatar from 'components/Avatar';
 import Icon from 'components/Icon';
 import { DividerVertical } from 'components/Divider';
 
+import { connect } from 'react-redux';
+import { AppState } from 'redux/store';
+
 class NotificationBells extends React.Component {
     ShowDetailHandler(element: React.MouseEvent) {
         const currentTarget = element.currentTarget as HTMLDivElement;
@@ -148,15 +151,7 @@ class NotificationBells extends React.Component {
     }
 }
 
-const AvatarProps = {
-    name: 'Famil Restu Pambudi',
-    position: 'Sr Implementation Consultant',
-    image:
-        'https://lh3.googleusercontent.com/ogw/ADGmqu8MsxxaLIBWUh90CoQRUHGJEpDp7NGxS9r1zu2C=s83-c-mo',
-    company: 'PT. Indodev Niaga Internet',
-};
-
-class Header extends React.Component {
+class Header extends React.Component<AppState> {
     OpenDropDownHandler(e: Event, element: Element) {
         const target = e.target as HTMLDivElement;
         if (target.classList.value.indexOf('btn-open-dropdown') > 0) {
@@ -166,7 +161,11 @@ class Header extends React.Component {
     }
 
     DropDownOnBlurHandler(element: Element) {
-        (element.lastChild as HTMLDivElement).classList.remove('show');
+        const keepFocus = element.getAttribute('keep-focus');
+
+        if (keepFocus === null) {
+            (element.lastChild as HTMLDivElement).classList.remove('show');
+        }
     }
 
     /* adding btn dropdown listener for header, so any existing btn-open-dropdown will show it's hidden last chidlren */
@@ -178,6 +177,10 @@ class Header extends React.Component {
         if (arrBtnDropDown !== null) {
             for (let i = 0; i < arrBtnDropDown.length; i++) {
                 const element = arrBtnDropDown[i];
+
+                /* element.addEventListener('click', (e: Event) =>
+                    this.OpenDropDownHandler(e, element),
+                ); */
 
                 element.addEventListener('click', (e: Event) =>
                     this.OpenDropDownHandler(e, element),
@@ -203,6 +206,14 @@ class Header extends React.Component {
     }
 
     render() {
+        const { UserState } = this.props;
+        const AvatarProps = {
+            name: UserState !== undefined ? UserState.full_name : '',
+            position: UserState !== undefined ? UserState.position_name : '',
+            image: UserState !== undefined ? UserState.profile_picture : '',
+            company: UserState !== undefined ? UserState.company_name : '',
+        };
+
         return (
             <div
                 id="header"
@@ -233,11 +244,18 @@ class Header extends React.Component {
                 >
                     <NotificationBells />
                     <DividerVertical marginLeft marginRight />
-                    <Avatar {...AvatarProps} />
+                    <Avatar
+                        {...AvatarProps}
+                        DropDownOnBlurHandler={this.DropDownOnBlurHandler}
+                    />
                 </div>
             </div>
         );
     }
 }
 
-export default Header;
+export const MapStateToProps = (state: AppState) => ({
+    UserState: state.UserState,
+});
+
+export default connect(MapStateToProps)(Header);

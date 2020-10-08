@@ -1,21 +1,12 @@
 import React from 'react';
 import Page from 'components/Page';
 
-import {
-    Card,
-    Row,
-    Col,
-    Badge,
-    OverlayTrigger,
-    Tooltip,
-} from 'react-bootstrap';
+import { Card, Row, Col, Badge } from 'react-bootstrap';
 import Chart from 'chart.js';
 import SimpleBar from 'simplebar-react';
 import moment from 'moment';
 
 import { DividerVertical } from 'components/Divider';
-import { AvatarImage, AvatarProps } from 'components/Avatar';
-
 import CompanyInfoUpToDate from 'assets/images/undraw_up_to_date_rmbm.png';
 
 class Piechart extends React.Component {
@@ -67,19 +58,24 @@ class Piechart extends React.Component {
 class Barchart extends React.Component {
     componentDidMount() {
         new Chart(document.getElementById('barchart') as HTMLCanvasElement, {
-            type: 'horizontalBar',
+            type: 'bar',
             data: {
-                labels: ['Sep', 'Oct'],
+                labels: ['Aug', 'Sep', 'Oct'],
                 datasets: [
                     {
-                        label: 'Productive Hours',
+                        label: 'Dept A',
                         backgroundColor: '#ff6384',
-                        data: [150, 150],
+                        data: [201, 150, 150],
                     },
                     {
-                        label: 'Work Hours',
+                        label: 'Dept B',
                         backgroundColor: '#4bc0c0',
-                        data: [153, 159],
+                        data: [182, 153, 159],
+                    },
+                    {
+                        label: 'Dept C',
+                        backgroundColor: '#fcba03',
+                        data: [165, 152, 119],
                     },
                 ],
             },
@@ -90,11 +86,11 @@ class Barchart extends React.Component {
                     position: 'bottom',
                 },
                 scales: {
-                    xAxes: [
+                    yAxes: [
                         {
                             ticks: {
                                 beginAtZero: true,
-                                max: 200,
+                                max: 300,
                             },
                         },
                     ],
@@ -104,14 +100,17 @@ class Barchart extends React.Component {
     }
 
     render() {
-        return <canvas id="barchart" height="200"></canvas>;
+        return <canvas id="barchart" height="400"></canvas>;
     }
 }
 
-const AttendanceCard = () => (
+const AttendanceRecordTime = () => (
     <Card className="shadow card-border-left-success">
-        <Card.Body className="d-flex">
-            <div className="d-flex flex-rows justify-content-center align-items-center flex-1">
+        <Card.Body className="d-flex flex-column">
+            <div
+                className="d-flex flex-rows justify-content-center align-items-center flex-1"
+                style={{ height: '50px' }}
+            >
                 <span className="d-flex justify-content-center text-center align-items-center text-primary flex-column flex-1">
                     <span className="flex-1" style={{ fontSize: 'x-large' }}>
                         07:02
@@ -136,6 +135,9 @@ const AttendanceCard = () => (
                     </span>
                 </span>
             </div>
+            {/* <div className="d-flex justify-content-center align-items-center p-2">
+                <div className="btn btn-primary">Record Time</div>
+            </div> */}
         </Card.Body>
     </Card>
 );
@@ -150,9 +152,13 @@ type ArrCompanyInfoType = {
 
 const arrCompanyInfo: ArrCompanyInfoType = [
     {
-        title: 'Work From Home and Work From Office',
+        title: 'Lorem ipsum dolor sit amet',
         date: moment('2020-11-20').format('DD MMMM, YYYY').toString(),
         content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut malesuada molestie eros, et maximus arcu imperdiet et. Nunc semper ex sed tellus placerat, id cursus velit tincidunt. Morbi nec velit in nisl elementum laoreet. Nullam quis risus egestas, pharetra ligula eu, laoreet quam. Sed dapibus porttitor erat, vel pretium nulla convallis ac. Vestibulum tellus nibh, pellentesque vitae est ac, mattis porta augue. Donec elementum augue ex, a sodales arcu porta quis. Fusce vel rutrum turpis. Maecenas elementum libero metus, sit amet feugiat ligula pharetra vitae. Curabitur id libero sit amet justo pretium molestie ac id metus. Sed facilisis metus viverra leo faucibus auctor. Aenean vitae cursus eros.
+
+Donec et facilisis lorem. Vestibulum vehicula ornare aliquet. Nunc in ipsum at ante vulputate feugiat id ut leo. Ut ultricies placerat magna ac posuere. Sed tortor lectus, eleifend non neque pulvinar, sollicitudin maximus justo. Ut finibus condimentum malesuada. Etiam tortor dui, feugiat id imperdiet et, accumsan eu est. Nunc consectetur metus dolor, at pretium turpis vehicula sit amet. Aliquam efficitur fermentum pharetra. Cras venenatis vulputate sapien id sagittis. Maecenas ornare justo ut massa vulputate rutrum. Nam lobortis ipsum vitae eros euismod sagittis. Sed iaculis in ante nec condimentum. Mauris ultricies, justo a auctor facilisis, ipsum enim tincidunt felis, non vulputate diam enim ac nulla.
+
+Donec et facilisis lorem. Vestibulum vehicula ornare aliquet. Nunc in ipsum at ante vulputate feugiat id ut leo. Ut ultricies placerat magna ac posuere. Sed tortor lectus, eleifend non neque pulvinar, sollicitudin maximus justo. Ut finibus condimentum malesuada. Etiam tortor dui, feugiat id imperdiet et, accumsan eu est. Nunc consectetur metus dolor, at pretium turpis vehicula sit amet. Aliquam efficitur fermentum pharetra. Cras venenatis vulputate sapien id sagittis. Maecenas ornare justo ut massa vulputate rutrum. Nam lobortis ipsum vitae eros euismod sagittis. Sed iaculis in ante nec condimentum. Mauris ultricies, justo a auctor facilisis, ipsum enim tincidunt felis, non vulputate diam enim ac nulla.
 
 Donec et facilisis lorem. Vestibulum vehicula ornare aliquet. Nunc in ipsum at ante vulputate feugiat id ut leo. Ut ultricies placerat magna ac posuere. Sed tortor lectus, eleifend non neque pulvinar, sollicitudin maximus justo. Ut finibus condimentum malesuada. Etiam tortor dui, feugiat id imperdiet et, accumsan eu est. Nunc consectetur metus dolor, at pretium turpis vehicula sit amet. Aliquam efficitur fermentum pharetra. Cras venenatis vulputate sapien id sagittis. Maecenas ornare justo ut massa vulputate rutrum. Nam lobortis ipsum vitae eros euismod sagittis. Sed iaculis in ante nec condimentum. Mauris ultricies, justo a auctor facilisis, ipsum enim tincidunt felis, non vulputate diam enim ac nulla.`,
         attachment: [
@@ -165,17 +171,15 @@ Donec et facilisis lorem. Vestibulum vehicula ornare aliquet. Nunc in ipsum at a
         opened: false,
     },
     {
-        title: 'Larangan Penggunaan Masker Scuba',
+        title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ',
         date: moment('2020-10-01').format('DD MMMM, YYYY').toString(),
-        content: `Dear All,
+        content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut malesuada molestie eros, et maximus arcu imperdiet et. Nunc semper ex sed tellus placerat, id cursus velit tincidunt. Morbi nec velit in nisl elementum laoreet. Nullam quis risus egestas, pharetra ligula eu, laoreet quam. Sed dapibus porttitor erat, vel pretium nulla convallis ac. Vestibulum tellus nibh, pellentesque vitae est ac, mattis porta augue. Donec elementum augue ex, a sodales arcu porta quis. Fusce vel rutrum turpis. Maecenas elementum libero metus, sit amet feugiat ligula pharetra vitae. Curabitur id libero sit amet justo pretium molestie ac id metus. Sed facilisis metus viverra leo faucibus auctor. Aenean vitae cursus eros.
 
-Sehubungan dengan tidak efektifnya penggunan masker scuba, masker kain 1 lapis maupun masker buff dalam pencegahan penyebaran virus korona maka kami himbau per Senin, 21 September 2020 seluruh karyawan diwajibkan mengenakan masker medis dan masker kain minimal 3 lapis.
-Penggunaan masker dengan kualitas yang tidak sesuai dengan rekomendasi secara medis termasuk pelanggaran protokol kesehatan.
+Donec et facilisis lorem. Vestibulum vehicula ornare aliquet. Nunc in ipsum at ante vulputate feugiat id ut leo. Ut ultricies placerat magna ac posuere. Sed tortor lectus, eleifend non neque pulvinar, sollicitudin maximus justo. Ut finibus condimentum malesuada. Etiam tortor dui, feugiat id imperdiet et, accumsan eu est. Nunc consectetur metus dolor, at pretium turpis vehicula sit amet. Aliquam efficitur fermentum pharetra. Cras venenatis vulputate sapien id sagittis. Maecenas ornare justo ut massa vulputate rutrum. Nam lobortis ipsum vitae eros euismod sagittis. Sed iaculis in ante nec condimentum. Mauris ultricies, justo a auctor facilisis, ipsum enim tincidunt felis, non vulputate diam enim ac nulla.
 
-Demikian yang dapat kami sampaikan, mohon dapat menjadi perhatian bagi seluruh karyawan.
+Donec et facilisis lorem. Vestibulum vehicula ornare aliquet. Nunc in ipsum at ante vulputate feugiat id ut leo. Ut ultricies placerat magna ac posuere. Sed tortor lectus, eleifend non neque pulvinar, sollicitudin maximus justo. Ut finibus condimentum malesuada. Etiam tortor dui, feugiat id imperdiet et, accumsan eu est. Nunc consectetur metus dolor, at pretium turpis vehicula sit amet. Aliquam efficitur fermentum pharetra. Cras venenatis vulputate sapien id sagittis. Maecenas ornare justo ut massa vulputate rutrum. Nam lobortis ipsum vitae eros euismod sagittis. Sed iaculis in ante nec condimentum. Mauris ultricies, justo a auctor facilisis, ipsum enim tincidunt felis, non vulputate diam enim ac nulla.
 
-Terima kasih
-HR`,
+Donec et facilisis lorem. Vestibulum vehicula ornare aliquet. Nunc in ipsum at ante vulputate feugiat id ut leo. Ut ultricies placerat magna ac posuere. Sed tortor lectus, eleifend non neque pulvinar, sollicitudin maximus justo. Ut finibus condimentum malesuada. Etiam tortor dui, feugiat id imperdiet et, accumsan eu est. Nunc consectetur metus dolor, at pretium turpis vehicula sit amet. Aliquam efficitur fermentum pharetra. Cras venenatis vulputate sapien id sagittis. Maecenas ornare justo ut massa vulputate rutrum. Nam lobortis ipsum vitae eros euismod sagittis. Sed iaculis in ante nec condimentum. Mauris ultricies, justo a auctor facilisis, ipsum enim tincidunt felis, non vulputate diam enim ac nulla.`,
         attachment: null,
         opened: false,
     },
@@ -196,7 +200,7 @@ const Attachment = (props: AttachmentPropsType) => {
                 className="d-flex flex-column justify-content-center align-items-center pointer"
                 style={{ height: '100px', minWidth: '100px' }}
             >
-                <img />
+                <div>img preview</div>
                 <span className="small">{props.name}</span>
             </div>
         );
@@ -277,9 +281,9 @@ class CompanyInfo extends React.Component {
     render() {
         return (
             <Card className="shadow companyinfo-container">
-                <Card.Header>Company Info</Card.Header>
-                <Card.Body>
-                    <SimpleBar style={{ maxHeight: '500px' }}>
+                <Card.Header>Announcement</Card.Header>
+                <Card.Body style={{ height: '439px' }}>
+                    <SimpleBar style={{ maxHeight: '375px' }}>
                         {arrCompanyInfo.length ? (
                             arrCompanyInfo.map((key, index) => {
                                 return (
@@ -309,10 +313,12 @@ class CompanyInfo extends React.Component {
                                                 </span>
                                             </div>
                                             <div
-                                                className="p-2 d-flex align-items-center justify-content-center"
+                                                className="d-flex align-items-center justify-content-end"
                                                 style={{
                                                     width: 30,
                                                     height: 30,
+                                                    padding: '.5rem',
+                                                    paddingRight: '0px',
                                                 }}
                                             >
                                                 <i className="fas fa-chevron-left"></i>
@@ -376,152 +382,36 @@ class CompanyInfo extends React.Component {
     }
 }
 
-const arrTeams = [
-    {
-        name: 'Mark Zuckerberg',
-        image:
-            'https://upload.wikimedia.org/wikipedia/commons/c/c4/Mark_Zuckerberg_F8_2018_Keynote_%28cropped%29.jpg',
-        position: 'Facebook CEO',
-        isPresent: false,
-        startTime: null,
-        endTime: null,
-    },
-    {
-        name: 'Elon Musk',
-        image:
-            'https://image.cnbcfm.com/api/v1/image/105773439-1551717349171rtx6p9uc.jpg?v=1551717410',
-        position: 'CEO of Tesla, SpaceX, etc..',
-        isPresent: true,
-        startTime: '06:54',
-        endTime: null,
-    },
-    {
-        name: 'Emil',
-        image:
-            'https://instagram.fcgk18-1.fna.fbcdn.net/v/t51.2885-19/s150x150/119965518_712593792802031_924955956384857550_n.jpg?_nc_ht=instagram.fcgk18-1.fna.fbcdn.net&_nc_cat=111&_nc_ohc=jFcPzhtfaHkAX-7Vvyh&oh=53259d8d87ad73e7b20bee7e03c4e219&oe=5F9E61AC',
-        position: '',
-        isPresent: true,
-        startTime: '07:54',
-        endTime: null,
-    },
-];
-
-type TeamsProps = {
-    isPresent: boolean;
-    startTime: string | null;
-    endTime: string | null;
-};
-
-const Teams = (props: TeamsProps & AvatarProps) => {
-    return (
-        <OverlayTrigger
-            placement="top"
-            overlay={
-                <Tooltip id={props.name.replaceAll(' ', '')}>
-                    <div
-                        className="d-flex flex-column justify-content-center p-1"
-                        style={{ width: '60px' }}
-                    >
-                        <div>
-                            {props.startTime !== null
-                                ? props.startTime
-                                : '--:--'}
-                        </div>
-                        <div>
-                            {props.endTime !== null ? props.endTime : '--:--'}
-                        </div>
-                    </div>
-                </Tooltip>
-            }
-        >
-            <div className="teamcontainer d-flex flex-column justify-content-center align-items-center m-2">
-                <AvatarImage
-                    name={props.name}
-                    position={props.position}
-                    image={props.image}
-                    style={{
-                        width: '50px',
-                        height: '50px',
-                    }}
-                    className="position-relative mb-2 mt-2"
-                >
-                    <div
-                        className={`position-absolute indicator ${
-                            props.isPresent ? 'prs' : ''
-                        }`}
-                    ></div>
-                </AvatarImage>
-                <span>{props.name}</span>
-            </div>
-        </OverlayTrigger>
-    );
-};
-
 class HomeScreen extends React.Component {
     render() {
         return (
             <Page breadCrumb="Dashboard">
                 <Row>
-                    <Col sm={2}>
-                        <AttendanceCard />
+                    <Col sm={3}>
+                        <AttendanceRecordTime />
                     </Col>
                 </Row>
                 <Row>
-                    <Col sm={8}>
-                        <Row>
-                            <Col sm={6}>
-                                <Card className="shadow">
-                                    <Card.Header>Attendance List</Card.Header>
-                                    <Card.Body>
-                                        <Piechart />
-                                    </Card.Body>
-                                </Card>
-                            </Col>
-
-                            <Col sm={6}>
-                                <Card className="shadow">
-                                    <Card.Header>Productive Hours</Card.Header>
-                                    <Card.Body>
-                                        <Barchart />
-                                    </Card.Body>
-                                </Card>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                <Card className="shadow">
-                                    <Card.Body>
-                                        <Card.Title>Team</Card.Title>
-                                        <div className="d-flex align-items-baseline">
-                                            {arrTeams.map((key, index) => {
-                                                return (
-                                                    <Teams
-                                                        key={`${key.name.replaceAll(
-                                                            ' ',
-                                                            '',
-                                                        )}-${index}`}
-                                                        name={key.name}
-                                                        image={key.image}
-                                                        position={key.position}
-                                                        isPresent={
-                                                            key.isPresent
-                                                        }
-                                                        startTime={
-                                                            key.startTime
-                                                        }
-                                                        endTime={key.endTime}
-                                                    />
-                                                );
-                                            })}
-                                        </div>
-                                    </Card.Body>
-                                </Card>
-                            </Col>
-                        </Row>
-                    </Col>
-
-                    <Col sm={4}>
+                    <Col sm={6} className="mb-4">
                         <CompanyInfo />
+                    </Col>
+                    <Col sm={6}>
+                        <Card className="shadow card-border-left-success">
+                            <Card.Header>Bar Chart</Card.Header>
+                            <Card.Body className="d-flex flex-column">
+                                <Barchart />
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col sm={3}>
+                        <Card className="shadow card-border-left-success">
+                            <Card.Header>Dougnut CHart</Card.Header>
+                            <Card.Body className="d-flex flex-column">
+                                <Piechart />
+                            </Card.Body>
+                        </Card>
                     </Col>
                 </Row>
             </Page>

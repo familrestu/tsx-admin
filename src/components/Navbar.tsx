@@ -2,8 +2,11 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 import { DividerHorizontal } from 'components/Divider';
-/* import Flex from 'components/Flex';
+/* import div from 'components/div';
 import View from 'components/View'; */
+
+import { connect } from 'react-redux';
+import { AppState } from 'redux/store';
 
 type CompanyDetailsType = {
     name: string;
@@ -65,6 +68,7 @@ const OpenChildrenHandler = (id: string) => {
     const bodyBottomPosition = document.body.getBoundingClientRect().bottom;
 
     if (typeof target !== 'undefined' && target !== null) {
+        target.focus();
         const targetNextSibling = target.nextElementSibling as HTMLUListElement;
         if (target.classList.contains('open')) {
             target.classList.add('closing');
@@ -101,9 +105,17 @@ const OpenChildrenHandler = (id: string) => {
     }
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const ClickLinkHandler = (id: string) => {
+const CloseChildrenHandler = (event: MouseEvent) => {
     const navbarActive = document.querySelectorAll('.navbar-left .open');
+    const nextSibling = (event.target as HTMLDivElement)
+        .nextSibling as HTMLDivElement;
+    const haveSibling = nextSibling !== null;
+
+    if (
+        haveSibling &&
+        nextSibling.classList.value.indexOf('avitem-children-parent') >= 0
+    )
+        return false;
 
     for (let i = 0; i < navbarActive.length; i++) {
         const element = navbarActive[i];
@@ -122,197 +134,148 @@ const ClickLinkHandler = (id: string) => {
 };
 
 type NavitemPropsType = {
+    group: string | null;
+    groupid: string | null;
     id: string;
     link: string;
     name: string;
-    icon?: string;
-    children?: { [key: string]: string }[];
+    icon: string | null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    children?: any;
 };
+
+const arrGroup: Array<string> = [];
 
 const Navitem = (props: NavitemPropsType) => {
-    let ReturnElement = null;
-
+    const ChildrenElement: React.ReactNode[] = [];
     if (props.children !== undefined && props.children.length > 0) {
-        const ChildrenElement = [];
+        (props.children as Array<NavitemPropsType>).forEach((item, index) => {
+            if (item.group !== null && arrGroup.indexOf(item.group) < 0) {
+                ChildrenElement.push(
+                    <div
+                        key={`${item.id}-${index}-group`}
+                        className="navitem-group"
+                    >
+                        {item.group}
+                    </div>,
+                );
+                arrGroup.push(item.group);
+            }
 
-        for (let i = 0; i < props.children.length; i++) {
-            const key = props.children[i];
             ChildrenElement.push(
-                <Navitem
-                    id={key.id}
-                    link={key.link}
-                    name={key.name}
-                    icon={key.icon}
-                >
-                    {props.children}
-                </Navitem>,
+                <Navitem key={`${item.id}-${index}`} {...item} />,
             );
-        }
-
-        ReturnElement = (
-            <li>
-                <div
-                    id={props.id}
-                    className="navitem-container"
-                    onClick={() => OpenChildrenHandler(props.id)}
-                >
-                    <div className="d-flex navitem-string">
-                        <i className={`${props.icon} mr-2 item-left`}></i>
-                        <div className="item-center">{props.name}</div>
-                        <i className="fas fa-chevron-right item-right"></i>
-                    </div>
-                </div>
-                <ul>{ChildrenElement}</ul>
-            </li>
-        );
-    } else {
-        ReturnElement = (
-            <li>
-                <NavLink
-                    id={props.id}
-                    className="navitem-container"
-                    exact
-                    to={props.link}
-                    onClick={() => ClickLinkHandler(props.id)}
-                >
-                    <div className="d-flex navitem-string">
-                        <i className={`${props.icon} mr-2 item-left`}></i>
-                        <div className="item-center">{props.name}</div>
-                    </div>
-                </NavLink>
-            </li>
-        );
+        });
     }
 
-    return ReturnElement;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const Div = (props: any) => (
+        <div
+            id={props.id}
+            className="navitem-container pointer"
+            tabIndex={0}
+            onClick={() => OpenChildrenHandler(props.id)}
+            // onBlur={() => CloseChildrenHandler()}
+        >
+            {props.children}
+        </div>
+    );
+
+    const Container =
+        props.children !== undefined && props.children.length > 0
+            ? Div
+            : NavLink;
+
+    return (
+        <li>
+            <Container
+                id={props.id}
+                className="navitem-container"
+                exact
+                to={props.link}
+                // onClick={() => CloseChildrenHandler()}
+            >
+                <div className="d-flex navitem-string">
+                    {props.icon !== null && (
+                        <i className={`${props.icon} mr-2 item-left`}></i>
+                    )}
+                    <div className="item-center">{props.name}</div>
+                    {props.children !== undefined &&
+                        props.children.length > 0 && (
+                            <i
+                                className={`fas fa-chevron-right mr-2 item-right`}
+                            ></i>
+                        )}
+                </div>
+            </Container>
+            {props.children !== undefined && props.children.length > 0 && (
+                <ul className="navitem-children-parent shadow">
+                    {ChildrenElement}
+                </ul>
+            )}
+        </li>
+    );
 };
 
-class NavbarLeft extends React.Component {
+type NavbarLeftState = {
+    element: React.ReactNode[];
+};
+
+class TempNavbarLeft extends React.Component<AppState, NavbarLeftState> {
+    state: NavbarLeftState = {
+        element: [],
+    };
+
+    BuildNav() {
+        const { MenuAuthState } = this.props;
+        const arrNav: JSX.Element[] = [];
+        if (MenuAuthState !== undefined) {
+            MenuAuthState.forEach((item, index) => {
+                if (item.group !== null && arrGroup.indexOf(item.group) < 0) {
+                    arrNav.push(
+                        <div
+                            key={`${item.id}-${index}-group`}
+                            className="navitem-group"
+                        >
+                            {item.group}
+                        </div>,
+                    );
+                    arrGroup.push(item.group);
+                }
+
+                arrNav.push(<Navitem key={`${item.id}-${index}`} {...item} />);
+            });
+        }
+
+        this.setState({ element: arrNav });
+    }
+
+    SetCloseChildrenListener() {
+        document.addEventListener('click', CloseChildrenHandler);
+    }
+
+    componentDidMount() {
+        this.BuildNav();
+        this.SetCloseChildrenListener();
+    }
+
     render() {
         return (
             <div id="navbar-left" className="d-flex navbar-left shadow">
                 <ul>
                     <Company {...CompanyDetails} />
                     <DividerHorizontal />
-                    <Navitem
-                        id="dashboard"
-                        icon="fas fa-tachometer-alt"
-                        name="dashboard"
-                        link="/"
-                    />
-                    <Navitem
-                        id="view"
-                        icon="fas fa-square"
-                        name="View"
-                        link="/view"
-                    />
-                    <div className="navitem-group">Divider</div>
-                    <Navitem
-                        id="view"
-                        icon="fas fa-square"
-                        name="Views"
-                        link="/views"
-                    />
+                    {this.state.element}
                 </ul>
             </div>
         );
     }
 }
 
-/* {<li>
-    <NavLink exact to="/" className="navitem-container">
-        <Flex className="navitem-string">
-            <i className="fas fa-tachometer-alt mr-2 item-left"></i>
-            <View className="item-center" flex={1}>
-                Dashboard
-            </View>
-            <i className="fas fa-chevron-right item-right"></i>
-        </Flex>
-    </NavLink>
-</li>
-<DividerHorizontal marginBottom />
-<div className="navitem-group">Divider</div>
-<li>
-    <View
-        className="navitem-container"
-        id="1-testing"
-        onClick={() =>
-            this.OpenChildrenHandler('1-testing')
-        }
-    >
-        <Flex className="navitem-string">
-            <i className="fas fa-square mr-2 item-left"></i>
-            <View className="item-center" flex={1}>
-                Dashboard
-            </View>
-            <i className="fas fa-chevron-right item-right"></i>
-        </Flex>
-    </View>
+export const MapStateToProps = (state: AppState) => ({
+    MenuAuthState: state.MenuAuthState,
+});
 
-    <ul className="navitem-children-parent shadow">
-        <div className="navitem-group">Divider</div>
-        <li>
-            <NavLink
-                exact
-                to="/component/children"
-                className="navitem-container"
-            >
-                <Flex className="navitem-string">
-                    <i className="fas fa-tachometer-alt mr-2 item-left"></i>
-                    <View className="item-center" flex={1}>
-                        children
-                    </View>
-                    <i className="fas fa-chevron-right item-right"></i>
-                </Flex>
-            </NavLink>
-        </li>
-        <li>
-            <NavLink
-                exact
-                to="/component/children"
-                className="navitem-container"
-            >
-                <Flex className="navitem-string">
-                    <i className="fas fa-tachometer-alt mr-2 item-left"></i>
-                    <View className="item-center" flex={1}>
-                        children huruf nya panjang panjang
-                    </View>
-                    <i className="fas fa-chevron-right item-right"></i>
-                </Flex>
-            </NavLink>
-        </li>
-        <div className="navitem-group">Divider</div>
-        <li>
-            <NavLink
-                exact
-                to="/component/children"
-                className="navitem-container"
-            >
-                <Flex className="navitem-string">
-                    <i className="fas fa-tachometer-alt mr-2 item-left"></i>
-                    <View className="item-center" flex={1}>
-                        children
-                    </View>
-                    <i className="fas fa-chevron-right item-right"></i>
-                </Flex>
-            </NavLink>
-        </li>
-        <li>
-            <NavLink
-                exact
-                to="/component/children"
-                className="navitem-container"
-            >
-                <Flex className="navitem-string">
-                    <i className="fas fa-tachometer-alt mr-2 item-left"></i>
-                    <View className="item-center" flex={1}>
-                        children huruf nya panjang panjang
-                    </View>
-                    <i className="fas fa-chevron-right item-right"></i>
-                </Flex>
-            </NavLink>
-        </li>
-    </ul>
-</li>} */
+const NavbarLeft = connect(MapStateToProps)(TempNavbarLeft);
 
 export { NavbarLeft };

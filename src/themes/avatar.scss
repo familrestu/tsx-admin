@@ -14,6 +14,7 @@
 	background-repeat: no-repeat;
 	align-items: center;
 	justify-content: center;
+	cursor: pointer;
 
 	span {
 		// flex: 1;
@@ -27,7 +28,7 @@
 		right: 0;
 		left: unset !important; /* override bootstrap */
 		border-radius: 7px;
-		min-width: 275px;
+		min-width: 325px;
 
 		.dropdown-item {
 			border-bottom: 1px solid rgba(0,0,0,.15);

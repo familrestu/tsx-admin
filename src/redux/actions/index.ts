@@ -1,8 +1,5 @@
-import { ThemeAction } from './ThemeAction';
-// import { ModalAction } from './ModalAction';
+import { UserActions } from './UserAction';
 
-type CombineActions = ThemeAction;
-
-// eslint-disable-next-line @typescript-eslint/ban-types
+type CombineActions = UserActions;
 
 export default CombineActions;

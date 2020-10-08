@@ -31,6 +31,8 @@ $colorsList: (
 @import 'navbar.scss';
 @import 'button.scss';
 @import 'card.scss';
+@import 'tabs.scss';
+@import 'form.scss';
 
 html {
 	height: 100%;
@@ -128,4 +130,37 @@ a:hover {
 
 p {
 	white-space: pre-wrap;
+}
+
+/* ::-webkit-scrollbar {
+	display: none;
+} */
+
+:focus {
+	outline: unset !important;
+}
+
+.temp-button {
+	position: absolute;
+	bottom: 20px;
+	right: 20px;
+	z-index: 20000;
+	height: 50px;
+	width: 50px;
+	border-radius: 50%;
+	font-size: 30px;
+	// line-height: 1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: unset;
+
+	span {
+		height: 100%;
+		width: 100%;
+	}
+}
+
+.toast-body {
+	background-color: color(white) !important;
 }
