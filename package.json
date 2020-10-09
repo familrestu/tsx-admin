@@ -62,7 +62,6 @@
     ]
   },
   "jest": {
-    "preset": "react-native",
     "moduleFileExtensions": [
       "ts",
       "tsx",
