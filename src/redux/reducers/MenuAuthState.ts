@@ -106,10 +106,7 @@ const DefaultState: MenuAuthStateType = [
     },
 ];
 
-const MenuAuthState = (
-    state: MenuAuthStateType = DefaultState,
-    action: MenuActions,
-) => {
+const MenuAuthState = (state: MenuAuthStateType = DefaultState, action: MenuActions) => {
     switch (action.type) {
         case SETUSERMENU:
             return { ...state };

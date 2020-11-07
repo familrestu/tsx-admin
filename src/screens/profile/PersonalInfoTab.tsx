@@ -1,15 +1,8 @@
 import React from 'react';
 import { AvatarImage } from 'components/Avatar';
 import Form from 'components/Form';
-import {
-    Row,
-    Col,
-    FormGroup,
-    FormLabel,
-    FormCheck,
-    FormText,
-} from 'react-bootstrap';
-import FormControl from 'components/FormControl';
+import { Row, Col } from 'react-bootstrap';
+import Input from 'components/Input';
 import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
 
@@ -55,210 +48,29 @@ class PersonalInfoTab extends React.Component<AppState> {
                     </Col>
                 </Row>
 
-                <Row>
-                    <Col sm={4}>
-                        <FormGroup>
-                            <FormLabel>Name</FormLabel>
-                            <FormControl
-                                type="text"
-                                placeholder="Full Name"
-                                name="full_name"
-                                readOnly
-                            />
-                        </FormGroup>
-                    </Col>
-                </Row>
+                <Input type="text" label="Name" size="4" placeholder="Full Name" name="full_name" readOnly />
+                <Input type="text" label="Position" size="auto" placeholder="Position" name="position_name" plaintext readOnly />
 
                 <Row>
-                    <Col sm={4}>
-                        <FormGroup>
-                            <FormLabel>Position</FormLabel>
-                            <FormControl
-                                type="text"
-                                placeholder="Position"
-                                name="position_name"
-                                plaintext
-                                readOnly
-                            />
-                        </FormGroup>
-                    </Col>
+                    <Input type="text" size={3} row="false" label="First name" placeholder="First name" name="first_name" formrequired="true" />
+                    <Input type="text" size={3} row="false" label="Middle name" placeholder="Middle name" name="middle_name" />
+                    <Input type="text" size={3} row="false" label="Last name" placeholder="Last name" name="last_name" formrequired="true" />
                 </Row>
+
+                <Input type="email" label="Email" size={4} placeholder="email@example.com" name="email" formrequired="true" />
+                <Input type="radio" label="Gender" size={3} name="gender" data="Male=0,Female=1" />
+
+                <Input type="text" label="Identification No." placeholder="XXXX-XXXX-XXXX-XXXX" name="identification_no" formrequired="true" ktp-value="1" maxLength={16} size={4} text="16 Digit" />
+                <Input type="text" label="Tax File No." placeholder="XX.XXX.XXX.X-XXX.XXX" name="taxfile_no" formrequired="true" className="required" npwp-value="1" maxLength={15} size={4} />
 
                 <Row>
-                    <Col sm={2}>
-                        <FormGroup>
-                            <FormLabel>First Name</FormLabel>
-                            <FormControl
-                                type="text"
-                                placeholder="First name"
-                                name="first_name"
-                                formrequired="true"
-                            />
-                        </FormGroup>
-                    </Col>
-                    <Col sm={2}>
-                        <FormGroup>
-                            <FormLabel>Middle Name</FormLabel>
-                            <FormControl
-                                type="text"
-                                placeholder="Middle name"
-                                name="middle_name"
-                            />
-                        </FormGroup>
-                    </Col>
-                    <Col sm={2}>
-                        <FormGroup>
-                            <FormLabel>Last Name</FormLabel>
-                            <FormControl
-                                type="text"
-                                placeholder="Last name"
-                                name="last_name"
-                                formrequired="true"
-                            />
-                        </FormGroup>
-                    </Col>
+                    <Input type="text" label="Birth Place" placeholder="Birth Place" name="birth_place" formrequired="true" size={2} row="false" />
+                    <Input type="date" label="Birth Date" placeholder="Birth Date" name="birth_date" formrequired="true" size={3} row="false" />
                 </Row>
 
-                <Row>
-                    <Col sm={3}>
-                        <FormGroup>
-                            <FormLabel>Email</FormLabel>
-                            <FormControl
-                                type="email"
-                                placeholder="email@example.com"
-                                name="email"
-                                formrequired="true"
-                            />
-                        </FormGroup>
-                    </Col>
-                </Row>
-
-                <Row>
-                    <Col sm={3}>
-                        <FormGroup>
-                            <FormLabel>Gender</FormLabel>
-                            <Row>
-                                <FormCheck
-                                    inline
-                                    id="male"
-                                    type="radio"
-                                    label="Male"
-                                    name="gender"
-                                    value={0}
-                                />
-
-                                <FormCheck
-                                    inline
-                                    id="female"
-                                    type="radio"
-                                    label="Female"
-                                    name="gender"
-                                    value={1}
-                                />
-                            </Row>
-                        </FormGroup>
-                    </Col>
-                </Row>
-
-                <Row>
-                    <Col sm={3}>
-                        <FormGroup>
-                            <FormLabel>Identification No.</FormLabel>
-                            <FormControl
-                                type="text"
-                                placeholder="XXXX-XXXX-XXXX-XXXX"
-                                name="identification_no"
-                                formrequired="true"
-                                ktp-value="1"
-                                maxLength={16}
-                            />
-
-                            <FormText>16 Digit</FormText>
-                        </FormGroup>
-                    </Col>
-                </Row>
-
-                <Row>
-                    <Col sm={3}>
-                        <FormGroup>
-                            <FormLabel>Tax File No.</FormLabel>
-                            <FormControl
-                                type="text"
-                                placeholder="XX.XXX.XXX.X-XXX.XXX"
-                                name="taxfile_no"
-                                formrequired="true"
-                                className="required"
-                                npwp-value="1"
-                                maxLength={15}
-                            />
-                        </FormGroup>
-                    </Col>
-                </Row>
-
-                <Row>
-                    <Col sm={2}>
-                        <FormGroup>
-                            <FormLabel>Birth Place</FormLabel>
-                            <FormControl
-                                type="text"
-                                placeholder="Birth Place"
-                                name="birth_place"
-                                formrequired="true"
-                            />
-                        </FormGroup>
-                    </Col>
-                    <Col sm={3}>
-                        <FormGroup>
-                            <FormLabel>Birth Date</FormLabel>
-                            <FormControl
-                                type="date"
-                                placeholder="Birth Date"
-                                name="birth_date"
-                                formrequired="true"
-                            />
-                        </FormGroup>
-                    </Col>
-                </Row>
-
-                <Row>
-                    <Col sm={2}>
-                        <FormGroup>
-                            <FormLabel>Phone</FormLabel>
-                            <FormControl
-                                type="text"
-                                placeholder="+62 21 XXX XXXX XXXX"
-                                name="phone"
-                            />
-                        </FormGroup>
-                    </Col>
-                </Row>
-
-                <Row>
-                    <Col sm={2}>
-                        <FormGroup>
-                            <FormLabel>Mobile Phone</FormLabel>
-                            <FormControl
-                                type="text"
-                                placeholder="+62 21 XXX XXXX XXXX"
-                                name="mobile_phone"
-                            />
-                        </FormGroup>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col sm={6}>
-                        <FormGroup>
-                            <FormLabel>Address</FormLabel>
-                            <FormControl
-                                as="textarea"
-                                type="text"
-                                name="address"
-                                rows={5}
-                                style={{ resize: 'none' }}
-                            />
-                        </FormGroup>
-                    </Col>
-                </Row>
+                <Input type="text" label="Phone" placeholder="+62 21 XXX XXXX XXXX" name="phone" size={2} />
+                <Input type="text" label="Mobile Phone" placeholder="+62 21 XXX XXXX XXXX" name="mobile_phone" size={2} />
+                <Input as="textarea" type="text" label="Address" name="address" size={6} rows={5} style={{ resize: 'none' }} />
             </Form>
         );
     }

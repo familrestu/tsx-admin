@@ -1,6 +1,6 @@
 import React from 'react';
 import Icon from 'components/Icon';
-// import SimpleBar from 'simplebar-react';
+import SimpleBar from 'simplebar-react';
 
 type PageProps = {
     breadCrumb?: string;
@@ -12,10 +12,7 @@ class Page extends React.Component<PageProps> {
         const element = [];
 
         if (this.props.breadCrumb !== undefined) {
-            if (
-                this.props.breadCrumb !== '' &&
-                this.props.breadCrumb.length > 2
-            ) {
+            if (this.props.breadCrumb !== '' && this.props.breadCrumb.length > 2) {
                 const arrBC = this.props.breadCrumb.split('|');
 
                 for (let i = 0; i < arrBC.length; i++) {
@@ -27,13 +24,7 @@ class Page extends React.Component<PageProps> {
                     );
 
                     if (i !== arrBC.length - 1) {
-                        element.push(
-                            <Icon
-                                key={`bc-divider-${i}`}
-                                name="fas fa-chevron-right pt-1 ml-1"
-                                fontSize="1rem"
-                            ></Icon>,
-                        );
+                        element.push(<Icon key={`bc-divider-${i}`} name="fas fa-chevron-right pt-1 ml-1" fontSize="1rem"></Icon>);
                     }
                 }
             }
@@ -50,11 +41,11 @@ class Page extends React.Component<PageProps> {
         return (
             <React.Fragment>
                 {this.PrintBreadCrumb()}
-                {/* <SimpleBar style={{ maxHeight: '83vh', overflowX: 'hidden' }}> */}
-                <div id="body-content" className="body-content">
-                    {this.props.children}
-                </div>
-                {/* </SimpleBar> */}
+                <SimpleBar style={{ maxHeight: '83vh', overflowX: 'hidden' }}>
+                    <div id="body-content" className="body-content">
+                        {this.props.children}
+                    </div>
+                </SimpleBar>
             </React.Fragment>
         );
     }

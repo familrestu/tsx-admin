@@ -7,10 +7,7 @@ type DividerHorizontalProps = {
 
 const DividerHorizontal = (props: DividerHorizontalProps) => {
     let className = 'navbar-divider-horizontal my-0';
-    if (
-        typeof props.marginTop !== 'undefined' ||
-        typeof props.marginBottom !== 'undefined'
-    ) {
+    if (typeof props.marginTop !== 'undefined' || typeof props.marginBottom !== 'undefined') {
         if (props.marginTop) {
             className += ' mt-3';
         }
@@ -30,10 +27,7 @@ type DividerVerticalProps = {
 
 const DividerVertical = (props: DividerVerticalProps) => {
     let className = 'navbar-divider-vertical my-0';
-    if (
-        typeof props.marginRight !== 'undefined' ||
-        typeof props.marginLeft !== 'undefined'
-    ) {
+    if (typeof props.marginRight !== 'undefined' || typeof props.marginLeft !== 'undefined') {
         if (props.marginRight) {
             className += ' mr-3';
         }

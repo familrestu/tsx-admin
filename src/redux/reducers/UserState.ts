@@ -24,7 +24,7 @@ export type UserStateType = {
 };
 
 const DefaultState: UserStateType = {
-    loggedIn: true,
+    loggedIn: false,
     username: 'famil.restu',
     email: 'famil.restu@gmail.com',
     full_name: 'Famil Restu Pambudi',
@@ -45,14 +45,10 @@ Tangerang Selatan, Banten.
     company_name: 'PT. Indodev Niaga Internet',
     department_name: 'Implementation AT',
     position_name: 'Sr Implmentation Consultant - AT',
-    profile_picture:
-        'https://instagram.fcgk18-1.fna.fbcdn.net/v/t51.2885-19/s150x150/119965518_712593792802031_924955956384857550_n.jpg?_nc_ht=instagram.fcgk18-1.fna.fbcdn.net&_nc_cat=111&_nc_ohc=jFcPzhtfaHkAX-7Vvyh&oh=53259d8d87ad73e7b20bee7e03c4e219&oe=5F9E61AC',
+    profile_picture: 'https://lh3.googleusercontent.com/ogw/ADGmqu8Xth9CuZj0MrKx-cdFhmJXKFCCr9eEwgIy4qci1A=s83-c-mo',
 };
 
-const UserState = (
-    state: UserStateType = DefaultState,
-    action: UserActions,
-) => {
+const UserState = (state: UserStateType = DefaultState, action: UserActions) => {
     switch (action.type) {
         case LOGIN:
             return { ...state };

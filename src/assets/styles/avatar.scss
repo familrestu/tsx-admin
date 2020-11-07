@@ -8,7 +8,7 @@
 	width: 2.5rem;
 	height: 2.5rem;
 	border-radius: 50%;
-	background-color: color(primary);
+	background-color: var(--primary);
 	background-position: center;
 	background-size: cover;
 	background-repeat: no-repeat;
@@ -17,9 +17,8 @@
 	cursor: pointer;
 
 	span {
-		// flex: 1;
 		pointer-events: none;
-		color: color(white);
+		color: var(--white);
 		font-weight: 600;
 	}
 
@@ -51,15 +50,15 @@
 		height: 18px;
 		bottom: -3px;
 		right: -3px;
-		border: 2px solid color(light);
+		border: 2px solid var(--light);
 		border-radius: 50%;
 
 		&.prs {
-			background-color: color(success);
+			background-color: var(--success);
 		}
 
 		&:not(.prs) {
-			background-color: color(danger);
+			background-color: var(--danger);
 		}
 	}
 }

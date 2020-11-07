@@ -2,123 +2,21 @@ import React from 'react';
 import Page from 'components/Page';
 
 import { Card, Row, Col, Badge } from 'react-bootstrap';
-import Chart from 'chart.js';
-import SimpleBar from 'simplebar-react';
+import Simplebar from 'simplebar-react';
 import moment from 'moment';
 
 import { DividerVertical } from 'components/Divider';
 import CompanyInfoUpToDate from 'assets/images/undraw_up_to_date_rmbm.png';
 
-class Piechart extends React.Component {
-    componentDidMount() {
-        new Chart(document.getElementById('piechart') as HTMLCanvasElement, {
-            type: 'pie',
-            data: {
-                labels: ['PRS', 'LTI', 'ABS', 'EAO', 'UNPR'],
-                datasets: [
-                    {
-                        label: 'Sept, 2020',
-                        data: [25, 2, 1, 5, 4],
-                        backgroundColor: [
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 99, 132, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)',
-                        ],
-                    },
-                ],
-            },
-            options: {
-                maintainAspectRatio: false,
-                cutoutPercentage: 65,
-                legend: {
-                    display: true,
-                    position: 'right',
-                },
-
-                tooltips: {
-                    backgroundColor: 'rgb(255,255,255)',
-                    bodyFontColor: '#858796',
-                    borderColor: '#dddfeb',
-                    xPadding: 15,
-                    yPadding: 15,
-                    displayColors: true,
-                },
-            },
-        });
-    }
-
-    render() {
-        return <canvas id="piechart" height="200"></canvas>;
-    }
-}
-
-class Barchart extends React.Component {
-    componentDidMount() {
-        new Chart(document.getElementById('barchart') as HTMLCanvasElement, {
-            type: 'bar',
-            data: {
-                labels: ['Aug', 'Sep', 'Oct'],
-                datasets: [
-                    {
-                        label: 'Dept A',
-                        backgroundColor: '#ff6384',
-                        data: [201, 150, 150],
-                    },
-                    {
-                        label: 'Dept B',
-                        backgroundColor: '#4bc0c0',
-                        data: [182, 153, 159],
-                    },
-                    {
-                        label: 'Dept C',
-                        backgroundColor: '#fcba03',
-                        data: [165, 152, 119],
-                    },
-                ],
-            },
-            options: {
-                maintainAspectRatio: false,
-                legend: {
-                    display: true,
-                    position: 'bottom',
-                },
-                scales: {
-                    yAxes: [
-                        {
-                            ticks: {
-                                beginAtZero: true,
-                                max: 300,
-                            },
-                        },
-                    ],
-                },
-            },
-        });
-    }
-
-    render() {
-        return <canvas id="barchart" height="400"></canvas>;
-    }
-}
-
 const AttendanceRecordTime = () => (
-    <Card className="shadow card-border-left-success">
+    <Card className="shadow-sm card-border-left-success">
         <Card.Body className="d-flex flex-column">
-            <div
-                className="d-flex flex-rows justify-content-center align-items-center flex-1"
-                style={{ height: '50px' }}
-            >
+            <div className="d-flex flex-rows justify-content-center align-items-center flex-1" style={{ height: '50px' }}>
                 <span className="d-flex justify-content-center text-center align-items-center text-primary flex-column flex-1">
                     <span className="flex-1" style={{ fontSize: 'x-large' }}>
                         07:02
                     </span>
-                    <span
-                        className="flex-1 text-gray bold text-uppercase"
-                        style={{ fontSize: 'x-small' }}
-                    >
+                    <span className="flex-1 text-black bold text-uppercase" style={{ fontSize: 'x-small' }}>
                         in
                     </span>
                 </span>
@@ -127,17 +25,11 @@ const AttendanceRecordTime = () => (
                     <span className="flex-1" style={{ fontSize: 'x-large' }}>
                         18:02
                     </span>
-                    <span
-                        className="flex-1 text-gray bold text-uppercase"
-                        style={{ fontSize: 'x-small' }}
-                    >
+                    <span className="flex-1 text-black bold text-uppercase" style={{ fontSize: 'x-small' }}>
                         out
                     </span>
                 </span>
             </div>
-            {/* <div className="d-flex justify-content-center align-items-center p-2">
-                <div className="btn btn-primary">Record Time</div>
-            </div> */}
         </Card.Body>
     </Card>
 );
@@ -196,20 +88,14 @@ const Attachment = (props: AttachmentPropsType) => {
 
     if (props.type === 'image') {
         returnElement = (
-            <div
-                className="d-flex flex-column justify-content-center align-items-center pointer"
-                style={{ height: '100px', minWidth: '100px' }}
-            >
+            <div className="d-flex flex-column justify-content-center align-items-center pointer" style={{ height: '100px', minWidth: '100px' }}>
                 <div>img preview</div>
                 <span className="small">{props.name}</span>
             </div>
         );
     } else {
         returnElement = (
-            <div
-                className="d-flex flex-column justify-content-center align-items-center pointer"
-                style={{ height: '100px', minWidth: '100px' }}
-            >
+            <div className="d-flex flex-column justify-content-center align-items-center pointer" style={{ height: '100px', minWidth: '100px' }}>
                 <i
                     className={`fas fa-file-${props.type} mb-1 text-${
                         props.type === 'excel' || props.type === 'csv'
@@ -242,9 +128,7 @@ class CompanyInfo extends React.Component {
 
         parentTarget.classList.toggle('show');
         if (targetNextSibling !== null) {
-            const expandedHeight = targetNextSibling.getAttribute(
-                'expanded-height',
-            );
+            const expandedHeight = targetNextSibling.getAttribute('expanded-height');
 
             if (parentTarget.classList.value.indexOf('show') > 0) {
                 targetNextSibling.style.height = `${expandedHeight}px`;
@@ -264,9 +148,7 @@ class CompanyInfo extends React.Component {
             (element as HTMLDivElement).classList.remove('show');
         }
 
-        const arrDetails = document.querySelectorAll(
-            '.companyinfo-row .details',
-        );
+        const arrDetails = document.querySelectorAll('.companyinfo-row .details');
 
         for (let i = 0; i < arrDetails.length; i++) {
             const element = arrDetails[i];
@@ -280,37 +162,21 @@ class CompanyInfo extends React.Component {
 
     render() {
         return (
-            <Card className="shadow companyinfo-container">
+            <Card className="shadow-sm companyinfo-container">
                 <Card.Header>Announcement</Card.Header>
                 <Card.Body style={{ height: '439px' }}>
-                    <SimpleBar style={{ maxHeight: '375px' }}>
+                    <Simplebar style={{ maxHeight: '375px' }}>
                         {arrCompanyInfo.length ? (
                             arrCompanyInfo.map((key, index) => {
                                 return (
-                                    <div
-                                        key={`${key.title}-${index}`}
-                                        className="companyinfo-row show"
-                                    >
-                                        <div
-                                            className="preview d-flex align-items-center pointer"
-                                            onClick={(e: React.MouseEvent) =>
-                                                this.ExpandCompanyRowHandler(e)
-                                            }
-                                        >
+                                    <div key={`${key.title}-${index}`} className="companyinfo-row show">
+                                        <div className="preview d-flex align-items-center pointer" onClick={(e: React.MouseEvent) => this.ExpandCompanyRowHandler(e)}>
                                             <div className="flex-1">
                                                 <h6 className="d-flex m-0 align-items-center">
-                                                    <span className="mr-1">
-                                                        {key.title}
-                                                    </span>
-                                                    {!key.opened && (
-                                                        <Badge variant="danger">
-                                                            New
-                                                        </Badge>
-                                                    )}
+                                                    <span className="mr-1">{key.title}</span>
+                                                    {!key.opened && <Badge variant="danger">New</Badge>}
                                                 </h6>
-                                                <span className="small">
-                                                    {key.date}
-                                                </span>
+                                                <span className="small">{key.date}</span>
                                             </div>
                                             <div
                                                 className="d-flex align-items-center justify-content-end"
@@ -328,37 +194,16 @@ class CompanyInfo extends React.Component {
                                             className="details"
                                             ref={(ref) => {
                                                 if (ref !== null) {
-                                                    ref.setAttribute(
-                                                        'expanded-height',
-                                                        ref.offsetHeight.toString(),
-                                                    );
+                                                    ref.setAttribute('expanded-height', ref.offsetHeight.toString());
                                                 }
                                             }}
                                         >
                                             <p>{key.content}</p>
                                             {key.attachment !== null && (
                                                 <Row>
-                                                    {key.attachment.map(
-                                                        (
-                                                            keyAttachment,
-                                                            indexAttachment,
-                                                        ) => {
-                                                            return (
-                                                                <Attachment
-                                                                    key={`${keyAttachment}-${indexAttachment}`}
-                                                                    name={
-                                                                        keyAttachment.name
-                                                                    }
-                                                                    type={
-                                                                        keyAttachment.type
-                                                                    }
-                                                                    link={
-                                                                        keyAttachment.link
-                                                                    }
-                                                                />
-                                                            );
-                                                        },
-                                                    )}
+                                                    {key.attachment.map((keyAttachment, indexAttachment) => {
+                                                        return <Attachment key={`${keyAttachment}-${indexAttachment}`} name={keyAttachment.name} type={keyAttachment.type} link={keyAttachment.link} />;
+                                                    })}
                                                 </Row>
                                             )}
                                         </div>
@@ -367,15 +212,11 @@ class CompanyInfo extends React.Component {
                             })
                         ) : (
                             <div className="position-relative d-flex align-items-center justify-content-center p-4">
-                                <img
-                                    src={CompanyInfoUpToDate}
-                                    style={{ height: '400px' }}
-                                    alt="Everything's catched up"
-                                />
+                                <img src={CompanyInfoUpToDate} style={{ height: '400px' }} alt="Everything's catched up" />
                                 <h5>Everything&apos;s catched up</h5>
                             </div>
                         )}
-                    </SimpleBar>
+                    </Simplebar>
                 </Card.Body>
             </Card>
         );
@@ -394,24 +235,6 @@ class HomeScreen extends React.Component {
                 <Row>
                     <Col sm={6} className="mb-4">
                         <CompanyInfo />
-                    </Col>
-                    <Col sm={6}>
-                        <Card className="shadow card-border-left-success">
-                            <Card.Header>Bar Chart</Card.Header>
-                            <Card.Body className="d-flex flex-column">
-                                <Barchart />
-                            </Card.Body>
-                        </Card>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col sm={3}>
-                        <Card className="shadow card-border-left-success">
-                            <Card.Header>Dougnut CHart</Card.Header>
-                            <Card.Body className="d-flex flex-column">
-                                <Piechart />
-                            </Card.Body>
-                        </Card>
                     </Col>
                 </Row>
             </Page>

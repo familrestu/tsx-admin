@@ -21,3 +21,13 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# underscored file
+_*.svg
+_*.ts
+_*.tsx
+_*.js
+_*.jsx
+
+# psd files
+*.psd

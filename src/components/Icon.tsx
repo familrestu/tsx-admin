@@ -17,13 +17,7 @@ class Icon extends React.Component<Props> {
             styles.cursor = 'pointer';
         }
 
-        return (
-            <i
-                className={`${this.props.name}`}
-                style={styles}
-                onClick={this.props.onClick}
-            ></i>
-        );
+        return <i className={`${this.props.name}`} style={styles} onClick={this.props.onClick}></i>;
     }
 }
 

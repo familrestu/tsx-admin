@@ -1,0 +1,43 @@
+.card {
+	margin-left: 1rem;
+	margin-right: 1rem;
+
+	.card-header {
+		// background-color: rgba(34,163,107,0.05);
+		color: var(--primary);
+		font-size: large;
+		font-weight: 600;
+	}
+
+	&.companyinfo-container {
+		.companyinfo-row {
+			border-bottom: 1px solid #e3e6f0;
+			padding: 1rem;
+
+			.preview {
+				.fas.fa-chevron-left {
+					transition: all 0.2s linear;
+				}
+			}
+
+			&.show {
+				.preview {
+					.fas.fa-chevron-left {
+						transform: rotate(-90deg);
+					}
+				}
+
+				.details {
+					opacity: 1;
+				}
+			}
+
+			.details {
+				opacity: 0;
+				overflow: hidden;
+
+				transition: all 0.2s linear;
+			}
+		}
+	}
+}

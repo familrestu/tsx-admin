@@ -1,64 +1,56 @@
-/* eslint-disable @typescript-eslint/ban-types */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
-
-/* import Flex from 'components/Flex';
-import View from 'components/View';
-import Absolute from 'components/Absolute'; */
+import { connect } from 'react-redux';
+import { AppState } from 'redux/store';
 
 import Header from 'components/Header';
 import { NavbarLeft } from 'components/Navbar';
 
+import LoginScreen from 'screens/LoginScreen';
+import PageNotFoundScreen from 'screens/PageNotFoundScreen';
 import HomeScreen from 'screens/HomeScreen';
 import ProfileScreen from 'screens/profile/ProfileScreen';
-import Page from 'components/Page';
-// import ReactDOM from 'react-dom';
 
-const NotAuthorized = () => {
-    return (
-        <Page>
-            <h2>Not Authorized</h2>
-        </Page>
-    );
-};
-
-class Body extends React.Component {
-    render() {
-        return (
-            <div id="body-container" className="body-container">
-                <div className="body">
-                    <Switch>
-                        <Route exact path="/" component={HomeScreen} />
-                        <Route
-                            exact
-                            path="/profile"
-                            component={ProfileScreen}
-                        />
-                        <Route
-                            path="/notauthorized"
-                            component={NotAuthorized}
-                        />
-                        <Redirect to="/notauthorized" />
-                    </Switch>
-                </div>
+const AuthorizedScreen = () => (
+    <BrowserRouter>
+        <NavbarLeft />
+        <div className="content-container">
+            <Header />
+            <div id="body" className="body">
+                <Switch>
+                    <Route exact path="/" component={HomeScreen} />
+                    <Route exact path="/profile" component={ProfileScreen} />
+                    <Route path="/pagenotfound" component={PageNotFoundScreen} />
+                    <Redirect to="/pagenotfound" />
+                </Switch>
             </div>
-        );
-    }
-}
+        </div>
+    </BrowserRouter>
+);
 
-class EntryPoint extends React.Component {
+const NotAuthorizedScreen = () => (
+    <BrowserRouter>
+        <div className="content-container">
+            <Switch>
+                <Route exact path="/" component={LoginScreen} />
+                <Route exact path="/forgotpassword" component={ProfileScreen} />
+            </Switch>
+        </div>
+    </BrowserRouter>
+);
+
+class EntryPoint extends React.Component<AppState> {
     render() {
-        return (
-            <BrowserRouter>
-                <NavbarLeft />
-                <div className="content-container">
-                    <Header />
-                    <Body />
-                </div>
-            </BrowserRouter>
-        );
+        if (this.props.UserState !== undefined && this.props.UserState.loggedIn) {
+            return <AuthorizedScreen />;
+        } else {
+            return <NotAuthorizedScreen />;
+        }
     }
 }
 
-export default EntryPoint;
+const MapStateToProps = (state: AppState) => ({
+    UserState: state.UserState,
+});
+
+export default connect(MapStateToProps)(EntryPoint);

@@ -1,0 +1,19 @@
+.login-container {
+	flex: 1;
+
+	.left-container {
+		flex: 2;
+		background-color: var(--primary);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		svg {
+			width: 50%;
+		}
+	}
+
+	.right-container {
+		flex: 1;
+	}
+}

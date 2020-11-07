@@ -49,14 +49,10 @@ export class AvatarImage extends React.Component<AvatarProps, AvatarState> {
 
         if (arrString.length > 1) {
             firstChar = arrString[0].toString().toUpperCase()[0];
-            secondChar = arrString[arrString.length - 1]
-                .toString()
-                .toUpperCase()[0];
+            secondChar = arrString[arrString.length - 1].toString().toUpperCase()[0];
         } else {
             firstChar = this.props.name[0].toUpperCase();
-            secondChar = this.props.name[
-                this.props.name.length - 1
-            ].toUpperCase();
+            secondChar = this.props.name[this.props.name.length - 1].toUpperCase();
         }
 
         return `${firstChar}${secondChar}`;
@@ -70,15 +66,7 @@ export class AvatarImage extends React.Component<AvatarProps, AvatarState> {
         return (
             <div
                 id="avatar"
-                className={`avatar ${
-                    this.props.dropdownParent !== undefined
-                        ? 'btn-open-dropdown'
-                        : ''
-                } ${
-                    this.props.className !== undefined
-                        ? this.props.className
-                        : ''
-                }`}
+                className={`avatar ${this.props.dropdownParent !== undefined ? 'btn-open-dropdown' : ''} ${this.props.className !== undefined ? this.props.className : ''}`}
                 {...this.props.attributes}
                 style={{
                     backgroundImage: `url(${this.props.image})`,
@@ -94,8 +82,7 @@ export class AvatarImage extends React.Component<AvatarProps, AvatarState> {
 
 class Avatar extends React.Component<AvatarProps> {
     ToggleKeepFocusHandler(e: React.MouseEvent, type: number) {
-        const target = (e.currentTarget.parentElement as HTMLDivElement)
-            .parentElement;
+        const target = (e.currentTarget.parentElement as HTMLDivElement).parentElement;
 
         if (target !== null) {
             if (type === 0) {
@@ -104,10 +91,7 @@ class Avatar extends React.Component<AvatarProps> {
                 target.removeAttribute('keep-focus');
 
                 if (e.type === 'click') {
-                    (e.currentTarget
-                        .parentElement as HTMLDivElement).classList.remove(
-                        'show',
-                    );
+                    (e.currentTarget.parentElement as HTMLDivElement).classList.remove('show');
                 }
             }
         }
@@ -117,11 +101,7 @@ class Avatar extends React.Component<AvatarProps> {
         return (
             <div className="position-relative avatar-container d-flex align-items-center br-4">
                 <div className="mr-3">{this.props.name}</div>
-                <AvatarImage
-                    attributes={{ tabIndex: 0 }}
-                    dropdownParent
-                    {...this.props}
-                >
+                <AvatarImage attributes={{ tabIndex: 0 }} dropdownParent {...this.props}>
                     <div className="position-absolute dropdown-menu p-0 shadow">
                         <div className="d-flex p-4 justify-content-center dropdown-item">
                             <div className="d-flex flex-column">
@@ -135,36 +115,20 @@ class Avatar extends React.Component<AvatarProps> {
                                         {...this.props}
                                     />
                                 </div>
-                                <div className="nowrap text-center">
-                                    {this.props.name}
-                                </div>
-                                <div className="nowrap text-center text-gray small">
-                                    {this.props.position}
-                                </div>
-                                <div className="nowrap text-center text-gray small">
-                                    {this.props.company}
-                                </div>
+                                <div className="nowrap text-center">{this.props.name}</div>
+                                <div className="nowrap text-center text-black small">{this.props.position}</div>
+                                <div className="nowrap text-center text-black small">{this.props.company}</div>
                             </div>
                         </div>
                         <NavLink
                             exact
                             to="/profile"
-                            onMouseEnter={(e: React.MouseEvent) =>
-                                this.ToggleKeepFocusHandler(e, 0)
-                            }
-                            onMouseLeave={(e: React.MouseEvent) =>
-                                this.ToggleKeepFocusHandler(e, 1)
-                            }
-                            onClick={(e: React.MouseEvent) =>
-                                this.ToggleKeepFocusHandler(e, 1)
-                            }
+                            onMouseEnter={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 0)}
+                            onMouseLeave={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
+                            onClick={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
                         >
                             <div className="d-flex p-3 dropdown-item small justify-content-start align-items-center">
-                                {/* <i className="fas fa-user mr-2"></i> */}
-                                <span
-                                    className="text-gray"
-                                    style={{ fontWeight: 'unset' }}
-                                >
+                                <span className="text-black" style={{ fontWeight: 'unset' }}>
                                     Your Profile
                                 </span>
                             </div>
@@ -175,22 +139,13 @@ class Avatar extends React.Component<AvatarProps> {
                                 pathname: '/profile',
                                 state: 'accountInformation',
                             }}
-                            onMouseEnter={(e: React.MouseEvent) =>
-                                this.ToggleKeepFocusHandler(e, 0)
-                            }
-                            onMouseLeave={(e: React.MouseEvent) =>
-                                this.ToggleKeepFocusHandler(e, 1)
-                            }
-                            onClick={(e: React.MouseEvent) =>
-                                this.ToggleKeepFocusHandler(e, 1)
-                            }
+                            onMouseEnter={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 0)}
+                            onMouseLeave={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
+                            onClick={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
                         >
                             <div className="d-flex p-3 dropdown-item small justify-content-start align-items-center">
                                 {/* <i className="fas fa-key mr-2"></i> */}
-                                <span
-                                    className="text-gray"
-                                    style={{ fontWeight: 'unset' }}
-                                >
+                                <span className="text-black" style={{ fontWeight: 'unset' }}>
                                     Change Password
                                 </span>
                             </div>

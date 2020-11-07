@@ -1,0 +1,20 @@
+.form-group {
+	margin-right: 1rem;
+
+	.form-control-plaintext {
+		cursor: default;
+		pointer-events: none;
+	}
+
+	.form-icon {
+		position: absolute;
+		right: 10px;
+		top: calc(50% + 5px);
+	}
+}
+
+.form-check {
+	label[for], input[type=radio], input[type=checkbox] {
+		cursor: pointer;
+	}
+}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { KTPFormat, NPWPFormat } from 'libs/form';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Button } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
@@ -8,13 +8,9 @@ const CancelButton = () => {
     const history = useHistory();
 
     return (
-        <button
-            type="button"
-            className="btn btn-default mr-2"
-            onClick={() => history.goBack()}
-        >
+        <Button variant="secondary" className="btn btn-default mr-2" onClick={() => history.goBack()}>
             Cancel
-        </button>
+        </Button>
     );
 };
 
@@ -52,10 +48,7 @@ class Form extends React.Component<FormProps, FormState> {
                 this.setState({ isLoaded: true, datasource: datasource });
             } else if (typeof datasource === 'string') {
                 const pathDsn = datasource as string;
-                if (
-                    pathDsn.substr(0, 4) === 'http' ||
-                    pathDsn.substr(0, 5) === 'https'
-                ) {
+                if (pathDsn.substr(0, 4) === 'http' || pathDsn.substr(0, 5) === 'https') {
                     console.log('lets fetch data');
                 }
             }
@@ -67,9 +60,7 @@ class Form extends React.Component<FormProps, FormState> {
             const datasource = this.state.datasource;
             if (this.form !== null && this.form !== undefined) {
                 // find all input inside this form
-                const arrInputs = this.form.querySelectorAll(
-                    'input, textarea, select',
-                );
+                const arrInputs = this.form.querySelectorAll('input, textarea, select');
 
                 for (let i = 0; i < arrInputs.length; i++) {
                     const element = arrInputs[i];
@@ -86,86 +77,36 @@ class Form extends React.Component<FormProps, FormState> {
                     ); */
 
                     if (tagName === 'INPUT' || tagName === 'TEXTAREA') {
-                        if (
-                            elementType === 'text' ||
-                            elementType === 'email' ||
-                            elementType === 'date'
-                        ) {
+                        if (elementType === 'text' || elementType === 'email' || elementType === 'date') {
                             if (elementName !== null && datasource !== null) {
-                                if (
-                                    (element as HTMLInputElement).getAttribute(
-                                        'ktp-value',
-                                    )
-                                ) {
-                                    (element as HTMLInputElement).defaultValue = KTPFormat(
-                                        datasource[elementName],
-                                    );
+                                if ((element as HTMLInputElement).getAttribute('ktp-value')) {
+                                    (element as HTMLInputElement).defaultValue = KTPFormat(datasource[elementName]);
 
-                                    (element as HTMLInputElement).addEventListener(
-                                        'blur',
-                                        (e: Event) => {
-                                            (element as HTMLInputElement).value = KTPFormat(
-                                                (e.currentTarget as HTMLInputElement)
-                                                    .value,
-                                            );
-                                        },
-                                    );
-                                    (element as HTMLInputElement).addEventListener(
-                                        'focus',
-                                        (e: Event) => {
-                                            (element as HTMLInputElement).value = (e.currentTarget as HTMLInputElement).value
-                                                .toString()
-                                                .replaceAll('-', '');
-                                        },
-                                    );
-                                } else if (
-                                    (element as HTMLInputElement).getAttribute(
-                                        'npwp-value',
-                                    )
-                                ) {
-                                    (element as HTMLInputElement).defaultValue = NPWPFormat(
-                                        datasource[elementName],
-                                    );
-                                    (element as HTMLInputElement).addEventListener(
-                                        'blur',
-                                        (e: Event) => {
-                                            (element as HTMLInputElement).value = NPWPFormat(
-                                                (e.currentTarget as HTMLInputElement)
-                                                    .value,
-                                            );
-                                        },
-                                    );
-                                    (element as HTMLInputElement).addEventListener(
-                                        'focus',
-                                        (e: Event) => {
-                                            (element as HTMLInputElement).value = (e.currentTarget as HTMLInputElement).value
-                                                .toString()
-                                                .replaceAll('.', '')
-                                                .replaceAll('-', '');
-                                        },
-                                    );
+                                    (element as HTMLInputElement).addEventListener('blur', (e: Event) => {
+                                        (element as HTMLInputElement).value = KTPFormat((e.currentTarget as HTMLInputElement).value);
+                                    });
+                                    (element as HTMLInputElement).addEventListener('focus', (e: Event) => {
+                                        (element as HTMLInputElement).value = (e.currentTarget as HTMLInputElement).value.toString().replaceAll('-', '');
+                                    });
+                                } else if ((element as HTMLInputElement).getAttribute('npwp-value')) {
+                                    (element as HTMLInputElement).defaultValue = NPWPFormat(datasource[elementName]);
+                                    (element as HTMLInputElement).addEventListener('blur', (e: Event) => {
+                                        (element as HTMLInputElement).value = NPWPFormat((e.currentTarget as HTMLInputElement).value);
+                                    });
+                                    (element as HTMLInputElement).addEventListener('focus', (e: Event) => {
+                                        (element as HTMLInputElement).value = (e.currentTarget as HTMLInputElement).value.toString().replaceAll('.', '').replaceAll('-', '');
+                                    });
                                 } else {
-                                    (element as HTMLInputElement).defaultValue =
-                                        datasource[elementName] === undefined
-                                            ? ''
-                                            : datasource[elementName];
+                                    (element as HTMLInputElement).defaultValue = datasource[elementName] === undefined ? '' : datasource[elementName];
                                 }
                             }
 
                             // console.log(element);
-                        } else if (
-                            elementType === 'checkbox' ||
-                            elementType === 'radio'
-                        ) {
-                            const elementValue = (element as HTMLInputElement)
-                                .value;
+                        } else if (elementType === 'checkbox' || elementType === 'radio') {
+                            const elementValue = (element as HTMLInputElement).value;
 
                             if (elementName !== null && datasource !== null) {
-                                (element as HTMLInputElement).defaultChecked =
-                                    elementValue ===
-                                    (datasource[
-                                        elementName
-                                    ] as string).toString();
+                                (element as HTMLInputElement).defaultChecked = elementValue === (datasource[elementName] as string).toString();
                             }
                         }
                     }
@@ -231,7 +172,7 @@ class Form extends React.Component<FormProps, FormState> {
             <form
                 ref={(ref) => (this.form = ref)}
                 id={this.props.id}
-                className={`p-4 ${this.props.className}`}
+                className={`p-4${this.props.className ? ` ${this.props.className}` : ''}`}
                 encType={this.props.encType}
                 action={this.props.action}
                 onSubmit={(e: React.FormEvent) => this.FormSubmitHandler(e)}
@@ -240,12 +181,12 @@ class Form extends React.Component<FormProps, FormState> {
 
                 <Row>
                     <Col sm={6}>
-                        <button type="submit" className="btn btn-primary mr-2">
+                        <Button variant="primary" className="mr-2">
                             {this.props.datasource ? 'Save' : 'Submit'}
-                        </button>
-                        <button type="reset" className="btn btn-default mr-2">
+                        </Button>
+                        <Button variant="secondary" type="reset" className="mr-2">
                             Reset
-                        </button>
+                        </Button>
                     </Col>
 
                     <Col sm={6} className="d-flex justify-content-end">
