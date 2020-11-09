@@ -1,4 +1,4 @@
-import { LOGIN, UserActions } from '../actions/UserAction';
+import { LOGIN, LOGOUT, UserActions } from '../actions/UserAction';
 
 export type UserStateType = {
     loggedIn: boolean;
@@ -51,7 +51,9 @@ Tangerang Selatan, Banten.
 const UserState = (state: UserStateType = DefaultState, action: UserActions) => {
     switch (action.type) {
         case LOGIN:
-            return { ...state };
+            return { ...state, loggedIn: true };
+        case LOGOUT:
+            return { ...state, loggedIn: false };
         default:
             return state;
     }

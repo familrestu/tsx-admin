@@ -56,7 +56,7 @@ ul {
 	}
 }
 
-a { color: var(--primary) !important; }
+// a { color: var(--primary) !important; }
 
 .form-control {
 	background-color: rgba(42, 81, 110, 0.1);
@@ -88,5 +88,6 @@ p { white-space: pre-wrap; }
 :focus { outline: unset !important; }
 
 /* text color */
+.text-primary { color: var(--primary) !important; }
 .text-grey { color: var(--grey) !important; }
 .text-black { color: var(--black) !important; }

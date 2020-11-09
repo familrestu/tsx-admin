@@ -8,12 +8,13 @@ import packagejson from '../../package.json';
 import { NavLink } from 'react-router-dom';
 
 import { ReactComponent as LoginSVG } from 'assets/svg/login.svg';
+import Form from 'components/Form';
 
 type LoginScreenState = {
     useAccountCode: boolean;
 };
 
-class LoginScreen extends React.Component<AppState, LoginScreenState> {
+class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginScreenState> {
     state = {
         useAccountCode: false,
     };
@@ -26,7 +27,7 @@ class LoginScreen extends React.Component<AppState, LoginScreenState> {
                 </div>
 
                 <div className="right-container p-4 d-flex align-items-center">
-                    <form className="p-4 flex-1">
+                    <Form className="p-4 flex-1" buttonGroup={false} action="core/login" onSubmitSuccessCallBack={this.props.Login}>
                         <Row>
                             <Col>
                                 <h2>Welcome</h2>
@@ -58,7 +59,7 @@ class LoginScreen extends React.Component<AppState, LoginScreenState> {
                         <Row>
                             <Col>
                                 <FormGroup>
-                                    <Button variant="primary" className="mr-2">
+                                    <Button variant="primary" className="mr-2" type="submit">
                                         Sign in
                                     </Button>
                                 </FormGroup>
@@ -74,7 +75,7 @@ class LoginScreen extends React.Component<AppState, LoginScreenState> {
                         <Row>
                             <Col className="text-center small text-grey">Web app version {packagejson.version}</Col>
                         </Row>
-                    </form>
+                    </Form>
                 </div>
             </div>
         );
@@ -85,4 +86,8 @@ const MapStateToProps = (state: AppState) => ({
     UserState: state.UserState,
 });
 
-export default connect(MapStateToProps)(LoginScreen);
+const MapDispatch = {
+    Login: () => ({ type: 'LOGIN' }),
+};
+
+export default connect(MapStateToProps, MapDispatch)(LoginScreen);

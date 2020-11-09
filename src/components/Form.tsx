@@ -14,14 +14,17 @@ const CancelButton = () => {
     );
 };
 
-type FormProps = {
+interface FormProps {
     id?: string;
     className?: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     datasource?: any;
     action?: string;
     encType?: string;
-};
+    buttonGroup?: boolean;
+    onSubmitSuccessCallBack?: () => void;
+    onSubmitErrorCallBack?: () => void;
+}
 
 type FormState = {
     isLoaded: boolean;
@@ -143,16 +146,26 @@ class Form extends React.Component<FormProps, FormState> {
             const formData = JSON.stringify(tempFormData);
             axios
                 .post(this.props.action, formData)
-                .then((res) => {
+                .then((res: any) => {
                     if (res) {
                         alert('succkess');
+
+                        if (this.props.onSubmitSuccessCallBack) {
+                            this.props.onSubmitSuccessCallBack();
+                        }
                     } else {
-                        alert('error');
+                        alert(res.data.message);
+                        if (this.props.onSubmitErrorCallBack) {
+                            this.props.onSubmitErrorCallBack();
+                        }
                     }
                 })
                 .catch((err) => {
-                    console.log(err);
-                    alert('error');
+                    // console.log(err);
+                    alert(err.message);
+                    if (this.props.onSubmitSuccessCallBack) {
+                        this.props.onSubmitSuccessCallBack();
+                    }
                 });
         }
     }
@@ -168,6 +181,7 @@ class Form extends React.Component<FormProps, FormState> {
     }
 
     render() {
+        console.log(this.props.children);
         return (
             <form
                 ref={(ref) => (this.form = ref)}
@@ -178,21 +192,23 @@ class Form extends React.Component<FormProps, FormState> {
                 onSubmit={(e: React.FormEvent) => this.FormSubmitHandler(e)}
             >
                 {this.props.children}
+                {this.props.buttonGroup === undefined ||
+                    (this.props.buttonGroup && (
+                        <Row>
+                            <Col sm={6}>
+                                <Button variant="primary" className="mr-2">
+                                    {this.props.datasource ? 'Save' : 'Submit'}
+                                </Button>
+                                <Button variant="secondary" type="reset" className="mr-2">
+                                    Reset
+                                </Button>
+                            </Col>
 
-                <Row>
-                    <Col sm={6}>
-                        <Button variant="primary" className="mr-2">
-                            {this.props.datasource ? 'Save' : 'Submit'}
-                        </Button>
-                        <Button variant="secondary" type="reset" className="mr-2">
-                            Reset
-                        </Button>
-                    </Col>
-
-                    <Col sm={6} className="d-flex justify-content-end">
-                        <CancelButton />
-                    </Col>
-                </Row>
+                            <Col sm={6} className="d-flex justify-content-end">
+                                <CancelButton />
+                            </Col>
+                        </Row>
+                    ))}
             </form>
         );
     }
