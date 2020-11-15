@@ -3,7 +3,8 @@ import { Row, Col, FormGroup, Button } from 'react-bootstrap';
 import Input from 'components/Input';
 import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
-import packagejson from '../../package.json';
+// import { UserStateType } from 'redux/reducers/UserState';
+import jwt from 'jsonwebtoken';
 
 import { NavLink } from 'react-router-dom';
 
@@ -19,6 +20,12 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
         useAccountCode: false,
     };
 
+    Login(res: any) {
+        console.log(res);
+        // const decoded = jwt.verify(res.data.jwt, process.env.REACT_APP_JWT_KEY as string);
+        // this.props.Login(decoded);
+    }
+
     render() {
         return (
             <div className="login-container d-flex flex-row">
@@ -27,7 +34,7 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
                 </div>
 
                 <div className="right-container p-4 d-flex align-items-center">
-                    <Form className="p-4 flex-1" buttonGroup={false} action="core/login" onSubmitSuccessCallBack={this.props.Login}>
+                    <Form className="p-4 flex-1" buttonGroup={false} action="system/core/login" onSubmitSuccessCallBack={(res) => this.Login(res)}>
                         <Row>
                             <Col>
                                 <h2>Welcome</h2>
@@ -35,13 +42,13 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
                         </Row>
                         {this.state.useAccountCode ? (
                             <React.Fragment>
-                                <Input type="text" label="Account Code" size="12" placeholder="accountcode" name="accountcode" />
-                                <Input type="text" label="Username" size="12" placeholder="username" name="username" />
+                                <Input type="text" label="Account Code" size="12" placeholder="accountcode" name="accountcode" defaultValue="ersys" />
+                                <Input type="text" label="Username" size="12" placeholder="username" name="username" defaultValue="famil.restu" />
                             </React.Fragment>
                         ) : (
-                            <Input type="email" label="Email" size="12" placeholder="example@companyemail.com" name="email" />
+                            <Input type="email" label="Email" size="12" placeholder="example@companyemail.com" name="email" defaultValue="famil.restu@ersys.com" />
                         )}
-                        <Input type="password" label="Password" size="12" placeholder="Password" name="password" />
+                        <Input type="password" label="Password" size="12" placeholder="Password" name="password" defaultValue="password" />
 
                         <Input
                             type="checkbox"
@@ -73,7 +80,7 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
                             </Col>
                         </Row>
                         <Row>
-                            <Col className="text-center small text-grey">Web app version {packagejson.version}</Col>
+                            <Col className="text-center small text-grey">Web app version {process.env.REACT_APP_VERSION}</Col>
                         </Row>
                     </Form>
                 </div>
@@ -87,7 +94,7 @@ const MapStateToProps = (state: AppState) => ({
 });
 
 const MapDispatch = {
-    Login: () => ({ type: 'LOGIN' }),
+    Login: (userState: any) => ({ type: 'LOGIN', data: { ...userState } }),
 };
 
 export default connect(MapStateToProps, MapDispatch)(LoginScreen);

@@ -7,8 +7,8 @@ type AvatarState = {
 };
 
 export type AvatarProps = {
-    name: string;
-    position: string;
+    name?: string;
+    position?: string;
     company?: string;
     className?: string;
     image?: string | null;
@@ -45,17 +45,21 @@ export class AvatarImage extends React.Component<AvatarProps, AvatarState> {
         let secondChar = '';
 
         /* set string as Array */
-        const arrString = this.props.name.split(' ');
+        if (this.props.name) {
+            const arrString = this.props.name.split(' ');
 
-        if (arrString.length > 1) {
-            firstChar = arrString[0].toString().toUpperCase()[0];
-            secondChar = arrString[arrString.length - 1].toString().toUpperCase()[0];
+            if (arrString.length > 1) {
+                firstChar = arrString[0].toString().toUpperCase()[0];
+                secondChar = arrString[arrString.length - 1].toString().toUpperCase()[0];
+            } else {
+                firstChar = this.props.name[0].toUpperCase();
+                secondChar = this.props.name[this.props.name.length - 1].toUpperCase();
+            }
+
+            return `${firstChar}${secondChar}`;
         } else {
-            firstChar = this.props.name[0].toUpperCase();
-            secondChar = this.props.name[this.props.name.length - 1].toUpperCase();
+            return ' ';
         }
-
-        return `${firstChar}${secondChar}`;
     }
 
     componentDidMount() {

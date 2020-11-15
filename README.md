@@ -1,2 +1,2 @@
-# ersys-admin
-Ersys Admin Template - Bootstrap
+# Ersys
+Ersys - a web application
