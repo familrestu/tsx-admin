@@ -23,7 +23,7 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
     Login(res: any) {
         console.log(res);
         // const decoded = jwt.verify(res.data.jwt, process.env.REACT_APP_JWT_KEY as string);
-        // this.props.Login(decoded);
+        this.props.Login(res.data);
     }
 
     render() {
@@ -94,7 +94,7 @@ const MapStateToProps = (state: AppState) => ({
 });
 
 const MapDispatch = {
-    Login: (userState: any) => ({ type: 'LOGIN', data: { ...userState } }),
+    Login: (data: any) => ({ type: 'LOGIN', data }),
 };
 
 export default connect(MapStateToProps, MapDispatch)(LoginScreen);
