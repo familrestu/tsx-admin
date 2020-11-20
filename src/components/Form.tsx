@@ -81,7 +81,7 @@ class Form extends React.Component<FormProps, FormState> {
 
                     if (tagName === 'INPUT' || tagName === 'TEXTAREA') {
                         if (elementType === 'text' || elementType === 'email' || elementType === 'date') {
-                            if (elementName !== null && datasource !== null) {
+                            if (elementName !== null && datasource !== null && datasource[elementName]) {
                                 if ((element as HTMLInputElement).getAttribute('ktp-value')) {
                                     (element as HTMLInputElement).defaultValue = KTPFormat(datasource[elementName]);
 
@@ -108,7 +108,7 @@ class Form extends React.Component<FormProps, FormState> {
                         } else if (elementType === 'checkbox' || elementType === 'radio') {
                             const elementValue = (element as HTMLInputElement).value;
 
-                            if (elementName !== null && datasource !== null) {
+                            if (elementName !== null && datasource !== null && datasource[elementName]) {
                                 (element as HTMLInputElement).defaultChecked = elementValue === (datasource[elementName] as string).toString();
                             }
                         }

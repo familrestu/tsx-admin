@@ -7,6 +7,7 @@ import { LOGIN, LOGOUT, UserActions } from '../actions/UserAction';
 }; */
 
 export type UserStateType = {
+    loggedIn?: boolean;
     app?: string;
     username?: string;
     email?: string;
@@ -28,14 +29,15 @@ export type UserStateType = {
     profile_picture?: string | null;
 };
 
-const DefaultState: UserStateType = {};
+const DefaultState: UserStateType = {
+    loggedIn: false,
+};
 
 const UserState = (state: UserStateType = DefaultState, action: UserActions) => {
     switch (action.type) {
         case LOGIN:
             return { ...state, loggedIn: true, ...action.data };
         case LOGOUT:
-            return { ...state, loggedIn: false };
         default:
             return state;
     }

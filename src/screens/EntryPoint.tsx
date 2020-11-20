@@ -46,7 +46,7 @@ type LocalState = {
     loggedIn: boolean | null;
 };
 
-class EntryPoint extends React.Component<AppState, LocalState> {
+class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalState> {
     /* constructor(props: any) {
         super(props);
         this.CheckLoginState();
@@ -62,18 +62,11 @@ class EntryPoint extends React.Component<AppState, LocalState> {
             .then((res) => {
                 if (res.data) {
                     if (res.data.loginStatus) {
-                        // eslint-disable-next-line react/no-direct-mutation-state
-                        /* this.state = {
-                            loggedIn: true,
-                        }; */
+                        this.props.Login(res.data);
                         this.setState((prevState) => {
                             return { ...prevState, loggedIn: true };
                         });
                     } else {
-                        // eslint-disable-next-line react/no-direct-mutation-state
-                        /* this.state = {
-                            loggedIn: false,
-                        }; */
                         this.setState((prevState) => {
                             return { ...prevState, loggedIn: false };
                         });
@@ -89,10 +82,6 @@ class EntryPoint extends React.Component<AppState, LocalState> {
 
     componentDidMount() {
         this.CheckLoginState();
-    }
-
-    componentDidUpdate() {
-        console.log(this.state.loggedIn);
     }
 
     render() {
@@ -112,4 +101,8 @@ const MapStateToProps = (state: AppState) => ({
     UserState: state.UserState,
 });
 
-export default connect(MapStateToProps)(EntryPoint);
+const MapDispatch = {
+    Login: (data: any) => ({ type: 'LOGIN', data }),
+};
+
+export default connect(MapStateToProps, MapDispatch)(EntryPoint);

@@ -32,7 +32,7 @@ class Company extends React.Component<CompanyDetailsType> {
 
         return (
             <li>
-                <div id="company-nav-container" className="company-nav-container pointer" onClick={() => alert()}>
+                <div id="company-nav-container" className="company-nav-container pointer" onClick={() => (window.location.href = '/')}>
                     <div id="company" className="company">
                         {this.props.company_logo !== null ? <img src={`${imgUrl}/${this.props.company_logo}`} alt={this.props.name} /> : this.props.name}
                     </div>

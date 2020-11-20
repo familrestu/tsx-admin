@@ -4,7 +4,7 @@ import Input from 'components/Input';
 import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
 // import { UserStateType } from 'redux/reducers/UserState';
-import jwt from 'jsonwebtoken';
+// import jwt from 'jsonwebtoken';
 
 import { NavLink } from 'react-router-dom';
 
@@ -21,9 +21,12 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
     };
 
     Login(res: any) {
-        console.log(res);
+        // console.log(res);
         // const decoded = jwt.verify(res.data.jwt, process.env.REACT_APP_JWT_KEY as string);
         this.props.Login(res.data);
+        if (res.data.loginStatus) {
+            window.location.reload();
+        }
     }
 
     render() {

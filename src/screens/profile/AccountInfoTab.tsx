@@ -29,6 +29,7 @@ class AccountInfo extends React.Component<AppState, LocalState> {
                 <Row>
                     <Input type="text" label="Username" size="4" placeholder="username" name="username" row="false" />
                     <Input
+                        label="&nbsp;"
                         type="button"
                         size="auto"
                         className="btn btn-primary"

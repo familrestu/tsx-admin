@@ -1,6 +1,9 @@
 import React from 'react';
 import CSS from 'csstype';
 import { NavLink } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { AppState } from 'redux/store';
+import axios from 'axios';
 
 type AvatarState = {
     isImageLoaded: boolean;
@@ -84,7 +87,7 @@ export class AvatarImage extends React.Component<AvatarProps, AvatarState> {
     }
 }
 
-class Avatar extends React.Component<AvatarProps> {
+class Avatar extends React.Component<AvatarProps & AppState & typeof MapDispatch> {
     ToggleKeepFocusHandler(e: React.MouseEvent, type: number) {
         const target = (e.currentTarget.parentElement as HTMLDivElement).parentElement;
 
@@ -99,6 +102,23 @@ class Avatar extends React.Component<AvatarProps> {
                 }
             }
         }
+    }
+
+    SignOutHandler() {
+        axios
+            .post(`${process.env.REACT_APP_API_PATH}/system/core/logout`, null, { withCredentials: true })
+            .then((res: any) => {
+                console.log(res);
+                if (res.data.loginStatus) {
+                    this.props.Logout();
+                    window.location.reload();
+                }
+            })
+            .catch((err: any) => {
+                console.error(err);
+                alert(err.message);
+                window.location.reload();
+            });
     }
 
     render() {
@@ -154,7 +174,7 @@ class Avatar extends React.Component<AvatarProps> {
                                 </span>
                             </div>
                         </NavLink>
-                        <div className="d-flex p-3 justify-content-center">
+                        <div className="d-flex p-3 justify-content-center" onClick={() => this.SignOutHandler()}>
                             <div className="btn btn-primary">Sign out</div>
                         </div>
                     </div>
@@ -164,4 +184,14 @@ class Avatar extends React.Component<AvatarProps> {
     }
 }
 
-export default Avatar;
+// export default Avatar;
+
+const MapStateToProps = (state: AppState) => ({
+    UserState: state.UserState,
+});
+
+const MapDispatch = {
+    Logout: () => ({ type: 'LOGOUT' }),
+};
+
+export default connect(MapStateToProps, MapDispatch)(Avatar);
