@@ -1,6 +1,6 @@
 import React from 'react';
 import Icon from 'components/Icon';
-import SimpleBar from 'simplebar-react';
+// import SimpleBar from 'simplebar-react';
 
 type PageProps = {
     breadCrumb?: string;
