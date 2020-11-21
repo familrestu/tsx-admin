@@ -1,10 +1,10 @@
-import { UserStateType } from '../reducers/UserState';
+// import { UserStateType } from '../reducers/UserState';
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 
 type LoginActionType = {
     type: typeof LOGIN;
-    data: UserStateType;
+    data: any;
 };
 
 type LogoutActionType = {

@@ -1,34 +1,59 @@
 import React from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { AppState } from 'redux/store';
+import { MenuAuthStateType } from 'redux/reducers/MenuAuthState';
 
 import Header from 'components/Header';
 import { NavbarLeft } from 'components/Navbar';
 
 import LoginScreen from 'screens/LoginScreen';
 import PageNotFoundScreen from 'screens/PageNotFoundScreen';
+import AttendanceScreen from 'screens/hris/attendance/AttendanceDataScreen';
 
 import HomeScreen from 'screens/HomeScreen';
 import ProfileScreen from 'screens/profile/ProfileScreen';
 import axios from 'axios';
 
-const AuthorizedScreen = () => (
-    <BrowserRouter>
-        <NavbarLeft />
-        <div className="content-container">
-            <Header />
-            <div id="body" className="body">
-                <Switch>
-                    <Route exact path="/" component={HomeScreen} />
-                    <Route exact path="/profile" component={ProfileScreen} />
-                    <Route path="/pagenotfound" component={PageNotFoundScreen} />
-                    <Redirect to="/pagenotfound" />
-                </Switch>
+const AuthorizedScreen = () => {
+    const currentApp = useSelector((state: any) => state.UserState.currentApp);
+    const menuAuth: MenuAuthStateType = useSelector((state: any) => state.MenuAuthState);
+    let component;
+
+    return (
+        <BrowserRouter>
+            <NavbarLeft />
+            <div className="content-container">
+                <Header />
+                <div id="body" className="body">
+                    <Switch>
+                        <Route exact path="/" component={HomeScreen} />
+
+                        {menuAuth.map((item, index) => {
+                            if (index > 0) {
+                                if (item.isGlobal === 'Yes' || item.isGlobal === 1) {
+                                    // eslint-disable-next-line @typescript-eslint/no-var-requires
+                                    component = require(`../screens${item.componentPath}`);
+                                    return <Route key={`dynamic-route-${index}`} exact path={item.link} component={component.default} />;
+                                } else {
+                                    component = require(`screens/${currentApp}${item.componentPath}`);
+                                    return <Route key={`dynamic-route-${index}`} exact path={item.link} component={component.default} />;
+                                }
+                            } else {
+                                return null;
+                            }
+                        })}
+
+                        <Route path="/attendance/attendancedata" exact component={AttendanceScreen} />
+
+                        <Route path="/pagenotfound" component={PageNotFoundScreen} />
+                        <Redirect to="/pagenotfound" />
+                    </Switch>
+                </div>
             </div>
-        </div>
-    </BrowserRouter>
-);
+        </BrowserRouter>
+    );
+};
 
 const NotAuthorizedScreen = () => (
     <BrowserRouter>
@@ -47,11 +72,6 @@ type LocalState = {
 };
 
 class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalState> {
-    /* constructor(props: any) {
-        super(props);
-        this.CheckLoginState();
-    } */
-
     state = {
         loggedIn: null,
     };
@@ -82,6 +102,12 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
 
     componentDidMount() {
         this.CheckLoginState();
+    }
+
+    componentDidUpdate() {
+        if (this.state.loggedIn) {
+            // this.GetMenuAuth();
+        }
     }
 
     render() {

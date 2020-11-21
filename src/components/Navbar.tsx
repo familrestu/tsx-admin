@@ -1,9 +1,8 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import axios from 'axios';
 
 import { DividerHorizontal } from 'components/Divider';
-/* import div from 'components/div';
-import View from 'components/View'; */
 
 import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
@@ -103,9 +102,13 @@ type NavitemPropsType = {
     group: string | null;
     groupid: string | null;
     id: string;
-    link: string;
-    name: string;
     icon: string | null;
+    name: string;
+    link: string;
+    componentPath?: string;
+    isMenu: 0 | 1 | 'No' | 'Yes';
+    isGlobal: 0 | 1 | 'No' | 'Yes';
+    accessmode?: 0 | 1 | 2 | 3 | 'read' | 'write' | 'update' | 'delete';
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     children?: any;
 };
@@ -116,7 +119,7 @@ const Navitem = (props: NavitemPropsType) => {
     const ChildrenElement: React.ReactNode[] = [];
     if (props.children !== undefined && props.children.length > 0) {
         (props.children as Array<NavitemPropsType>).forEach((item, index) => {
-            if (item.group !== null && arrGroup.indexOf(item.group) < 0) {
+            if (item.group !== null && arrGroup.indexOf(item.group) < 0 && (item.isMenu === 1 || item.isMenu === 'Yes')) {
                 ChildrenElement.push(
                     <div key={`${item.id}-${index}-group`} className="navitem-group">
                         {item.group}
@@ -124,8 +127,9 @@ const Navitem = (props: NavitemPropsType) => {
                 );
                 arrGroup.push(item.group);
             }
-
-            ChildrenElement.push(<Navitem key={`${item.id}-${index}`} {...item} />);
+            if (item.isMenu === 1 || item.isMenu === 'Yes') {
+                ChildrenElement.push(<Navitem key={`${item.id}-${index}`} {...item} />);
+            }
         });
     }
 
@@ -168,17 +172,18 @@ type NavbarLeftState = {
     element: React.ReactNode[];
 };
 
-class TempNavbarLeft extends React.Component<AppState, NavbarLeftState> {
+class TempNavbarLeft extends React.Component<AppState & typeof MapDispatch, NavbarLeftState> {
     state: NavbarLeftState = {
         element: [],
     };
+    currentMenu: any;
 
     BuildNav() {
         const { MenuAuthState } = this.props;
         const arrNav: JSX.Element[] = [];
         if (MenuAuthState !== undefined) {
             MenuAuthState.forEach((item, index) => {
-                if (item.group !== null && arrGroup.indexOf(item.group) < 0) {
+                if (item.group !== null && arrGroup.indexOf(item.group) < 0 && (item.isMenu === 1 || item.isMenu === 'Yes')) {
                     arrNav.push(
                         <div key={`${item.id}-${index}-group`} className="navitem-group">
                             {item.group}
@@ -187,7 +192,9 @@ class TempNavbarLeft extends React.Component<AppState, NavbarLeftState> {
                     arrGroup.push(item.group);
                 }
 
-                arrNav.push(<Navitem key={`${item.id}-${index}`} {...item} />);
+                if (item.isMenu === 1 || item.isMenu === 'Yes' || item.id === 'dashboard') {
+                    arrNav.push(<Navitem key={`${item.id}-${index}`} {...item} />);
+                }
             });
         }
 
@@ -198,9 +205,33 @@ class TempNavbarLeft extends React.Component<AppState, NavbarLeftState> {
         document.addEventListener('click', CloseChildrenHandler);
     }
 
+    GetMenuAuth() {
+        axios
+            .post(`${process.env.REACT_APP_API_PATH}/system/core/getMenuAuth`, null, { withCredentials: true })
+            .then((res) => {
+                if (res.data) {
+                    this.props.SetUserMenu(res.data);
+                } else {
+                    throw new Error('Something wrong');
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }
+
     componentDidMount() {
-        this.BuildNav();
+        this.currentMenu = this.props.MenuAuthState;
+        this.GetMenuAuth();
         this.SetCloseChildrenListener();
+        this.BuildNav();
+    }
+
+    componentDidUpdate() {
+        if (this.currentMenu !== this.props.MenuAuthState) {
+            this.BuildNav();
+            this.currentMenu = this.props.MenuAuthState;
+        }
     }
 
     render() {
@@ -216,10 +247,14 @@ class TempNavbarLeft extends React.Component<AppState, NavbarLeftState> {
     }
 }
 
-export const MapStateToProps = (state: AppState) => ({
+const MapStateToProps = (state: AppState) => ({
     MenuAuthState: state.MenuAuthState,
 });
 
-const NavbarLeft = connect(MapStateToProps)(TempNavbarLeft);
+const MapDispatch = {
+    SetUserMenu: (data: any) => ({ type: 'SETUSERMENU', data }),
+};
+
+const NavbarLeft = connect(MapStateToProps, MapDispatch)(TempNavbarLeft);
 
 export { NavbarLeft };

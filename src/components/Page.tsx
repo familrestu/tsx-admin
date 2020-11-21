@@ -41,11 +41,11 @@ class Page extends React.Component<PageProps> {
         return (
             <React.Fragment>
                 {this.PrintBreadCrumb()}
-                <SimpleBar style={{ maxHeight: '83vh', overflowX: 'hidden' }}>
-                    <div id="body-content" className="body-content">
-                        {this.props.children}
-                    </div>
-                </SimpleBar>
+                {/* <SimpleBar style={{ maxHeight: '84vh', overflowX: 'hidden' }}> */}
+                <div id="body-content" className="body-content">
+                    {this.props.children}
+                </div>
+                {/* </SimpleBar> */}
             </React.Fragment>
         );
     }

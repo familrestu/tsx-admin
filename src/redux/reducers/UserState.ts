@@ -6,7 +6,7 @@ import { LOGIN, LOGOUT, UserActions } from '../actions/UserAction';
     jwt: string | null;
 }; */
 
-export type UserStateType = {
+/* export type UserStateType = {
     loggedIn?: boolean;
     app?: string;
     username?: string;
@@ -27,13 +27,13 @@ export type UserStateType = {
     department_name?: string;
     position_name?: string;
     profile_picture?: string | null;
-};
+}; */
 
-const DefaultState: UserStateType = {
+const DefaultState: any = {
     loggedIn: false,
 };
 
-const UserState = (state: UserStateType = DefaultState, action: UserActions) => {
+const UserState = (state: any = DefaultState, action: UserActions) => {
     switch (action.type) {
         case LOGIN:
             return { ...state, loggedIn: true, ...action.data };

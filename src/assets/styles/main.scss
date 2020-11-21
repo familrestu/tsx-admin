@@ -6,6 +6,7 @@
 @import 'card.scss';
 @import 'tabs.scss';
 @import 'form.scss';
+@import 'table.scss';
 
 
 @import 'login.scss';
@@ -19,10 +20,12 @@ body[themes=light] {
 	--neutral: rgb(57, 189, 237);
 	
 	--primary: #519a66;
+	--light-primary: #f3fdf6;
 	--secondary: #61d883;
 
 	--white: #ffffff;
 	
+	--light-grey: #dee2e6;
 	--grey: rgba(0, 0, 0, 0.35);
 	--black: rgba(0, 0, 0, 0.75);
 }

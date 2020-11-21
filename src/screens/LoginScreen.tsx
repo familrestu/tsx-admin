@@ -55,7 +55,7 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
 
                         <Input
                             type="checkbox"
-                            name="accountcode"
+                            name="is_accountcode"
                             data="Login with account code=Y"
                             size="auto"
                             labelSize="small"

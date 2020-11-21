@@ -2,6 +2,13 @@
 	background-color: var(--white);
 	padding: 0 1rem;
 	z-index: 1000;
+	height: 100%;
+	
 
 	.bread-crumb { font-size: 1.5rem; }
+	.body-content {
+		height: 84vh;
+		width: calc(100vw - 14.5rem - 2rem);
+		overflow: auto;
+	}
 }
