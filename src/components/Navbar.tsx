@@ -207,7 +207,7 @@ class TempNavbarLeft extends React.Component<AppState & typeof MapDispatch, Navb
 
     GetMenuAuth() {
         axios
-            .post(`${process.env.REACT_APP_API_PATH}/system/core/getMenuAuth`, null, { withCredentials: true })
+            .post(`${process.env.REACT_APP_API_PATH}/system/global/GetMenuAuth`, null, { withCredentials: true })
             .then((res) => {
                 if (res.data) {
                     this.props.SetUserMenu(res.data);

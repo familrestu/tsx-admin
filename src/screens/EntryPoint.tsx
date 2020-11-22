@@ -16,7 +16,7 @@ import ProfileScreen from 'screens/profile/ProfileScreen';
 import axios from 'axios';
 
 const AuthorizedScreen = () => {
-    const currentApp = useSelector((state: any) => state.UserState.currentApp);
+    const currentApp = useSelector((state: any) => state.UserState.current_app);
     const menuAuth: MenuAuthStateType = useSelector((state: any) => state.MenuAuthState);
     let component;
 
@@ -78,7 +78,7 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
 
     CheckLoginState() {
         axios
-            .post(`${process.env.REACT_APP_API_PATH}/system/core/loginStatus`, null, { withCredentials: true })
+            .post(`${process.env.REACT_APP_API_PATH}/system/global/LoginStatus`, null, { withCredentials: true })
             .then((res) => {
                 if (res.data) {
                     if (res.data.loginStatus) {

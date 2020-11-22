@@ -36,7 +36,7 @@ class AttendanceDataScreen extends Component {
         data.body[2][6] = '15:00';
         return (
             <Page breadCrumb="Time & Attendance|Attendance Data">
-                <Table data={data}>
+                <Table data={data} datasource="attendance/AttData">
                     <Column label="Date" name="date" width="350" />
                     <Column label="Start Time" name="start_time" />
                     <Column label="End Time" name="end_time" />

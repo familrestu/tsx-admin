@@ -5,14 +5,13 @@ type ColumnType = {
     name: string | number;
     header?: Array<any>;
     body?: Array<any>;
-    maxDataLength?: number;
     width?: number | string;
 };
 
 class Column extends Component<ColumnType> {
     getColumn() {
         const row = [];
-        if (this.props.header && this.props.body && this.props.maxDataLength) {
+        if (this.props.header && this.props.body) {
             const index = this.props.header.indexOf(this.props.name);
 
             row.push(
@@ -22,7 +21,7 @@ class Column extends Component<ColumnType> {
             );
 
             if (this.props.body[index]) {
-                for (let i = 0; i < this.props.maxDataLength; i++) {
+                for (let i = 0; i < this.props.body[index].length; i++) {
                     const body = this.props.body[index][i];
                     row.push(
                         <div key={`body-${this.props.name}-${i}`} className="row-body" style={this.props.width ? { width: `${this.props.width}px` } : {}}>
@@ -32,10 +31,12 @@ class Column extends Component<ColumnType> {
                 }
             }
         }
+
         return row;
     }
 
     render() {
+        // console.log(this.props);
         return <div className="row-group">{this.getColumn()}</div>;
     }
 }

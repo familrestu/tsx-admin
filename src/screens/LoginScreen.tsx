@@ -37,7 +37,7 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
                 </div>
 
                 <div className="right-container p-4 d-flex align-items-center">
-                    <Form className="p-4 flex-1" buttonGroup={false} action="system/core/login" onSubmitSuccessCallBack={(res) => this.Login(res)}>
+                    <Form className="p-4 flex-1" buttonGroup={false} action="system/global/Login" onSubmitSuccessCallBack={(res) => this.Login(res)}>
                         <Row>
                             <Col>
                                 <h2>Welcome</h2>
