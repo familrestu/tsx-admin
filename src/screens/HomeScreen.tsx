@@ -228,7 +228,7 @@ class HomeScreen extends React.Component {
         return (
             <Page breadCrumb="Dashboard">
                 <Row>
-                    <Col sm={3}>
+                    <Col xs={12} sm={6} md={3}>
                         <AttendanceRecordTime />
                     </Col>
                 </Row>

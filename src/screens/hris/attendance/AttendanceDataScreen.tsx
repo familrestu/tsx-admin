@@ -6,53 +6,11 @@ import Column from 'components/Column';
 
 class AttendanceDataScreen extends Component {
     render() {
-        const data = {
-            header: ['date', 'start_time', 'end_time'],
-            body: [
-                [
-                    '2020-01-01',
-                    '2020-01-02',
-                    '2020-01-03',
-                    '2020-01-03',
-                    '2020-01-03',
-                    '2020-01-03',
-                    '2020-01-03',
-                    '2020-01-03',
-                    '2020-01-03',
-                    '2020-01-03',
-                    '2020-01-03',
-                    '2020-01-03',
-                    '2020-01-03',
-                    '2020-01-03',
-                    '2020-01-03',
-                    '2020-01-03',
-                    '2020-01-03',
-                    '2020-01-03',
-                ],
-                ['06:45', '07:50', '08:00', '08:00', '08:00', '08:00', '08:00', '08:00', '08:00', '08:00', '08:00', '08:00', '08:00', '08:00'],
-                ['15:00', '18:00', null],
-            ],
-        };
-        data.body[2][6] = '15:00';
         return (
             <Page breadCrumb="Time & Attendance|Attendance Data">
-                <Table data={data} datasource="attendance/AttData">
-                    <Column label="Date" name="date" width="350" />
-                    <Column label="Start Time" name="start_time" />
-                    <Column label="End Time" name="end_time" />
-                    <Column label="Date" name="date" />
-                    <Column label="Start Time" name="start_time" />
-                    <Column label="End Time" name="end_time" />
-                    <Column label="Date" name="date" />
-                    <Column label="Start Time" name="start_time" />
-                    <Column label="End Time" name="end_time" />
-                    <Column label="Date" name="date" />
-                    <Column label="Start Time" name="start_time" />
-                    <Column label="End Time" name="end_time" />
-                    <Column label="Date" name="date" />
-                    <Column label="Start Time" name="start_time" />
-                    <Column label="End Time" name="end_time" />
-                    <Column label="Date" name="date" />
+                <Table datasource="attendance/AttData">
+                    <Column label="Employee No" name="employee_no" type="link" link="/attendance/attendancedata/details/[id]" />
+                    <Column label="Date" name="date" type="date" format="DD MMM, YYYY" width="350" />
                     <Column label="Start Time" name="start_time" />
                     <Column label="End Time" name="end_time" />
                 </Table>

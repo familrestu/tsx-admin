@@ -1,14 +1,32 @@
 .body {
 	background-color: var(--white);
 	padding: 0 1rem;
+	padding-bottom: 1rem;
 	z-index: 1000;
 	height: 100%;
-	
 
-	.bread-crumb { font-size: 1.5rem; }
-	.body-content {
-		height: 84vh;
-		width: calc(100vw - 14.5rem - 2rem);
-		overflow: auto;
+	.bread-crumb { 
+		display: flex;
+
+		.bread-crumb-left {
+			font-size: 1.125rem;
+			flex: 1;
+		}
+
+		.bread-crumb-right {
+			flex: 1;
+			display: flex;
+			justify-content: flex-end;
+
+			.btn {
+				margin: 0rem 0.125rem;
+			}
+		}
 	}
+
+	// .body-content {
+	// 	// height: 83vh;
+	// 	// width: calc(100vw - 14.5rem - 2rem);
+	// 	// overflow: auto;
+	// }
 }

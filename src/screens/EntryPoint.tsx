@@ -30,21 +30,26 @@ const AuthorizedScreen = () => {
                         <Route exact path="/" component={HomeScreen} />
 
                         {menuAuth.map((item, index) => {
-                            if (index > 0) {
-                                if (item.isGlobal === 'Yes' || item.isGlobal === 1) {
-                                    // eslint-disable-next-line @typescript-eslint/no-var-requires
-                                    component = require(`../screens${item.componentPath}`);
-                                    return <Route key={`dynamic-route-${index}`} exact path={item.link} component={component.default} />;
+                            try {
+                                if (index > 0) {
+                                    if (item.isGlobal === 'Yes' || item.isGlobal === 1) {
+                                        // eslint-disable-next-line @typescript-eslint/no-var-requires
+                                        component = require(`../screens${item.componentPath}`);
+                                        return <Route key={`dynamic-route-${index}`} exact path={item.link} component={component.default} />;
+                                    } else {
+                                        component = require(`screens/${currentApp}${item.componentPath}`);
+                                        return <Route key={`dynamic-route-${index}`} exact path={item.link} component={component.default} />;
+                                    }
                                 } else {
-                                    component = require(`screens/${currentApp}${item.componentPath}`);
-                                    return <Route key={`dynamic-route-${index}`} exact path={item.link} component={component.default} />;
+                                    return null;
                                 }
-                            } else {
-                                return null;
+                            } catch (error) {
+                                console.error(error.message);
                             }
                         })}
 
-                        <Route path="/attendance/attendancedata" exact component={AttendanceScreen} />
+                        {/* <Route path="/attendance/attendancedata" exact component={AttendanceScreen} /> */}
+                        {/* <Route path="/attendance/attendancedata/details/:id" exact component={AttendanceScreen} /> */}
 
                         <Route path="/pagenotfound" component={PageNotFoundScreen} />
                         <Redirect to="/pagenotfound" />

@@ -1,5 +1,26 @@
 import axios from 'axios';
 import React, { Component } from 'react';
+import { Button } from 'react-bootstrap';
+import ReactDOM from 'react-dom';
+
+type ToolbarPropsType = {
+    access?: 1 | 2 | 3 | 4 | 'read' | 'write' | 'update' | 'delete';
+};
+
+class Toolbar extends Component<ToolbarPropsType> {
+    render() {
+        return (
+            <div className="toolbar-wrapper" id="toolbar-wrapper">
+                <Button>
+                    <i className="fas fa-file-excel"></i>
+                </Button>
+                <Button>
+                    <i className="fas fa-file-pdf"></i>
+                </Button>
+            </div>
+        );
+    }
+}
 
 type TablePropsType = {
     datasource?: string;
@@ -9,56 +30,19 @@ type TablePropsType = {
 };
 
 type TableStateType = {
-    tabledata?: Array<any>;
+    cloneChildren?: any;
+    data?: Array<any>;
 };
 
 class Table extends Component<TablePropsType, TableStateType> {
-    NewChildren: React.ReactChild[] = [];
+    _isMounted = false;
 
-    render_debug() {
-        let maxDataLength = 0;
-        const num = [];
+    state = {
+        cloneChildren: [],
+        data: [],
+    };
 
-        if (this.props && this.props.data.body) {
-            for (let i = 0; i < this.props.data.body.length; i++) {
-                const element = this.props.data.body[i];
-                maxDataLength = Math.max(maxDataLength, element.length);
-            }
-
-            for (let i = 1; i <= maxDataLength; i++) {
-                num.push(
-                    <div key={`row-num-${i}`} className="row-body" style={{ minWidth: 'min-content', padding: '.75rem 1.5rem', justifyContent: 'center' }}>
-                        {i}.
-                    </div>,
-                );
-            }
-        }
-
-        const childrenWithProps = React.Children.map(this.props.children, (child) => {
-            if (React.isValidElement(child)) {
-                return React.cloneElement(child, { ...this.props.data, maxDataLength });
-            }
-        });
-
-        return (
-            <div className={`table${this.props.className ? ` table-${this.props.className}` : ''}`}>
-                <div className="row-group" style={{ minWidth: 'min-content' }}>
-                    <div className="row-header" style={{ minWidth: 'min-content', padding: '.75rem 1.5rem' }}>
-                        #
-                    </div>
-                    {num}
-                </div>
-                {childrenWithProps}
-            </div>
-        );
-    }
-
-    constructor(props: TablePropsType) {
-        super(props);
-        this.BuildTable();
-    }
-
-    BuildTable() {
+    FetchData() {
         if (this.props.datasource) {
             let path: string;
             if (this.props.datasource.split('/').length < 3) {
@@ -67,36 +51,80 @@ class Table extends Component<TablePropsType, TableStateType> {
                 path = `${process.env.REACT_APP_API_PATH}/${this.props.datasource}`;
             }
 
-            axios.post(path, null, {
-                withCredentials: true,
-            });
+            if (this.state.cloneChildren.length === 0) {
+                axios
+                    .post(path, null, {
+                        withCredentials: true,
+                    })
+                    .then((res) => {
+                        if (res.data) {
+                            const tempArr: any[] = [];
+
+                            React.Children.map(this.props.children, (child, index) => {
+                                if (React.isValidElement(child)) {
+                                    tempArr.push(React.cloneElement(child, { ...res.data, key: `childs-${index}` }));
+                                }
+                            });
+
+                            if (this._isMounted) {
+                                this.setState((prevState) => {
+                                    return { ...prevState, cloneChildren: [...tempArr], data: [...res.data.body] };
+                                });
+                            }
+                        }
+                    });
+            }
+        }
+    }
+
+    AddToolBarDOM() {
+        const breadCrumbRight = document.getElementById('bread-crumb-right');
+        if (breadCrumbRight) {
+            ReactDOM.render(<Toolbar />, breadCrumbRight);
+        }
+    }
+
+    BuildNumber() {
+        const arrNo = [];
+        for (let x = 0; x < this.state.data.length; x++) {
+            const element: Array<any> = this.state.data[x];
+            if (element) {
+                for (let i = 0; i < element.length; i++) {
+                    arrNo.push(
+                        <div key={`body-number-${i}`} className="row-body">
+                            {i + 1000}.
+                        </div>,
+                    );
+                }
+                break;
+            }
         }
 
-        React.Children.map(this.props.children, (child, index) => {
-            if (React.isValidElement(child)) {
-                this.NewChildren.push(React.cloneElement(child, { ...this.props.data, key: `childs-${index}` }));
-            }
-        });
+        return (
+            <div className="row-group">
+                <div className="row-header">No</div>
+                {arrNo}
+            </div>
+        );
     }
 
     componentDidMount() {
-        // console.log(this.NewChildren);
-        /* console.log(this.props.children);
-        if (this.props.children) {
-            for (let i = 0; i < this.props.children.length; i++) {
-                const element = this.props.children[i];
-                console.log(element);
-            }
-        } */
-        // this.BuildTable();
+        this._isMounted = true;
+        this.FetchData();
+        this.AddToolBarDOM();
     }
 
-    componentDidUpdate() {
-        /*  */
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     render() {
-        return <div className={`table${this.props.className ? ` table-${this.props.className}` : ''}`}>{this.NewChildren}</div>;
+        return (
+            <div className={`table${this.props.className ? ` table-${this.props.className}` : ''}`}>
+                {this.BuildNumber()}
+                {this.state.cloneChildren.length > 0 ? this.state.cloneChildren : this.props.children}
+            </div>
+        );
     }
 }
 
