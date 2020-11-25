@@ -48,8 +48,25 @@ class Column extends Component<ColumnType> {
                         };
                     } else if (this.props.type === 'link' && this.props.link !== undefined) {
                         ValueElement = () => {
+                            let link = this.props.link as string;
                             if (this.props.link) {
-                                return <NavLink to={`${this.props.link as string}`}> {value} </NavLink>;
+                                const replaceThis = this.props.link.match(/\[(.*?)\]/);
+                                if (replaceThis && this.props.header) {
+                                    // console.log(replaceThis[0]);
+                                    const id = replaceThis[0].replace('[', '').replace(']', '');
+                                    const indexOfId = this.props.header.indexOf(id);
+                                    // console.log(indexOfId);
+
+                                    if (this.props.body && indexOfId && indexOfId >= 0) {
+                                        const idValue = this.props.body[indexOfId][i];
+                                        // link += '/' + idValue;
+                                        link = link.replace(replaceThis[0], idValue);
+                                    } else {
+                                        link = link.replace(replaceThis[0], '');
+                                    }
+                                }
+
+                                return <NavLink to={`${link}`}> {value} </NavLink>;
                             } else {
                                 return <React.Fragment>{value}</React.Fragment>;
                             }
