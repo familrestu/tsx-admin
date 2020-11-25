@@ -21,11 +21,11 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
     };
 
     Login(res: any) {
-        // console.log(res);
-        // const decoded = jwt.verify(res.data.jwt, process.env.REACT_APP_JWT_KEY as string);
-        this.props.Login(res.data);
-        if (res.data.loginStatus) {
-            window.location.reload();
+        if (res.data) {
+            this.props.Login(res.data);
+            if (res.data.loginStatus) {
+                window.location.reload();
+            }
         }
     }
 
