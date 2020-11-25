@@ -222,7 +222,7 @@ class TempNavbarLeft extends React.Component<AppState & typeof MapDispatch, Navb
 
     componentDidMount() {
         this.currentMenu = this.props.MenuAuthState;
-        this.GetMenuAuth();
+        // this.GetMenuAuth();
         this.SetCloseChildrenListener();
         this.BuildNav();
     }

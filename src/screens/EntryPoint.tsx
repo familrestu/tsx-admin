@@ -1,64 +1,106 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
-import { connect, useSelector } from 'react-redux';
+import { connect /* useSelector */ } from 'react-redux';
 import { AppState } from 'redux/store';
-import { MenuAuthStateType } from 'redux/reducers/MenuAuthState';
+// import { MenuAuthStateType } from 'redux/reducers/MenuAuthState';
 
 import Header from 'components/Header';
 import { NavbarLeft } from 'components/Navbar';
 
 import LoginScreen from 'screens/LoginScreen';
 import PageNotFoundScreen from 'screens/PageNotFoundScreen';
-import AttendanceScreen from 'screens/hris/attendance/AttendanceDataScreen';
+// import AttendanceScreen from 'screens/hris/attendance/AttendanceDataScreen';
 
 import HomeScreen from 'screens/HomeScreen';
 import ProfileScreen from 'screens/profile/ProfileScreen';
 import axios from 'axios';
 
-const AuthorizedScreen = () => {
-    const currentApp = useSelector((state: any) => state.UserState.current_app);
-    const menuAuth: MenuAuthStateType = useSelector((state: any) => state.MenuAuthState);
-    let component;
+/* should changed to fetch navbar data here, so on refresh. system will wait first here */
+class TempAuthorizedScreen extends Component<AppState & typeof MapDispatchAuthorizedScreen> {
+    /* constructor(props: any) {
+        super(props);
+        this.GetMenuAuth();
+    } */
 
-    return (
-        <BrowserRouter>
-            <NavbarLeft />
-            <div className="content-container">
-                <Header />
-                <div id="body" className="body">
-                    <Switch>
-                        <Route exact path="/" component={HomeScreen} />
+    componentDidMount() {
+        this.GetMenuAuth();
+    }
 
-                        {menuAuth.map((item, index) => {
-                            try {
-                                if (index > 0) {
-                                    if (item.isGlobal === 'Yes' || item.isGlobal === 1) {
-                                        // eslint-disable-next-line @typescript-eslint/no-var-requires
-                                        component = require(`../screens${item.componentPath}`);
-                                        return <Route key={`dynamic-route-${index}`} exact path={item.link} component={component.default} />;
-                                    } else {
-                                        component = require(`screens/${currentApp}${item.componentPath}`);
-                                        return <Route key={`dynamic-route-${index}`} exact path={item.link} component={component.default} />;
+    GetMenuAuth() {
+        axios
+            .post(`${process.env.REACT_APP_API_PATH}/system/global/GetMenuAuth`, null, { withCredentials: true })
+            .then((res) => {
+                if (res.data) {
+                    this.props.SetUserMenu(res.data);
+                } else {
+                    throw new Error('Something wrong');
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }
+
+    render() {
+        // const currentApp = useSelector((state: any) => state.UserState.current_app);
+        // const menuAuth: MenuAuthStateType = useSelector((state: any) => state.MenuAuthState);
+        const currentApp = this.props.UserState.current_app;
+        const menuAuth = this.props.MenuAuthState;
+        let component;
+
+        return (
+            <BrowserRouter>
+                <NavbarLeft />
+                <div className="content-container">
+                    <Header />
+                    <div id="body" className="body">
+                        <Switch>
+                            <Route exact path="/" component={HomeScreen} />
+
+                            {menuAuth &&
+                                menuAuth.map((item, index) => {
+                                    try {
+                                        if (index > 0) {
+                                            if (item.isGlobal === 'Yes' || item.isGlobal === 1) {
+                                                // eslint-disable-next-line @typescript-eslint/no-var-requires
+                                                component = require(`../screens${item.componentPath}`);
+                                                return <Route key={`dynamic-route-${index}`} exact path={item.link} component={component.default} />;
+                                            } else {
+                                                component = require(`screens/${currentApp}${item.componentPath}`);
+                                                return <Route key={`dynamic-route-${index}`} exact path={item.link} component={component.default} />;
+                                            }
+                                        } else {
+                                            return null;
+                                        }
+                                    } catch (error) {
+                                        console.error(error.message);
+                                        return null;
                                     }
-                                } else {
-                                    return null;
-                                }
-                            } catch (error) {
-                                console.error(error.message);
-                            }
-                        })}
+                                })}
 
-                        {/* <Route path="/attendance/attendancedata" exact component={AttendanceScreen} /> */}
-                        {/* <Route path="/attendance/attendancedata/details/:id" exact component={AttendanceScreen} /> */}
+                            {/* <Route path="/attendance/attendancedata" exact component={AttendanceScreen} /> */}
+                            {/* <Route path="/attendance/attendancedata/details/:id" exact component={AttendanceScreen} /> */}
 
-                        <Route path="/pagenotfound" component={PageNotFoundScreen} />
-                        <Redirect to="/pagenotfound" />
-                    </Switch>
+                            <Route path="/pagenotfound" component={PageNotFoundScreen} />
+                            <Redirect to="/pagenotfound" />
+                        </Switch>
+                    </div>
                 </div>
-            </div>
-        </BrowserRouter>
-    );
+            </BrowserRouter>
+        );
+    }
+}
+
+const MapStateToPropsAuthorizedScreen = (state: AppState) => ({
+    MenuAuthState: state.MenuAuthState,
+    UserState: state.UserState,
+});
+
+const MapDispatchAuthorizedScreen = {
+    SetUserMenu: (data: any) => ({ type: 'SETUSERMENU', data }),
 };
+
+const AuthorizedScreen = connect(MapStateToPropsAuthorizedScreen, MapDispatchAuthorizedScreen)(TempAuthorizedScreen);
 
 const NotAuthorizedScreen = () => (
     <BrowserRouter>
@@ -107,12 +149,6 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
 
     componentDidMount() {
         this.CheckLoginState();
-    }
-
-    componentDidUpdate() {
-        if (this.state.loggedIn) {
-            // this.GetMenuAuth();
-        }
     }
 
     render() {
