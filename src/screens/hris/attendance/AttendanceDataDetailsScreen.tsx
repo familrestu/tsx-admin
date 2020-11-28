@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 
-class AttendanceDataDetailsScreen extends Component {
+import Page from 'components/Page';
+
+class AttendanceDataDetailsScreen extends Component<RouteComponentProps<{ id: string }>> {
     render() {
-        return <div>Hello </div>;
+        return <Page breadCrumb="Time & Attendance|Attendance Data|Details"></Page>;
     }
 }
 

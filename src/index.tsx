@@ -20,4 +20,11 @@ ReactDOM.render(
     document.getElementById('root-container'),
 );
 
+/* ReactDOM.render(
+    <Provider store={store}>
+        <EntryPoint />
+    </Provider>,
+    document.getElementById('root-container'),
+);
+ */
 serviceWorker.register();

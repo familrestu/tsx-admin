@@ -1,28 +1,97 @@
 div.table {
 	position: relative;
 	border-radius: .25rem;
-	margin-bottom: 0;
+	margin-bottom: 1rem;
 
 	display: flex;
 
-	div.row-header {
+	div.row-header, div.row-header-absolute {
 		background-color: var(--primary);
 		color: var(--white);
 		border-color: var(--primary) !important;
 		position: sticky;
 	}
 
-	div.row-group:first-child .row-header, div.row-group:first-child .row-body {
+	div.row-group:first-child .row-header, div.row-group:first-child .row-header-absolute, div.row-group:first-child .row-body {
 		width: auto;
 	}
 	
-	div.row-header, div.row-body {
+	div.row-header, div.row-body, div.row-header-absolute {
 		display: flex;
 		align-items: center;
 		padding: 0.75rem;
 		border: 1px solid var(--light-grey);
 		height: 50px;
 		width: 150px;
+	}
+
+	div.row-header {
+		position: sticky;
+		top: 0;
+
+		.left {
+			flex: 1;
+		}
+
+		.right {
+			position: relative;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100%;
+
+			i {
+				position: relative;
+
+				cursor: pointer;
+				height: 8px;
+
+				&::before {
+					display: block;
+					height: 8px;
+				}
+
+				&.fa-sort-down::before {
+					position: relative;
+					top: -100%;
+				}
+			}
+
+			i:not(.active) {
+				color: rgba(255, 255, 255, .5);
+			}
+
+			i:hover {
+				color: rgba(255, 255, 255, 1);
+			}
+		}
+	}
+
+	div.row-body.loading span {
+		width: 100%;
+		border-radius: .25rem;
+
+		animation-duration: 3s;
+		animation-fill-mode: forwards;
+		animation-iteration-count: infinite;
+		animation-name: placeHolderShimmer;
+		animation-timing-function: linear;
+		-webkit-animation-duration: 1s;
+		-webkit-animation-fill-mode: forwards;
+		-webkit-animation-iteration-count: infinite;
+		-webkit-animation-name: placeHolderShimmer;
+		-webkit-animation-timing-function: linear;
+		background: #e6e6e6;
+		background-image: linear-gradient(to right, #e6e6e6 0%, #d6d6d6 20%, #e6e6e6 40%, #e6e6e6 100%);
+		background-repeat: no-repeat;
+		background-size: 800px 104px;
+		// height: 104px;
+		color: transparent;
+		position: relative;
+
+		a {
+			color: transparent
+		}
 	}
 
 	div.row-body:nth-child(even) {
@@ -51,5 +120,23 @@ div.table {
 
 	div.row-group:last-child div.row-body:last-child {
 		border-bottom-right-radius: .25rem;
+	}
+}
+
+// @keyframes placeHolderShimmer {
+// 	0% {
+// 		background-position: 0px 0;
+// 	}
+// 	100% {
+// 		background-position: 100em 0;
+// 	}
+// }
+
+@keyframes placeHolderShimmer{
+	0% {
+		background-position: -468px 0;
+	}
+	100% {
+		background-position: 468px 0;
 	}
 }

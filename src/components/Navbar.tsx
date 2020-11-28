@@ -1,6 +1,5 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import axios from 'axios';
 
 import { DividerHorizontal } from 'components/Divider';
 
@@ -172,7 +171,7 @@ type NavbarLeftState = {
     element: React.ReactNode[];
 };
 
-class TempNavbarLeft extends React.Component<AppState & typeof MapDispatch, NavbarLeftState> {
+class TempNavbarLeft extends React.Component<AppState, NavbarLeftState> {
     state: NavbarLeftState = {
         element: [],
     };
@@ -205,7 +204,7 @@ class TempNavbarLeft extends React.Component<AppState & typeof MapDispatch, Navb
         document.addEventListener('click', CloseChildrenHandler);
     }
 
-    GetMenuAuth() {
+    /* GetMenuAuth() {
         axios
             .post(`${process.env.REACT_APP_API_PATH}/system/global/GetMenuAuth`, null, { withCredentials: true })
             .then((res) => {
@@ -218,7 +217,7 @@ class TempNavbarLeft extends React.Component<AppState & typeof MapDispatch, Navb
             .catch((err) => {
                 console.error(err);
             });
-    }
+    } */
 
     componentDidMount() {
         this.currentMenu = this.props.MenuAuthState;
@@ -251,10 +250,6 @@ const MapStateToProps = (state: AppState) => ({
     MenuAuthState: state.MenuAuthState,
 });
 
-const MapDispatch = {
-    SetUserMenu: (data: any) => ({ type: 'SETUSERMENU', data }),
-};
-
-const NavbarLeft = connect(MapStateToProps, MapDispatch)(TempNavbarLeft);
+const NavbarLeft = connect(MapStateToProps)(TempNavbarLeft);
 
 export { NavbarLeft };

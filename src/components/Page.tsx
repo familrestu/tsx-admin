@@ -7,8 +7,18 @@ type PageProps = {
     children?: React.ReactChild[] | React.ReactChild | Element | Element[];
 };
 
-class Page extends React.Component<PageProps> {
+type PageState = {
+    maxWidth: number;
+    maxHeight: number;
+};
+
+class Page extends React.Component<PageProps, PageState> {
     BreadCrumbRight: HTMLDivElement | null | undefined;
+
+    state = {
+        maxWidth: 0,
+        maxHeight: 0,
+    };
 
     PrintBreadCrumb() {
         const element = [];
@@ -37,46 +47,39 @@ class Page extends React.Component<PageProps> {
                 <div className="bread-crumb-left" id="bread-crumb-left">
                     {element}
                 </div>
-                <div className="bread-crumb-right" id="bread-crumb-right" ref={(ref) => (this.BreadCrumbRight = ref)}></div>
+                <div className="bread-crumb-right" id="bread-crumb-right"></div>
             </div>
         );
     }
 
-    render() {
+    SetSimpleBarMaxWidth() {
         let maxWidth = 0;
         let maxHeight = 0;
         const headerElement = document.getElementById('header');
         const breadcrumbElement = document.getElementById('bread-crumb');
         const navbarElement = document.getElementById('navbar-left');
 
+        // console.log(headerElement, breadcrumbElement, navbarElement);
+
         if (headerElement && breadcrumbElement && navbarElement) {
             maxHeight = window.innerHeight - headerElement.offsetHeight - breadcrumbElement.offsetHeight - 16;
             maxWidth = window.outerWidth - navbarElement.offsetWidth;
+
+            this.setState((prevState) => {
+                return { ...prevState, maxHeight: maxHeight, maxWidth: maxWidth };
+            });
         }
+    }
 
-        /* const isChildrenTable = (this.props.children as any).type.name.toUpperCase() === 'TABLE';
+    componentDidMount() {
+        this.SetSimpleBarMaxWidth();
+    }
 
+    render() {
         return (
             <React.Fragment>
                 {this.PrintBreadCrumb()}
-                {isChildrenTable ? (
-                    <div id="body-content" className="body-content">
-                        {this.props.children}
-                    </div>
-                ) : (
-                    <SimpleBar style={{ maxHeight: `${maxHeight}px`, maxWidth: `${maxWidth}px` }}>
-                        <div id="body-content" className="body-content">
-                            {this.props.children}
-                        </div>
-                    </SimpleBar>
-                )}
-            </React.Fragment>
-        ); */
-
-        return (
-            <React.Fragment>
-                {this.PrintBreadCrumb()}
-                <SimpleBar style={{ maxHeight: `${maxHeight}px`, maxWidth: `${maxWidth}px` }}>
+                <SimpleBar style={{ maxHeight: `${this.state.maxHeight}px`, maxWidth: `${this.state.maxWidth}px` }}>
                     <div id="body-content" className="body-content">
                         {this.props.children}
                     </div>
