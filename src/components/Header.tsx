@@ -1,5 +1,5 @@
 import React from 'react';
-import { InputGroup, FormControl, Button } from 'react-bootstrap';
+import { InputGroup, FormControl, Button, Badge } from 'react-bootstrap';
 import Simplebar from 'simplebar-react';
 
 import Avatar from 'components/Avatar';
@@ -58,7 +58,9 @@ class NotificationBells extends React.Component {
     render() {
         return (
             <div className="icon-groups mx-2 pointer btn-open-dropdown btn-ripple btn-ripple-white" tabIndex={0} /* add tabIndex for adding focus */>
-                <div className="position-absolute badge badge-danger badge-counter">99+</div>
+                <Badge className="position-absolute badge-counter" variant="danger">
+                    99+
+                </Badge>
                 <Icon name="fas fa-bell" />
                 <div id="dropdown-menu" className="position-absolute dropdown-menu p-0 shadow-sm show" style={{ visibility: 'hidden' }}>
                     <div className="dropdown-item dropdown-header">

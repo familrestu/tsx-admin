@@ -188,7 +188,7 @@ class Form extends React.Component<FormProps, FormState> {
             <form
                 ref={(ref) => (this.form = ref)}
                 id={this.props.id}
-                className={`p-4${this.props.className ? ` ${this.props.className}` : ''}`}
+                className={`${this.props.className ? ` ${this.props.className}` : ''}`}
                 encType={this.props.encType}
                 action={this.props.action}
                 onSubmit={(e: React.FormEvent) => this.FormSubmitHandler(e)}
