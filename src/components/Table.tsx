@@ -3,6 +3,8 @@ import { Button, Badge } from 'react-bootstrap';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 
+const source = axios.CancelToken.source();
+
 type ToolbarPropsType = {
     access?: 1 | 2 | 3 | 4 | 'read' | 'write' | 'update' | 'delete';
 };
@@ -114,7 +116,7 @@ class Table extends Component<TablePropsType, TableStateType> {
                             arrSortType: tempArrSortType,
                         };
                     },
-                    () => this.FetchData(false),
+                    () => this.FetchTableData(false),
                 );
             }
         }
@@ -152,7 +154,7 @@ class Table extends Component<TablePropsType, TableStateType> {
                 (prevState) => {
                     return { ...prevState, arrSearchData: tempArr };
                 },
-                () => this.FetchData(false),
+                () => this.FetchTableData(false),
             );
         }
     }
@@ -168,12 +170,12 @@ class Table extends Component<TablePropsType, TableStateType> {
                 (prevState) => {
                     return { ...prevState, arrSearchData: tempArr };
                 },
-                () => this.FetchData(false),
+                () => this.FetchTableData(false),
             );
         }
     }
 
-    FetchData(initial: boolean) {
+    FetchTableData(initial: boolean) {
         if (this.props.datasource && this.state.arrTableData) {
             let path: string;
             if (this.props.datasource.split('/').length < 3) {
@@ -205,6 +207,7 @@ class Table extends Component<TablePropsType, TableStateType> {
                 .post(
                     path,
                     {
+                        cancelToken: source.token,
                         arrSortColumn: this.state.arrSortColumn,
                         arrSortType: this.state.arrSortType,
                         arrSearchData: this.state.arrSearchData,
@@ -224,6 +227,7 @@ class Table extends Component<TablePropsType, TableStateType> {
                     /* set no data */
                     console.log(err);
                     this.CloneChildren({ header: [], body: [] });
+                    this.SetLoadingRow(true);
                 });
         }
     }
@@ -336,7 +340,7 @@ class Table extends Component<TablePropsType, TableStateType> {
 
     componentDidMount() {
         this._isMounted = true;
-        this.FetchData(true);
+        this.FetchTableData(true);
         this.AddToolBarDOM();
         this.setBodyAttribute(true);
     }
