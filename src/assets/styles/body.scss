@@ -9,24 +9,21 @@
 		display: flex;
 
 		.bread-crumb-left {
-			font-size: 1.125rem;
+			display: flex;
 			flex: 1;
+    		align-items: center;
+			font-size: 1.125rem;
 		}
 
 		.bread-crumb-right {
 			flex: 1;
 			display: flex;
 			justify-content: flex-end;
+			align-items: center;
 
 			.btn {
 				margin: 0rem 0.125rem;
 			}
 		}
 	}
-
-	// .body-content {
-	// 	// height: 83vh;
-	// 	// width: calc(100vw - 14.5rem - 2rem);
-	// 	// overflow: auto;
-	// }
 }
