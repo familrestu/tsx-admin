@@ -70,7 +70,7 @@ const Input = (props: any) => {
 
         return (
             <Wrapper>
-                <Col xs={12} sm={props.size === undefined ? 'auto' : props.size}>
+                <Col xs={12} sm={props.size === undefined ? 'auto' : props.size} className="pl-0">
                     <FormGroup className="position-relative">
                         {ShowLabel && <Label text={props.label} required={props.formrequired} />}
                         <Row>{arrInput}</Row>
@@ -86,6 +86,41 @@ const Input = (props: any) => {
                     <FormGroup className="position-relative">
                         {ShowLabel && <Label text="&nbsp;" required={props.formrequired} />}
                         <FormControl {...props} />
+                    </FormGroup>
+                </Col>
+            </Wrapper>
+        );
+    } else if ((props.type as string).toUpperCase() === 'SELECT') {
+        const Option = () => {
+            const arrOpt: React.ReactElement[] = [];
+
+            const data = (props.data as string).split(',');
+            for (let i = 0; i < data.length; i++) {
+                const optValue = (data[i] as string).split('=')[0];
+                const optLabel = (data[i] as string).split('=')[1];
+
+                arrOpt.push(
+                    <option key={`option-${i}`} value={optValue}>
+                        {optLabel}
+                    </option>,
+                );
+            }
+
+            return arrOpt;
+        };
+
+        const allProps = { ...props };
+        delete allProps['data'];
+
+        return (
+            <Wrapper>
+                <Col xs={12} sm={props.size === undefined ? 'auto' : props.size} className="pl-0">
+                    <FormGroup className="position-relative">
+                        {ShowLabel && <Label text={props.label} required={props.formrequired} />}
+                        <FormControl {...allProps} as="select">
+                            {Option()}
+                        </FormControl>
+                        {props.text && <FormText>{props.text}</FormText>}
                     </FormGroup>
                 </Col>
             </Wrapper>
@@ -108,7 +143,7 @@ const Input = (props: any) => {
 
         return (
             <Wrapper>
-                <Col xs={12} sm={props.size === undefined ? 'auto' : props.size}>
+                <Col xs={12} sm={props.size === undefined ? 'auto' : props.size} className="pl-0">
                     <FormGroup className="position-relative">
                         {ShowLabel && <Label text={props.label} required={props.formrequired} />}
                         <FormControl {...props} />
