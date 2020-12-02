@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Button } from 'react-bootstrap';
+import React, { Component, createRef } from 'react';
+import { Button, Badge } from 'react-bootstrap';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 
@@ -7,11 +7,39 @@ type ToolbarPropsType = {
     access?: 1 | 2 | 3 | 4 | 'read' | 'write' | 'update' | 'delete';
 };
 
-class Toolbar extends Component<ToolbarPropsType> {
+type tableDataType = {
+    header: string[];
+    body: string[][];
+};
+
+type TablePropsType = {
+    datasource?: string;
+    className?: string;
+    id?: string;
+    children?: React.ReactChild[] | React.ReactChild | Element | Element[];
+};
+
+type TableStateType = {
+    arrTableData?: tableDataType;
+    arrCloneChildren?: React.ReactElement[];
+    arrNumberElement?: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>[];
+    arrSortColumn?: string[];
+    arrSortType?: string[];
+    arrSearchData?: { [key: string]: string }[];
+};
+
+class Toolbar extends Component<ToolbarPropsType & TablePropsType & TableStateType> {
+    ExportToMsExcelHandler() {
+        console.log(this.props.arrTableData);
+    }
+
     render() {
         return (
             <div className="toolbar-wrapper" id="toolbar-wrapper">
-                <Button title="Export to MS Excel">
+                {/* <Button title="Filter">
+                    <i className="fas fa-filter"></i>
+                </Button> */}
+                <Button title="Export to MS Excel" onClick={() => this.ExportToMsExcelHandler()}>
                     <i className="fas fa-file-excel"></i>
                 </Button>
                 <Button title="Export to PDF">
@@ -25,28 +53,9 @@ class Toolbar extends Component<ToolbarPropsType> {
     }
 }
 
-type tableDataType = {
-    header: string[];
-    body: string[][];
-};
-
-type TablePropsType = {
-    datasource: string;
-    className?: string;
-    children?: React.ReactChild[] | React.ReactChild | Element | Element[];
-};
-
-type TableStateType = {
-    arrTableData?: tableDataType;
-    arrCloneChildren?: React.ReactElement[];
-    arrNumberElement?: Element[];
-    arrSortColumn?: string[];
-    arrSortType?: string[];
-    arrSearchData?: { [key: string]: string }[];
-};
-
 class Table extends Component<TablePropsType, TableStateType> {
     _isMounted = false;
+    _Table = createRef<HTMLDivElement>();
 
     state: TableStateType = {
         arrTableData: {
@@ -61,14 +70,14 @@ class Table extends Component<TablePropsType, TableStateType> {
     };
 
     SetLoadingRow(remove: boolean) {
-        const rowBody = document.querySelectorAll('.table .row-body');
-        if (rowBody) {
-            for (let i = 0; i < rowBody.length; i++) {
-                const element = rowBody[i];
+        if (this._Table) {
+            const element = this._Table;
+
+            if (element.current !== null) {
                 if (remove) {
-                    element.classList.remove('loading');
+                    element.current.classList.remove('loading');
                 } else {
-                    element.classList.add('loading');
+                    element.current.classList.add('loading');
                 }
             }
         }
@@ -111,11 +120,64 @@ class Table extends Component<TablePropsType, TableStateType> {
         }
     }
 
+    SearchClickHandler(column: string, label: string, value: string, masking?: string) {
+        if (this.state.arrSearchData) {
+            this.SetLoadingRow(false);
+            const tempArr: { [key: string]: string }[] = [...this.state.arrSearchData];
+            const obj: { [key: string]: string } = {
+                column: column,
+                label: label,
+                value: value,
+            };
+
+            if (masking) {
+                /* split masking as array */
+                const arrayMasking: string[] = masking.split(',');
+                if (arrayMasking) {
+                    for (let i = 0; i < arrayMasking.length; i++) {
+                        const originalValue = arrayMasking[i].split('=')[0];
+                        const targetValue = arrayMasking[i].split('=')[1];
+
+                        if (value.toString() === originalValue.toString()) {
+                            obj.maskingValue = targetValue;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            tempArr.push(obj);
+
+            this.setState(
+                (prevState) => {
+                    return { ...prevState, arrSearchData: tempArr };
+                },
+                () => this.FetchData(false),
+            );
+        }
+    }
+
+    RemoveSearchClickHandler(indexNum: number) {
+        if (this.state.arrSearchData) {
+            this.SetLoadingRow(false);
+
+            const tempArr: { [key: string]: string }[] = [...this.state.arrSearchData];
+            tempArr.splice(indexNum, 1);
+
+            this.setState(
+                (prevState) => {
+                    return { ...prevState, arrSearchData: tempArr };
+                },
+                () => this.FetchData(false),
+            );
+        }
+    }
+
     FetchData(initial: boolean) {
         if (this.props.datasource && this.state.arrTableData) {
             let path: string;
             if (this.props.datasource.split('/').length < 3) {
-                path = `${process.env.REACT_APP_API_PATH}/${this.props.datasource}/Listing`;
+                path = `${process.env.REACT_APP_API_PATH}/${this.props.datasource}/TableData`;
             } else {
                 path = `${process.env.REACT_APP_API_PATH}/${this.props.datasource}`;
             }
@@ -123,10 +185,10 @@ class Table extends Component<TablePropsType, TableStateType> {
             const maxLength = this.GetDataMaxLength(this.state.arrTableData.body);
 
             if (initial) {
-                const row: Array<any> = [];
+                const row: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>[] = [];
                 for (let i = 0; i < (maxLength === 0 ? 5 : maxLength); i++) {
                     row.push(
-                        <div key={`body-no-${i}`} className="row-body loading">
+                        <div key={`body-no-${i}`} className="row-body">
                             <span>&nbsp;</span>
                         </div>,
                     );
@@ -153,7 +215,6 @@ class Table extends Component<TablePropsType, TableStateType> {
                 )
                 .then((res) => {
                     if (res.data && res.data.datasets) {
-                        // console.log(res.data);
                         const { datasets } = res.data;
                         this.CloneChildren(datasets);
                         this.SetLoadingRow(true);
@@ -164,7 +225,6 @@ class Table extends Component<TablePropsType, TableStateType> {
                     console.log(err);
                     this.CloneChildren({ header: [], body: [] });
                 });
-            // }
         }
     }
 
@@ -204,6 +264,7 @@ class Table extends Component<TablePropsType, TableStateType> {
                         maxLength,
                         key: `childs-${index}`,
                         AddSortClickHandler: (column: string, sorting: string) => this.AddSortClickHandler(column, sorting),
+                        SearchClickHandler: (column: string, label: string, value: string, masking?: string) => this.SearchClickHandler(column, label, value, masking),
                     }),
                 );
             }
@@ -227,18 +288,8 @@ class Table extends Component<TablePropsType, TableStateType> {
     AddToolBarDOM() {
         const breadCrumbRight = document.getElementById('bread-crumb-right');
         if (breadCrumbRight) {
-            ReactDOM.render(<Toolbar />, breadCrumbRight);
+            ReactDOM.render(<Toolbar {...this.state} />, breadCrumbRight);
         }
-    }
-
-    componentDidMount() {
-        this._isMounted = true;
-        this.FetchData(true);
-        this.AddToolBarDOM();
-    }
-
-    componentWillUnmount() {
-        this._isMounted = false;
     }
 
     NewChildren() {
@@ -249,15 +300,65 @@ class Table extends Component<TablePropsType, TableStateType> {
         }
     }
 
+    SearchData() {
+        const arrBadges = [];
+        if (this.state.arrSearchData && this.state.arrSearchData.length) {
+            for (let i = 0; i < this.state.arrSearchData.length; i++) {
+                const element: { [key: string]: string } = this.state.arrSearchData[i];
+                let value = element.value;
+
+                if (element.maskingValue !== undefined) {
+                    value = element.maskingValue;
+                }
+
+                arrBadges.push(
+                    <Badge key={`badge-${element.label}-${i}`} variant="primary" className="shadow-sm pointer">
+                        <span className="label">
+                            {element.label}: {value}
+                        </span>
+                        <i className="fas fa-times" onClick={() => this.RemoveSearchClickHandler(i)}></i>
+                    </Badge>,
+                );
+            }
+        }
+
+        return arrBadges;
+    }
+
+    /* add attribute have-table=true, to tell css that will give css top: 55px */
+    setBodyAttribute(isAdd: boolean) {
+        if (isAdd) {
+            document.body.setAttribute('have-table', 'true');
+        } else {
+            document.body.removeAttribute('have-table');
+        }
+    }
+
+    componentDidMount() {
+        this._isMounted = true;
+        this.FetchData(true);
+        this.AddToolBarDOM();
+        this.setBodyAttribute(true);
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+        this.setBodyAttribute(false);
+    }
+
     render() {
         return (
-            <div className={`table${this.props.className ? ` table-${this.props.className}` : ''}`}>
-                <div className="row-group">
-                    <div className="row-header">#</div>
-                    {this.state.arrNumberElement}
+            <React.Fragment>
+                <div className={`table${this.props.className ? ` table-${this.props.className}` : ''} loading`} id={`${this.props.id ? ` table-${this.props.id}` : ''}`} ref={this._Table}>
+                    <div className="column-group">
+                        <div className="row-header">#</div>
+                        {this.state.arrNumberElement}
+                    </div>
+                    {this.NewChildren()}
                 </div>
-                {this.NewChildren()}
-            </div>
+
+                {this.state.arrSearchData && this.state.arrSearchData.length > 0 && <div className="table-search-data">{this.SearchData()}</div>}
+            </React.Fragment>
         );
     }
 }
