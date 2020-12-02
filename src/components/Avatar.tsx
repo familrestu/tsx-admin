@@ -106,7 +106,7 @@ class Avatar extends React.Component<AvatarProps & AppState & typeof MapDispatch
 
     SignOutHandler() {
         axios
-            .post(`${process.env.REACT_APP_API_PATH}/system/global/Logout`, null, { withCredentials: true })
+            .post(`${process.env.REACT_APP_API_PATH}/system/application/Logout`, null, { withCredentials: true })
             .then((res: any) => {
                 console.log(res);
                 if (res.data.loginStatus) {

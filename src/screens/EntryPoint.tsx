@@ -89,7 +89,7 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
 
     CheckLoginState() {
         axios
-            .post(`${process.env.REACT_APP_API_PATH}/system/global/LoginStatus`, null, { withCredentials: true })
+            .post(`${process.env.REACT_APP_API_PATH}/system/application/LoginStatus`, null, { withCredentials: true })
             .then((res) => {
                 if (res.data) {
                     if (res.data.loginStatus) {
@@ -113,7 +113,7 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
 
     GetMenuAuth() {
         axios
-            .post(`${process.env.REACT_APP_API_PATH}/system/global/GetMenuAuth`, null, { withCredentials: true })
+            .post(`${process.env.REACT_APP_API_PATH}/system/application/GetMenuAuth`, null, { withCredentials: true })
             .then((res) => {
                 if (res.data && res.data.menuData) {
                     const { menuData } = res.data;
