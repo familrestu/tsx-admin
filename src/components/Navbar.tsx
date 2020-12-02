@@ -204,21 +204,6 @@ class TempNavbarLeft extends React.Component<AppState, NavbarLeftState> {
         document.addEventListener('click', CloseChildrenHandler);
     }
 
-    /* GetMenuAuth() {
-        axios
-            .post(`${process.env.REACT_APP_API_PATH}/system/global/GetMenuAuth`, null, { withCredentials: true })
-            .then((res) => {
-                if (res.data) {
-                    this.props.SetUserMenu(res.data);
-                } else {
-                    throw new Error('Something wrong');
-                }
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-    } */
-
     componentDidMount() {
         this.currentMenu = this.props.MenuAuthState;
         // this.GetMenuAuth();
