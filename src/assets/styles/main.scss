@@ -26,6 +26,7 @@ body[themes=light] {
 	--white: #ffffff;
 	
 	--light-grey: #dee2e6;
+	--dark-grey: #545454;
 	--grey: rgba(0, 0, 0, 0.35);
 	--black: rgba(0, 0, 0, 0.75);
 }
@@ -33,7 +34,7 @@ body[themes=light] {
 body {
 	height: 100%;
 	background-color: var(--white);
-	// color: var(--black);
+	color: var(--dark-grey);
 
 	#root-container {
 		display: flex;
@@ -96,3 +97,11 @@ p { white-space: pre-wrap; }
 .text-black { color: var(--black) !important; }
 
 a:hover { text-decoration: none; }
+
+/* badge */
+.badge-primary { background-color: var(--primary); }
+
+/* simplebar */
+.simplebar-track.simplebar-vertical { margin-right: .15rem; } 
+
+body[have-table=true] .simplebar-track.simplebar-vertical { top: 55px; }
