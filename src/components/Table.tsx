@@ -7,9 +7,10 @@ const source = axios.CancelToken.source();
 
 type ToolbarPropsType = {
     access?: 1 | 2 | 3 | 4 | 'read' | 'write' | 'update' | 'delete';
+    ClearFilter?: () => void;
 };
 
-type tableDataType = {
+type TableDataType = {
     header: string[];
     body: string[][];
 };
@@ -22,7 +23,7 @@ type TablePropsType = {
 };
 
 type TableStateType = {
-    arrTableData?: tableDataType;
+    arrTableData?: TableDataType;
     arrCloneChildren?: React.ReactElement[];
     arrNumberElement?: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>[];
     arrSortColumn?: string[];
@@ -41,6 +42,12 @@ class Toolbar extends Component<ToolbarPropsType & TablePropsType & TableStateTy
                 {/* <Button title="Filter">
                     <i className="fas fa-filter"></i>
                 </Button> */}
+                {this.props.arrSearchData && this.props.arrSearchData.length > 0 && (
+                    <Button title="Clear Filter" style={{ position: 'relative' }} onClick={() => (this.props.ClearFilter !== undefined ? this.props.ClearFilter() : null)}>
+                        <i className="fas fa-filter"></i>
+                        <i className="fas fa-times-circle position-absolute" style={{ right: '.25rem', bottom: '.25rem', fontSize: '.75rem' }}></i>
+                    </Button>
+                )}
                 <Button title="Export to MS Excel" onClick={() => this.ExportToMsExcelHandler()}>
                     <i className="fas fa-file-excel"></i>
                 </Button>
@@ -175,6 +182,17 @@ class Table extends Component<TablePropsType, TableStateType> {
         }
     }
 
+    ClearFilter() {
+        if (this.state.arrSearchData) {
+            this.setState(
+                (prevState) => {
+                    return { ...prevState, arrSearchData: [] };
+                },
+                () => this.FetchTableData(false),
+            );
+        }
+    }
+
     FetchTableData(initial: boolean) {
         if (this.props.datasource && this.state.arrTableData) {
             let path: string;
@@ -221,6 +239,7 @@ class Table extends Component<TablePropsType, TableStateType> {
                         const { datasets } = res.data;
                         this.CloneChildren(datasets);
                         this.SetLoadingRow(true);
+                        this.AddToolBarDOM();
                     }
                 })
                 .catch((err) => {
@@ -241,7 +260,7 @@ class Table extends Component<TablePropsType, TableStateType> {
         return maxLength;
     }
 
-    CloneChildren(datasets: tableDataType) {
+    CloneChildren(datasets: TableDataType) {
         const tempArr: any[] = [];
 
         const arrarrNumberElement: any[] = [];
@@ -292,7 +311,7 @@ class Table extends Component<TablePropsType, TableStateType> {
     AddToolBarDOM() {
         const breadCrumbRight = document.getElementById('bread-crumb-right');
         if (breadCrumbRight) {
-            ReactDOM.render(<Toolbar {...this.state} />, breadCrumbRight);
+            ReactDOM.render(<Toolbar {...this.state} ClearFilter={() => this.ClearFilter()} />, breadCrumbRight);
         }
     }
 
