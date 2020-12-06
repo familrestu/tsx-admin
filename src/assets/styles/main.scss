@@ -7,6 +7,7 @@
 @import 'tabs.scss';
 @import 'form.scss';
 @import 'table.scss';
+@import 'calendar.scss';
 
 
 @import 'login.scss';
@@ -21,7 +22,7 @@ body[themes=light] {
 	
 	--primary: #519a66;
 	--light-primary: #f3fdf6;
-	--secondary: #61d883;
+	--secondary: rgb(113, 192, 135);
 
 	--white: #ffffff;
 	
