@@ -94,16 +94,18 @@ const Input = (props: any) => {
         const Option = () => {
             const arrOpt: React.ReactElement[] = [];
 
-            const data = (props.data as string).split(',');
-            for (let i = 0; i < data.length; i++) {
-                const optValue = (data[i] as string).split('=')[0];
-                const optLabel = (data[i] as string).split('=')[1];
+            if (props.data) {
+                const data = (props.data as string).split(',');
+                for (let i = 0; i < data.length; i++) {
+                    const optValue = (data[i] as string).split('=')[0];
+                    const optLabel = (data[i] as string).split('=')[1];
 
-                arrOpt.push(
-                    <option key={`option-${i}`} value={optValue}>
-                        {optLabel}
-                    </option>,
-                );
+                    arrOpt.push(
+                        <option key={`option-${i}`} value={optValue}>
+                            {optLabel}
+                        </option>,
+                    );
+                }
             }
 
             return arrOpt;

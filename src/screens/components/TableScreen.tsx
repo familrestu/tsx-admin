@@ -9,8 +9,8 @@ class TableScreen extends Component {
             <Page breadCrumb="Components|Table">
                 <Table datasource="components/ExampleTable">
                     <Column label="Column 1" name="column_1" />
-                    <Column label="Column 2" name="column_2" />
-                    <Column label="Column 3" name="column_3" />
+                    <Column label="Column Masked 2" name="column_2" masking="A=ABCDEFG,B=HIJKLMN" />
+                    <Column label="Date Column" name="column_3" type="date" format="DD-MMM-YYYY" align="right" />
                     <Column label="Column 4" name="column_4" />
                     <Column label="Column 5" name="column_5" />
                     <Column label="Column 6" name="column_6" />

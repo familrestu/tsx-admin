@@ -3,8 +3,6 @@ import { Button, Badge } from 'react-bootstrap';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 
-const source = axios.CancelToken.source();
-
 type ToolbarPropsType = {
     access?: 1 | 2 | 3 | 4 | 'read' | 'write' | 'update' | 'delete';
     ClearFilter?: () => void;
@@ -65,6 +63,7 @@ class Toolbar extends Component<ToolbarPropsType & TablePropsType & TableStateTy
 class Table extends Component<TablePropsType, TableStateType> {
     _isMounted = false;
     _Table = createRef<HTMLDivElement>();
+    axiosCancelSource: any;
 
     state: TableStateType = {
         arrTableData: {
@@ -225,7 +224,6 @@ class Table extends Component<TablePropsType, TableStateType> {
                 .post(
                     path,
                     {
-                        cancelToken: source.token,
                         arrSortColumn: this.state.arrSortColumn,
                         arrSortType: this.state.arrSortType,
                         arrSearchData: this.state.arrSearchData,
@@ -271,7 +269,7 @@ class Table extends Component<TablePropsType, TableStateType> {
         for (let i = 1; i <= maxLength; i++) {
             arrarrNumberElement.push(
                 <div key={`body-number-${i}`} className="row-body">
-                    <span>{i}.</span>
+                    <span className="text-center">{i}.</span>
                 </div>,
             );
         }
@@ -358,6 +356,8 @@ class Table extends Component<TablePropsType, TableStateType> {
     }
 
     componentDidMount() {
+        console.log('mounted');
+        this.axiosCancelSource = axios.CancelToken.source();
         this._isMounted = true;
         this.FetchTableData(true);
         this.AddToolBarDOM();
@@ -365,6 +365,8 @@ class Table extends Component<TablePropsType, TableStateType> {
     }
 
     componentWillUnmount() {
+        console.log(this.axiosCancelSource);
+        this.axiosCancelSource.cancel('Axios request canceled.');
         this._isMounted = false;
         this.setBodyAttribute(false);
     }
@@ -374,7 +376,9 @@ class Table extends Component<TablePropsType, TableStateType> {
             <React.Fragment>
                 <div className={`table${this.props.className ? ` table-${this.props.className}` : ''} loading`} id={`${this.props.id ? ` table-${this.props.id}` : ''}`} ref={this._Table}>
                     <div className="column-group">
-                        <div className="row-header">#</div>
+                        <div className="row-header number">
+                            <span className="text-center">#</span>
+                        </div>
                         {this.state.arrNumberElement}
                     </div>
                     {this.NewChildren()}

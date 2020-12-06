@@ -61,6 +61,7 @@ type ColumnPropsType = {
     link?: string;
     format?: string;
     masking?: string;
+    align?: 'left' | 'center' | 'right';
 
     header?: string[] /* table data */;
     body?: string[] /* table data */;
@@ -314,9 +315,14 @@ class Column extends Component<ColumnPropsType, ColumnStateType> {
                         };
                     }
 
+                    let alignmentClassName = 'text-left';
+                    if (this.props.align) {
+                        alignmentClassName = `text-${this.props.align}`;
+                    }
+
                     row.push(
                         <div key={`body-${this.props.name}-${i}`} className="row-body">
-                            <span>
+                            <span className={alignmentClassName}>
                                 <ValueElement />
                             </span>
                         </div>,
