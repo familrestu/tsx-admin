@@ -231,8 +231,8 @@ class Column extends Component<ColumnPropsType, ColumnStateType> {
                 </span>
                 {!this.state.isSearch && (
                     <span className="right">
-                        <i className={`fas fa-sort-up${activeAsc ? ' active' : ''}`} onClick={(e) => this.SortAscendingHandler(e, this.props.name as string)}></i>
-                        <i className={`fas fa-sort-down${activeDesc ? ' active' : ''}`} onClick={(e) => this.SortDescendingHandler(e, this.props.name as string)}></i>
+                        <i className={`fas fa-sort-up ${activeAsc ? 'active' : ''}`.trim()} onClick={(e) => this.SortAscendingHandler(e, this.props.name as string)}></i>
+                        <i className={`fas fa-sort-down ${activeDesc ? 'active' : ''}`.trim()} onClick={(e) => this.SortDescendingHandler(e, this.props.name as string)}></i>
                     </span>
                 )}
             </div>,
