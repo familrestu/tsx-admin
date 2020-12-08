@@ -66,50 +66,41 @@ class Form extends React.Component<FormProps, FormState> {
                 const arrInputs = this.form.querySelectorAll('input, textarea, select');
 
                 for (let i = 0; i < arrInputs.length; i++) {
-                    const element = arrInputs[i];
+                    const element = arrInputs[i] as HTMLInputElement;
 
                     const tagName = element.tagName;
                     const elementName = element.getAttribute('name');
                     const elementType = element.getAttribute('type');
 
-                    /* (element as HTMLInputElement).setAttribute(
-                        'actualValue',
-                        datasource[elementName] === undefined
-                            ? ''
-                            : datasource[elementName],
-                    ); */
-
                     if (tagName === 'INPUT' || tagName === 'TEXTAREA') {
                         if (elementType === 'text' || elementType === 'email' || elementType === 'date') {
                             if (elementName !== null && datasource !== null && datasource[elementName]) {
-                                if ((element as HTMLInputElement).getAttribute('ktp-value')) {
-                                    (element as HTMLInputElement).defaultValue = KTPFormat(datasource[elementName]);
+                                if (element.getAttribute('ktp-value')) {
+                                    element.defaultValue = KTPFormat(datasource[elementName]);
 
-                                    (element as HTMLInputElement).addEventListener('blur', (e: Event) => {
-                                        (element as HTMLInputElement).value = KTPFormat((e.currentTarget as HTMLInputElement).value);
+                                    element.addEventListener('blur', (e: Event) => {
+                                        element.value = KTPFormat((e.currentTarget as HTMLInputElement).value);
                                     });
-                                    (element as HTMLInputElement).addEventListener('focus', (e: Event) => {
-                                        (element as HTMLInputElement).value = (e.currentTarget as HTMLInputElement).value.toString().replaceAll('-', '');
+                                    element.addEventListener('focus', (e: Event) => {
+                                        element.value = (e.currentTarget as HTMLInputElement).value.toString().replaceAll('-', '');
                                     });
-                                } else if ((element as HTMLInputElement).getAttribute('npwp-value')) {
-                                    (element as HTMLInputElement).defaultValue = NPWPFormat(datasource[elementName]);
-                                    (element as HTMLInputElement).addEventListener('blur', (e: Event) => {
-                                        (element as HTMLInputElement).value = NPWPFormat((e.currentTarget as HTMLInputElement).value);
+                                } else if (element.getAttribute('npwp-value')) {
+                                    element.defaultValue = NPWPFormat(datasource[elementName]);
+                                    element.addEventListener('blur', (e: Event) => {
+                                        element.value = NPWPFormat((e.currentTarget as HTMLInputElement).value);
                                     });
-                                    (element as HTMLInputElement).addEventListener('focus', (e: Event) => {
-                                        (element as HTMLInputElement).value = (e.currentTarget as HTMLInputElement).value.toString().replaceAll('.', '').replaceAll('-', '');
+                                    element.addEventListener('focus', (e: Event) => {
+                                        element.value = (e.currentTarget as HTMLInputElement).value.toString().replaceAll('.', '').replaceAll('-', '');
                                     });
                                 } else {
-                                    (element as HTMLInputElement).defaultValue = datasource[elementName] === undefined ? '' : datasource[elementName];
+                                    element.defaultValue = datasource[elementName] === undefined ? '' : datasource[elementName];
                                 }
                             }
-
-                            // console.log(element);
                         } else if (elementType === 'checkbox' || elementType === 'radio') {
-                            const elementValue = (element as HTMLInputElement).value;
+                            const elementValue = element.value;
 
                             if (elementName !== null && datasource !== null && datasource[elementName]) {
-                                (element as HTMLInputElement).defaultChecked = elementValue === (datasource[elementName] as string).toString();
+                                element.defaultChecked = elementValue === (datasource[elementName] as string).toString();
                             }
                         }
                     }
