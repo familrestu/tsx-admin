@@ -63,7 +63,6 @@ class Toolbar extends Component<ToolbarPropsType & TablePropsType & TableStateTy
 class Table extends Component<TablePropsType, TableStateType> {
     _isMounted = false;
     _Table = createRef<HTMLDivElement>();
-    axiosCancelSource: any;
 
     state: TableStateType = {
         arrTableData: {
@@ -356,8 +355,7 @@ class Table extends Component<TablePropsType, TableStateType> {
     }
 
     componentDidMount() {
-        console.log('mounted');
-        this.axiosCancelSource = axios.CancelToken.source();
+        // console.log('mounted');
         this._isMounted = true;
         this.FetchTableData(true);
         this.AddToolBarDOM();
@@ -365,8 +363,6 @@ class Table extends Component<TablePropsType, TableStateType> {
     }
 
     componentWillUnmount() {
-        console.log(this.axiosCancelSource);
-        this.axiosCancelSource.cancel('Axios request canceled.');
         this._isMounted = false;
         this.setBodyAttribute(false);
     }
@@ -374,7 +370,7 @@ class Table extends Component<TablePropsType, TableStateType> {
     render() {
         return (
             <React.Fragment>
-                <div className={`table${this.props.className ? ` table-${this.props.className}` : ''} loading`} id={`${this.props.id ? ` table-${this.props.id}` : ''}`} ref={this._Table}>
+                <div className={`table ${this.props.className ? `table-${this.props.className}` : ''} loading`.trim()} id={`${this.props.id ? `table-${this.props.id}` : ''}`.trim()} ref={this._Table}>
                     <div className="column-group">
                         <div className="row-header number">
                             <span className="text-center">#</span>
