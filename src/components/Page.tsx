@@ -36,7 +36,7 @@ class Page extends React.Component<PageProps, PageState> {
                     );
 
                     if (i !== arrBC.length - 1) {
-                        element.push(<Icon key={`bc-divider-${i}`} name="fas fa-chevron-right pt-1 ml-1" fontSize="1rem"></Icon>);
+                        element.push(<Icon key={`bc-divider-${i}`} name="fas fa-angle-right m-1" fontSize="1rem"></Icon>);
                     }
                 }
             }
