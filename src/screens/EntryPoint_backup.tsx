@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
-import { connect, useSelector } from 'react-redux';
+import { connect /* useSelector */ } from 'react-redux';
 import { AppState } from 'redux/store';
-import { MenuAuthStateType } from 'redux/reducers/MenuAuthState';
+// import { MenuAuthStateType } from 'redux/reducers/MenuAuthState';
 
 import Header from 'components/Header';
 import { NavbarLeft } from 'components/Navbar';
@@ -15,49 +15,66 @@ import HomeScreen from 'screens/HomeScreen';
 import ProfileScreen from 'screens/profile/ProfileScreen';
 import axios from 'axios';
 
-const AuthorizedScreen = () => {
-    const currentApp = useSelector((state: any) => state.UserState.current_app);
-    const menuAuth: MenuAuthStateType = useSelector((state: any) => state.MenuAuthState);
-    let component;
+class TempAuthorizedScreen extends Component<AppState & typeof MapDispatch> {
+    CheckAuth() {
+        axios
+            .post(`${process.env.REACT_APP_API_PATH}/system/application/LoginStatus`, null, { withCredentials: true })
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
 
-    return (
-        <BrowserRouter>
-            <NavbarLeft />
-            <div className="content-container">
-                <Header />
-                <div id="body" className="body">
-                    <Switch>
-                        <Route exact path="/" component={HomeScreen} />
+    componentDidMount() {
+        // this.CheckAuth();
+    }
 
-                        {menuAuth &&
-                            menuAuth.map((item, index) => {
-                                try {
-                                    if (index > 0) {
-                                        if (item.isGlobal === 'Yes' || item.isGlobal === 1) {
-                                            // eslint-disable-next-line @typescript-eslint/no-var-requires
-                                            component = require(`../screens${item.componentPath}`);
-                                            return <Route key={`dynamic-route-${index}`} exact path={item.link} component={component.default} />;
+    render() {
+        const currentApp = this.props.UserState.current_app;
+        const menuAuth = this.props.MenuAuthState;
+        let component;
+
+        return (
+            <BrowserRouter>
+                <NavbarLeft />
+                <div className="content-container">
+                    <Header />
+                    <div id="body" className="body">
+                        <Switch>
+                            <Route exact path="/" component={HomeScreen} />
+
+                            {menuAuth &&
+                                menuAuth.map((item, index) => {
+                                    try {
+                                        if (index > 0) {
+                                            if (item.isGlobal === 'Yes' || item.isGlobal === 1) {
+                                                // eslint-disable-next-line @typescript-eslint/no-var-requires
+                                                component = require(`../screens${item.componentPath}`);
+                                                return <Route key={`dynamic-route-${index}`} exact path={item.link} component={component.default} />;
+                                            } else {
+                                                component = require(`screens/${currentApp}${item.componentPath}`);
+                                                return <Route key={`dynamic-route-${index}`} exact path={item.link} component={component.default} />;
+                                            }
                                         } else {
-                                            component = require(`screens/${currentApp}${item.componentPath}`);
-                                            return <Route key={`dynamic-route-${index}`} exact path={item.link} component={component.default} />;
+                                            return null;
                                         }
-                                    } else {
+                                    } catch (error) {
+                                        console.error(error.message);
                                         return null;
                                     }
-                                } catch (error) {
-                                    console.error(error.message);
-                                    return null;
-                                }
-                            })}
+                                })}
 
-                        <Route path="/pagenotfound" component={PageNotFoundScreen} />
-                        <Redirect to="/pagenotfound" />
-                    </Switch>
+                            <Route path="/pagenotfound" component={PageNotFoundScreen} />
+                            <Redirect to="/pagenotfound" />
+                        </Switch>
+                    </div>
                 </div>
-            </div>
-        </BrowserRouter>
-    );
-};
+            </BrowserRouter>
+        );
+    }
+}
 
 const NotAuthorizedScreen = () => (
     <BrowserRouter>
@@ -146,5 +163,7 @@ const MapDispatch = {
     Login: (data: any) => ({ type: 'LOGIN', data }),
     SetUserMenu: (data: any) => ({ type: 'SETUSERMENU', data }),
 };
+
+const AuthorizedScreen = connect(MapStateToProps, MapDispatch)(TempAuthorizedScreen);
 
 export default connect(MapStateToProps, MapDispatch)(EntryPoint);
