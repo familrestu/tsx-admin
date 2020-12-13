@@ -15,10 +15,28 @@ import HomeScreen from 'screens/HomeScreen';
 import ProfileScreen from 'screens/profile/ProfileScreen';
 import axios from 'axios';
 
-const AuthorizedScreen = () => {
+type AuthorizedScreenPropsType = {
+    GetToken: () => void;
+};
+
+let interval: number;
+const getTokenInterval = 14000;
+
+const CheckTokenInterval = (props: AuthorizedScreenPropsType) => {
+    if (interval === undefined) {
+        props.GetToken();
+        interval = window.setInterval(() => {
+            props.GetToken();
+        }, getTokenInterval);
+    }
+};
+
+const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
     const currentApp = useSelector((state: any) => state.UserState.current_app);
     const menuAuth: MenuAuthStateType = useSelector((state: any) => state.MenuAuthState);
     let component;
+
+    CheckTokenInterval(props);
 
     return (
         <BrowserRouter>
@@ -82,7 +100,7 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
 
     CheckLoginState() {
         axios
-            .post(`${process.env.REACT_APP_API_PATH}/system/application/LoginStatus`, null, { withCredentials: true })
+            .get(`${process.env.REACT_APP_API_PATH}/system/application/LoginStatus`, { withCredentials: true })
             .then((res) => {
                 if (res.data) {
                     if (res.data.loginStatus) {
@@ -106,7 +124,7 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
 
     GetMenuAuth() {
         axios
-            .post(`${process.env.REACT_APP_API_PATH}/system/application/GetMenuAuth`, null, { withCredentials: true })
+            .get(`${process.env.REACT_APP_API_PATH}/system/application/GetMenuAuth`, { withCredentials: true })
             .then((res) => {
                 if (res.data && res.data.menuData) {
                     const { menuData } = res.data;
@@ -120,6 +138,10 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
             });
     }
 
+    GetToken() {
+        axios.get(`${process.env.REACT_APP_API_PATH}/system/application/GetToken`, { withCredentials: true });
+    }
+
     componentDidMount() {
         this.GetMenuAuth();
         this.CheckLoginState();
@@ -130,7 +152,7 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
             return null;
         } else {
             if (this.state.loggedIn) {
-                return <AuthorizedScreen />;
+                return <AuthorizedScreen GetToken={() => this.GetToken()} />;
             } else {
                 return <NotAuthorizedScreen />;
             }
