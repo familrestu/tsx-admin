@@ -113,16 +113,12 @@ type DateAttributesType = {
 
 const DateComponent = (props: DateComponentPropsType) => {
     const dateAttr: DateAttributesType = {};
-    // let dateClassActive = '';
-
-    // const currentDate = moment(new Date(props.currentYear, props.currentMonth, props.currentDay));
     const currentDate = moment().year(props.currentYear).month(props.currentMonth).date(props.currentDay);
     // const currentDateDayFormat = currentDate.format('D').toString();
     const currentDateMonthFormat = currentDate.format('MM').toString();
     const currentDateYearFormat = currentDate.format('YYYY').toString();
 
     const calendarDate = moment().year(props.currentYear).month(props.currentMonth).week(props.weekIndex).day(props.dayIndex);
-    // const calendarDate = moment().year(props.currentYear).month(props.currentMonth).week(props.weekIndex).day(props.dayIndex);
     const calendarDateDayFormat = calendarDate.format('D').toString();
     const calendarDateMonthFormat = calendarDate.format('MM').toString();
     const calendarDateYearFormat = calendarDate.format('YYYY').toString();
@@ -306,7 +302,6 @@ class Calendar extends Component<CalendarPropsType, CalendarStateType> {
                     }
                 })
                 .catch((err) => {
-                    /*  */
                     console.log(err);
                 });
         }
@@ -323,13 +318,21 @@ class Calendar extends Component<CalendarPropsType, CalendarStateType> {
                     tempData = tempData.substring(0, tempData.length - 1);
                 }
 
-                const findDate = document.querySelector(`div[data-calendardate*='${tempData}']`);
+                const findDate = document.querySelector(`div[data-calendardate*='${tempData}']`) as HTMLDivElement;
                 // console.log(findDate, tempData);
 
                 if (findDate) {
                     findDate.setAttribute('data-holiday', 'true');
                     findDate.setAttribute('title', calData.name);
                 }
+            }
+
+            const allDate = document.querySelectorAll('div[data-calendardate]');
+            // console.log(allDate);
+            for (let i = 0; i < allDate.length; i++) {
+                const dateBox = allDate[i] as HTMLDivElement;
+                // console.log();
+                dateBox.style.height = `${dateBox.offsetWidth}px`;
             }
         }
     }

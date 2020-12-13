@@ -27,7 +27,7 @@ class AccountInfo extends React.Component<AppState, LocalState> {
         return (
             <Form datasource={UserState} action="changepassword" id="form-accountinfo">
                 <Row>
-                    <Input type="text" label="Username" size="4" placeholder="username" name="username" row="false" />
+                    <Input type="text" label="Username" size="4" placeholder="username" name="username" row="false" readOnly />
                     <Input
                         label="&nbsp;"
                         type="button"

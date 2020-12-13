@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import moment from 'moment';
-import { FormControl } from 'react-bootstrap';
+import { FormControl, InputGroup, Button } from 'react-bootstrap';
 
 let mouseMove: any;
 let mouseUp: any;
@@ -211,16 +211,39 @@ class Column extends Component<ColumnPropsType, ColumnStateType> {
                     </FormControl>
                 );
             } else {
-                return (
-                    <FormControl
-                        size="sm"
-                        name={this.props.name}
-                        type={type}
-                        autoFocus={true}
-                        onBlur={() => this.ToggleSearch()}
-                        onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => this.OnKeyPressSearchHandler(e)}
-                    />
-                );
+                if (type === 'text') {
+                    return (
+                        <FormControl
+                            size="sm"
+                            name={this.props.name}
+                            type={type}
+                            autoFocus={true}
+                            onBlur={() => this.ToggleSearch()}
+                            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => this.OnKeyPressSearchHandler(e)}
+                        />
+                    );
+                } else {
+                    return (
+                        <InputGroup>
+                            <FormControl
+                                size="sm"
+                                name={this.props.name}
+                                type="text"
+                                autoFocus={true}
+                                placeholder={type.toUpperCase() === 'DATE' ? 'DD/MM/YYYY' : '--:--'}
+                                onBlur={() => this.ToggleSearch()}
+                                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => this.OnKeyPressSearchHandler(e)}
+                            />
+                            {type.toUpperCase() === 'DATE' && (
+                                <InputGroup.Append>
+                                    <Button variant="outline-secondary" size="sm">
+                                        Button
+                                    </Button>
+                                </InputGroup.Append>
+                            )}
+                        </InputGroup>
+                    );
+                }
             }
         };
 

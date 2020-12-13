@@ -76,7 +76,7 @@ export class AvatarImage extends React.Component<AvatarProps, AvatarState> {
                 className={`avatar ${this.props.dropdownParent !== undefined ? 'btn-open-dropdown' : ''} ${this.props.className !== undefined ? this.props.className : ''}`}
                 {...this.props.attributes}
                 style={{
-                    backgroundImage: `url(${this.props.image})`,
+                    backgroundImage: this.props.image !== undefined ? `url(${this.props.image})` : '',
                     ...this.props.style,
                 }}
             >
@@ -108,7 +108,6 @@ class Avatar extends React.Component<AvatarProps & AppState & typeof MapDispatch
         axios
             .post(`${process.env.REACT_APP_API_PATH}/system/application/Logout`, null, { withCredentials: true })
             .then((res: any) => {
-                console.log(res);
                 if (res.data.loginStatus) {
                     this.props.Logout();
                     window.location.reload();
@@ -127,21 +126,21 @@ class Avatar extends React.Component<AvatarProps & AppState & typeof MapDispatch
                 <div className="mr-3">{this.props.name}</div>
                 <AvatarImage attributes={{ tabIndex: 0 }} dropdownParent {...this.props}>
                     <div className="position-absolute dropdown-menu p-0 shadow">
-                        <div className="d-flex p-4 justify-content-center dropdown-item">
+                        <div className="d-flex justify-content-center dropdown-item border-bottom nohover">
                             <div className="d-flex flex-column">
-                                <div className="d-flex justify-content-center align-items-center mb-4">
+                                {/* <div className="d-flex justify-content-center align-items-center mb-4">
                                     <AvatarImage
                                         style={{
-                                            width: '75px',
-                                            height: '75px',
-                                            fontSize: '2rem',
+                                            width: '50px',
+                                            height: '50px',
+                                            fontSize: '1rem',
                                         }}
                                         {...this.props}
                                     />
-                                </div>
+                                </div> */}
                                 <div className="nowrap text-center">{this.props.name}</div>
-                                <div className="nowrap text-center text-black small">{this.props.position}</div>
-                                <div className="nowrap text-center text-black small">{this.props.company}</div>
+                                {/* <div className="nowrap text-center text-black small">{this.props.position}</div>
+                                <div className="nowrap text-center text-black small">{this.props.company}</div> */}
                             </div>
                         </div>
                         <NavLink
@@ -151,10 +150,8 @@ class Avatar extends React.Component<AvatarProps & AppState & typeof MapDispatch
                             onMouseLeave={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
                             onClick={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
                         >
-                            <div className="d-flex p-3 dropdown-item small justify-content-start align-items-center">
-                                <span className="text-black" style={{ fontWeight: 'unset' }}>
-                                    Your Profile
-                                </span>
+                            <div className="d-flex dropdown-item small justify-content-start align-items-center">
+                                <span className="text-black">Your Profile</span>
                             </div>
                         </NavLink>
                         <NavLink
@@ -167,15 +164,18 @@ class Avatar extends React.Component<AvatarProps & AppState & typeof MapDispatch
                             onMouseLeave={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
                             onClick={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
                         >
-                            <div className="d-flex p-3 dropdown-item small justify-content-start align-items-center">
-                                {/* <i className="fas fa-key mr-2"></i> */}
-                                <span className="text-black" style={{ fontWeight: 'unset' }}>
-                                    Change Password
-                                </span>
+                            <div className="d-flex dropdown-item small justify-content-start align-items-center border-bottom">
+                                <span className="text-black">Change Password</span>
                             </div>
                         </NavLink>
-                        <div className="d-flex p-3 justify-content-center" onClick={() => this.SignOutHandler()}>
-                            <div className="btn btn-primary">Sign out</div>
+                        {/* <div className="d-flex justify-content-center" onClick={() => this.SignOutHandler()}>
+                            <div className="btn btn-primary btn-sm">Sign out</div>
+                        </div> */}
+                        <div onClick={() => this.SignOutHandler()}>
+                            <div className="d-flex dropdown-item small justify-content-start align-items-center">
+                                {/* <i className="fas fa-key mr-2"></i> */}
+                                <span className="text-black">Sign out</span>
+                            </div>
                         </div>
                     </div>
                 </AvatarImage>

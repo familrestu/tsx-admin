@@ -26,11 +26,29 @@
 		top: 100%;
 		right: 0;
 		left: unset !important; /* override bootstrap */
-		border-radius: 7px;
-		min-width: 325px;
+		border-radius: .35rem;
+		// min-width: 325px;
+		width: min-content;
+		overflow: hidden;
+
+		a { display: block; }
 
 		.dropdown-item {
-			border-bottom: 1px solid rgba(0,0,0,.15);
+			font-weight: 500;
+			padding: .75rem 1.35rem;
+
+			&.small {
+				span {
+					font-size: .8rem;
+					font-weight: normal !important;
+				}
+			}
+
+			&.nohover {
+				&:hover {
+					background-color: unset;
+				}
+			}
 		}
 
 		.dropdown-item:active {
