@@ -11,9 +11,9 @@ class TableScreen extends Component {
                     <Column label="Column 1" name="column_1" />
                     <Column label="Column Masked 2" name="column_2" masking="A=ABCDEFG,B=HIJKLMN" />
                     <Column label="Date Column" name="column_3" type="date" format="DD-MMM-YYYY" align="right" />
-                    <Column label="Column 4" name="column_4" />
-                    <Column label="Column 5" name="column_5" />
-                    <Column label="Column 6" name="column_6" />
+                    <Column label="Time Column" name="column_4" type="time" />
+                    <Column label="Number Column" name="column_5" type="number" />
+                    <Column label="Wrong Column" name="column_21" />
                     <Column label="Column 7" name="column_7" />
                     <Column label="Column 8" name="column_8" />
                     <Column label="Column 9" name="column_9" />
