@@ -36,9 +36,45 @@
 	}
 
 	.row-header {
+		position: relative;
+		z-index: 100;
 		background-color: var(--primary);
 		color: var(--white);
 		border-color: var(--primary) !important;
+
+		.form-control {
+			background-color: white !important;
+			border-color: #ced4da !important;
+		}
+
+		.input-group-append {
+			.btn {
+				background-color: white !important;
+				border-color: #ced4da !important;
+				color: var(--primary);
+			}
+
+			.dropdown:not(:last-child) {
+				.btn {
+					border-right: 0;
+					border-top-right-radius: 0;
+					border-bottom-right-radius: 0;
+				}
+			}
+			
+			.dropdown:last-child {
+				.btn {
+					border-top-left-radius: 0;
+					border-bottom-left-radius: 0;
+				}
+			}
+			
+			.dropdown-toggle {
+				&::after {
+					content: unset;
+				}
+			}
+		}
 	}
 
 	.column-group:first-child {
