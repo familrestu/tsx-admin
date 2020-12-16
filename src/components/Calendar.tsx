@@ -30,9 +30,10 @@ const Toolbar = (props: ToolbarPropsType & CalendarStateType) => {
         props.ChangeYearHandler(year);
     };
 
-    const ChangeMonth = (type: number) => {
+    const ChangeMonth = (e: React.MouseEvent<HTMLElement>, type: number) => {
         let month = 0;
         let year = 0;
+
         if (type === 0) {
             if (props.currentMonth - 1 < 0) {
                 month = 11;
@@ -59,9 +60,9 @@ const Toolbar = (props: ToolbarPropsType & CalendarStateType) => {
             <Button size="sm" onClick={() => props.ChangeDayHandler(moment().date(), moment().month() + 1, moment().year())}>
                 Today
             </Button>
-            <i className="fas fa-angle-left calendar-caret" onClick={() => ChangeMonth(0)}></i>
-            <i className="fas fa-angle-right calendar-caret" onClick={() => ChangeMonth(1)}></i>
-            <DropdownButton title={moment().month(props.currentMonth).format('MMMM').toString()} className="calendar-toolbar">
+            <i className="fas fa-angle-left calendar-caret" onClick={(e: React.MouseEvent<HTMLElement>) => ChangeMonth(e, 0)}></i>
+
+            <DropdownButton title={moment().month(props.currentMonth).format('MMMM').toString()} className="calendar-toolbar btn-group-sm">
                 {arrMonth.map((monthIndex) => {
                     return (
                         <Dropdown.Item
@@ -75,9 +76,12 @@ const Toolbar = (props: ToolbarPropsType & CalendarStateType) => {
                     );
                 })}
             </DropdownButton>
+            <i className="fas fa-angle-right calendar-caret" onClick={(e: React.MouseEvent<HTMLElement>) => ChangeMonth(e, 1)}></i>
             <FormControl
+                /* using very unique key here, so react will always re-render year input. not a big deal */
+                key={`${moment().format('HHmmss.SSS').toString()}-yearinput`}
                 type="text"
-                className="calendar-toolbar"
+                className="calendar-toolbar calendar-toolbar-year-input"
                 defaultValue={moment().year(props.currentYear).month(props.currentMonth).format('YYYY').toString()}
                 onDoubleClick={() => toggleYearDisabled(false)}
                 onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -87,7 +91,6 @@ const Toolbar = (props: ToolbarPropsType & CalendarStateType) => {
                     OnBlurHandler(parseInt(e.currentTarget.value));
                 }}
                 title="Double click to change year"
-                id="calendar-toolbar-years"
                 onChange={() => null}
                 readOnly={isYearDisabled}
             />
@@ -144,7 +147,8 @@ const DateComponent = (props: DateComponentPropsType) => {
 };
 
 type CalendarPropsType = {
-    type?: 'calendar' | 'datepicker';
+    type?: 'calendar' | 'datepicker' | 'datepicker-range';
+    ToolbarPosition?: string;
 };
 
 type CalendarStateType = {
@@ -156,6 +160,8 @@ type CalendarStateType = {
 
 class Calendar extends Component<CalendarPropsType, CalendarStateType> {
     _isMounted = false;
+    _Type = this.props.type === undefined ? 'calendar' : this.props.type;
+    _ToolbarPosition = this.props.ToolbarPosition === undefined ? `${this._Type}-header` : this.props.ToolbarPosition;
 
     state = {
         currentYear: moment().year(),
@@ -190,9 +196,8 @@ class Calendar extends Component<CalendarPropsType, CalendarStateType> {
         return Math.max(1900, year);
     }
 
-    SetStateCallBack(year: number) {
-        this.AddToolBarDOM();
-        this.SetYearInputValue(this.MinimumYear(year));
+    SetStateCallBack() {
+        this.AddToolbarToDOM();
         this.SetCalendarData();
     }
 
@@ -224,7 +229,7 @@ class Calendar extends Component<CalendarPropsType, CalendarStateType> {
                 (prevState) => {
                     return { ...prevState, currentYear: this.MinimumYear(year) };
                 },
-                () => this.SetStateCallBack(year),
+                () => this.SetStateCallBack(),
             );
         }
     }
@@ -236,7 +241,7 @@ class Calendar extends Component<CalendarPropsType, CalendarStateType> {
                 (prevState) => {
                     return { ...prevState, currentMonth: month, currentYear: this.MinimumYear(year) };
                 },
-                () => this.SetStateCallBack(year),
+                () => this.SetStateCallBack(),
             );
         }
     }
@@ -248,31 +253,26 @@ class Calendar extends Component<CalendarPropsType, CalendarStateType> {
                 (prevState) => {
                     return { ...prevState, currentDay: day, currentMonth: month - 1, currentYear: this.MinimumYear(year) };
                 },
-                () => this.SetStateCallBack(year),
+                () => this.SetStateCallBack(),
             );
         }
     }
 
-    SetYearInputValue(year: number) {
-        const inputYears = document.getElementById('calendar-toolbar-years') as HTMLInputElement;
-        if (inputYears !== null) {
-            inputYears.defaultValue = year.toString();
-            inputYears.value = year.toString();
-        }
-    }
+    AddToolbarToDOM() {
+        if (this._ToolbarPosition) {
+            const DOMElement = document.getElementById(this._ToolbarPosition);
 
-    AddToolBarDOM() {
-        const breadCrumbRight = document.getElementById('bread-crumb-right');
-        if (breadCrumbRight) {
-            ReactDOM.render(
-                <Toolbar
-                    {...this.state}
-                    ChangeYearHandler={(year: number) => this.ChangeYearHandler(year)}
-                    ChangeMonthHandler={(month: number, year: number) => this.ChangeMonthHandler(month, year)}
-                    ChangeDayHandler={(day: number, month: number, year: number) => this.ChangeDayHandler(day, month, year)}
-                />,
-                breadCrumbRight,
-            );
+            if (DOMElement) {
+                ReactDOM.render(
+                    <Toolbar
+                        {...this.state}
+                        ChangeYearHandler={(year: number) => this.ChangeYearHandler(year)}
+                        ChangeMonthHandler={(month: number, year: number) => this.ChangeMonthHandler(month, year)}
+                        ChangeDayHandler={(day: number, month: number, year: number) => this.ChangeDayHandler(day, month, year)}
+                    />,
+                    DOMElement,
+                );
+            }
         }
     }
 
@@ -318,12 +318,15 @@ class Calendar extends Component<CalendarPropsType, CalendarStateType> {
                     tempData = tempData.substring(0, tempData.length - 1);
                 }
 
-                const findDate = document.querySelector(`div[data-calendardate*='${tempData}']`) as HTMLDivElement;
+                const findDate = document.querySelectorAll(`div[data-calendardate*='${tempData}']`);
                 // console.log(findDate, tempData);
 
-                if (findDate) {
-                    findDate.setAttribute('data-holiday', 'true');
-                    findDate.setAttribute('title', calData.name);
+                if (findDate.length) {
+                    for (let i = 0; i < findDate.length; i++) {
+                        const element = findDate[i] as HTMLDivElement;
+                        element.setAttribute('data-holiday', 'true');
+                        element.setAttribute('title', calData.name);
+                    }
                 }
             }
 
@@ -339,14 +342,18 @@ class Calendar extends Component<CalendarPropsType, CalendarStateType> {
 
     componentDidMount() {
         this._isMounted = true;
-        this.AddToolBarDOM();
-        this.SetBodyAttribute(true);
+        this.AddToolbarToDOM();
+        if (this._Type === 'calendar') {
+            this.SetBodyAttribute(true);
+        }
         this.GetCalendarData();
     }
 
     componentWillUnmount() {
         this._isMounted = false;
-        this.SetBodyAttribute(false);
+        if (this._Type === 'calendar') {
+            this.SetBodyAttribute(false);
+        }
     }
 
     render() {
@@ -408,14 +415,27 @@ class Calendar extends Component<CalendarPropsType, CalendarStateType> {
             return <React.Fragment>{returnElement}</React.Fragment>;
         };
 
-        return (
-            <div className="calendar-container">
-                <div className="calendar-body">
-                    <DaynamesRow />
-                    <DatesRow />
+        if (this._Type === 'calendar') {
+            return (
+                <div className="calendar-container">
+                    <div className="calendar-header" id="calendar-header" />
+                    <div className="calendar-body">
+                        <DaynamesRow />
+                        <DatesRow />
+                    </div>
                 </div>
-            </div>
-        );
+            );
+        } else {
+            return (
+                <div className="datepicker-container">
+                    <div className="datepicker-header" id="datepicker-header" />
+                    <div className="datepicker-body">
+                        <DaynamesRow />
+                        <DatesRow />
+                    </div>
+                </div>
+            );
+        }
     }
 }
 
