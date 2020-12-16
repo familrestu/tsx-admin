@@ -182,6 +182,7 @@ class Table extends Component<TablePropsType, TableStateType> {
 
     ClearFilter() {
         if (this.state.arrSearchData) {
+            this.SetLoadingRow(false);
             this.setState(
                 (prevState) => {
                     return { ...prevState, arrSearchData: [] };
@@ -345,7 +346,7 @@ class Table extends Component<TablePropsType, TableStateType> {
         return arrBadges;
     }
 
-    /* add attribute have-table=true, to tell css that will give css top: 55px */
+    /* add attribute have-table=true, to tell css that scroll will have css top styling: 55px */
     setBodyAttribute(isAdd: boolean) {
         if (isAdd) {
             document.body.setAttribute('have-table', 'true');
