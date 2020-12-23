@@ -39,7 +39,7 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
     CheckTokenInterval(props);
 
     return (
-        <BrowserRouter>
+        <BrowserRouter basename={`/${process.env.REACT_APP_SUBDIRECTORY}`}>
             <NavbarLeft />
             <div className="content-container">
                 <Header />
@@ -78,12 +78,12 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
 };
 
 const NotAuthorizedScreen = () => (
-    <BrowserRouter>
+    <BrowserRouter basename={`/${process.env.REACT_APP_SUBDIRECTORY}`}>
         <div className="content-container">
             <Switch>
-                <Route exact path="/" component={LoginScreen} />
-                <Route exact path="/forgotpassword" component={ProfileScreen} />
-                <Redirect to="/" />
+                <Route exact path={`/`} component={LoginScreen} />
+                <Route exact path={`/forgotpassword`} component={ProfileScreen} />
+                <Redirect to={`/`} />
             </Switch>
         </div>
     </BrowserRouter>
@@ -145,6 +145,14 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
     componentDidMount() {
         this.GetMenuAuth();
         this.CheckLoginState();
+
+        // console.log();
+        if (window.location.pathname !== `/${process.env.REACT_APP_SUBDIRECTORY}`) {
+            if (process.env.REACT_APP_SUBDIRECTORY) {
+                window.location.href = process.env.REACT_APP_SUBDIRECTORY;
+            }
+        }
+        // window.history.pushState(null, '/admin-template');
     }
 
     render() {
