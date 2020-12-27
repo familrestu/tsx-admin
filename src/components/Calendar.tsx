@@ -117,8 +117,10 @@ const DateComponent = (props: DateComponentPropsType) => {
     const currentDateMonthFormat = currentDate.format('MM').toString();
     const currentDateYearFormat = currentDate.format('YYYY').toString();
 
-    const calendarDate = moment().week(props.weekIndex).day(props.dayIndex);
-    calendarDate.year(props.currentYear);
+    const calendarDate = moment().year(props.currentYear).month(props.currentMonth).week(props.weekIndex).day(props.dayIndex);
+    // console.log(calendarDate);
+    // calendarDate.year(props.currentYear).week(props.weekIndex);
+
     const calendarDateDayFormat = calendarDate.format('D').toString();
     const calendarDateMonthFormat = calendarDate.format('MM').toString();
     const calendarDateYearFormat = calendarDate.format('YYYY').toString();
@@ -181,12 +183,6 @@ class DatePicker extends Component<DatepickerPropsType, DatepickerStateType> {
     TotalWeeks(): number[] {
         const date = moment().year(this.state.currentYear).month(this.state.currentMonth).date(1);
         const currentWeekIndex = date.week();
-
-        // if (this.state.currentMonth === 0) {
-        //     // currentWeekIndex = 0;
-        // }
-        // console.log(date.format('DD-MMM-YYYY').toString(), date.week());
-
         const arr: number[] = [];
 
         for (let i = 0 + currentWeekIndex; i < 6 + currentWeekIndex; i++) {
@@ -372,40 +368,39 @@ class DatePicker extends Component<DatepickerPropsType, DatepickerStateType> {
                 const startOfMonth = moment().year(this.state.currentYear).month(this.state.currentMonth).startOf('month');
                 const endOfMonth = moment().year(this.state.currentYear).month(this.state.currentMonth).endOf('month');
 
-                startOfWeek.year(this.state.currentYear);
-                endOfWeek.year(this.state.currentYear);
+                // startOfWeek.year(this.state.currentYear);
+                // endOfWeek.year(this.state.currentYear);
                 // endOfMonth.year(this.state.currentYear).month(this.state.currentMonth);
-
-                console.log(startOfMonth, endOfMonth, startOfWeek, endOfWeek, startOfWeek >= startOfMonth && endOfWeek <= endOfMonth);
+                // console.log(startOfMonth, endOfMonth, startOfWeek, endOfWeek, startOfWeek >= startOfMonth && endOfWeek <= endOfMonth);
 
                 // if (startOfWeek <= endOfMonth || endOfWeek <= endOfMonth) {
-                if (endOfWeek >= startOfMonth && endOfWeek <= endOfMonth) {
-                    const arrDay: JSX.Element[] = [];
+                // if ((endOfWeek >= startOfMonth && endOfWeek <= endOfMonth) || (startOfWeek >= startOfMonth && endOfWeek <= endOfMonth)) {
+                const arrDay: JSX.Element[] = [];
 
-                    for (let x = 0; x < totalDays.length; x++) {
-                        const dayIndex = totalDays[x];
-                        arrDay.push(
-                            <DateComponent
-                                key={`date-${dayIndex}`}
-                                weekIndex={weekIndex}
-                                dayIndex={dayIndex}
-                                currentYear={this.state.currentYear}
-                                currentMonth={this.state.currentMonth}
-                                currentDay={this.state.currentDay}
-                                ChangeDayHandler={(day: number, month: number, year: number) => this.ChangeDayHandler(day, month, year)}
-                                calendarData={this.state.calendarData}
-                            />,
-                        );
-                    }
-
-                    returnElement.push(
-                        <React.Fragment key={`week-num-${weekIndex}`}>
-                            <div className="calendar-date-row" week-index={weekIndex}>
-                                {arrDay}
-                            </div>
-                        </React.Fragment>,
+                for (let x = 0; x < totalDays.length; x++) {
+                    const dayIndex = totalDays[x];
+                    arrDay.push(
+                        <DateComponent
+                            key={`date-${dayIndex}`}
+                            weekIndex={weekIndex}
+                            dayIndex={dayIndex}
+                            currentYear={this.state.currentYear}
+                            currentMonth={this.state.currentMonth}
+                            currentDay={this.state.currentDay}
+                            ChangeDayHandler={(day: number, month: number, year: number) => this.ChangeDayHandler(day, month, year)}
+                            calendarData={this.state.calendarData}
+                        />,
                     );
                 }
+
+                returnElement.push(
+                    <React.Fragment key={`week-num-${weekIndex}`}>
+                        <div className="calendar-date-row" week-index={weekIndex}>
+                            {arrDay}
+                        </div>
+                    </React.Fragment>,
+                );
+                // }
             }
 
             return <React.Fragment>{returnElement}</React.Fragment>;
