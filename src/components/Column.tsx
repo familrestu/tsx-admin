@@ -1,7 +1,9 @@
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import moment from 'moment';
-import { FormControl, InputGroup, DropdownButton, Dropdown } from 'react-bootstrap';
+
+import { FormControl /* InputGroup , DropdownButton, Dropdown, Button */ } from 'react-bootstrap';
+import { DatePicker } from './Input';
 
 let mouseMove: any;
 let mouseUp: any;
@@ -78,6 +80,7 @@ type ColumnStateType = {
 
 class Column extends Component<ColumnPropsType, ColumnStateType> {
     MouseMoveListener: any;
+    _HeaderSearchRef: HTMLButtonElement | null | undefined;
 
     state = {
         isSearch: false,
@@ -181,8 +184,6 @@ class Column extends Component<ColumnPropsType, ColumnStateType> {
         }
 
         const InputSearch = () => {
-            const [selectedSelector, setSelectedSelector] = useState('EQ');
-
             let type = '';
 
             if (this.props.type === undefined) {
@@ -238,72 +239,7 @@ class Column extends Component<ColumnPropsType, ColumnStateType> {
                         />
                     );
                 } else {
-                    const ToggleKeepFocus = (e: React.MouseEvent, type: number) => {
-                        const target = (e.currentTarget as HTMLDivElement).previousSibling as HTMLDivElement;
-                        if (type === 1) {
-                            target.setAttribute('keep-focus', 'true');
-                        } else {
-                            target.removeAttribute('keep-focus');
-                        }
-                    };
-
-                    const Selector = (props: { type: string; selectedSelector: string; setSelectedSelector: (selectedSelector: string) => void }) => {
-                        const datePickerType = props.selectedSelector === 'RG' ? 'dateRange' : 'single';
-
-                        const arrSelector = [
-                            { selectorVal: 'EQ', selectorLabel: 'Equals' },
-                            { selectorVal: 'RG', selectorLabel: 'Range' },
-                            { selectorVal: 'GT', selectorLabel: 'Greater Than' },
-                            { selectorVal: 'GTE', selectorLabel: 'Greater Than Equals' },
-                            { selectorVal: 'LT', selectorLabel: 'Less Than' },
-                            { selectorVal: 'LTE', selectorLabel: 'Less Than Equals' },
-                        ];
-                        return (
-                            <InputGroup.Append onMouseEnter={(e: React.MouseEvent) => ToggleKeepFocus(e, 1)} onMouseLeave={(e: React.MouseEvent) => ToggleKeepFocus(e, 0)}>
-                                <DropdownButton title={selectedSelector} size="sm" className="">
-                                    {arrSelector.map((el, index) => {
-                                        return (
-                                            <Dropdown.Item key={`selector-${index}`} onClick={() => props.setSelectedSelector(el.selectorVal)}>
-                                                {el.selectorLabel}
-                                            </Dropdown.Item>
-                                        );
-                                    })}
-                                </DropdownButton>
-                                {props.type.toUpperCase() === 'DATE' && (
-                                    <DropdownButton title={<i className="fas fa-calendar-day"></i>} size="sm">
-                                        <div>Date Picker type: {datePickerType}</div>
-                                    </DropdownButton>
-                                )}
-                            </InputGroup.Append>
-                        );
-                    };
-
-                    let placeHolder = '';
-
-                    if (type.toUpperCase() === 'DATE') {
-                        if (selectedSelector === 'RG') {
-                            placeHolder = 'DD/MM/YYYY - DD/MM/YYYY';
-                        } else {
-                            placeHolder = 'DD/MM/YYYY';
-                        }
-                    } else if (type.toUpperCase() === 'TIME') {
-                        placeHolder = '--:--';
-                    }
-
-                    return (
-                        <InputGroup>
-                            <FormControl
-                                size="sm"
-                                name={this.props.name}
-                                type="text"
-                                autoFocus={true}
-                                placeholder={placeHolder}
-                                onBlur={(e: React.FocusEvent<HTMLInputElement>) => this.ToggleSearch(e)}
-                                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => this.OnKeyPressSearchHandler(e)}
-                            />
-                            <Selector type={type} selectedSelector={selectedSelector} setSelectedSelector={(selectedSelector: string) => setSelectedSelector(selectedSelector)} />
-                        </InputGroup>
-                    );
+                    return <DatePicker size="sm" />;
                 }
             }
         };

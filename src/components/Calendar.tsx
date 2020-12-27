@@ -1,7 +1,7 @@
 import React, { Component, useState } from 'react';
 import ReactDOM from 'react-dom';
 import moment from 'moment';
-import { Button, DropdownButton, Dropdown, FormControl } from 'react-bootstrap';
+import { Button, /* DropdownButton, Dropdown,  */ FormControl } from 'react-bootstrap';
 import axios from 'axios';
 
 type ToolbarPropsType = {
@@ -60,28 +60,24 @@ const Toolbar = (props: ToolbarPropsType & DatepickerStateType) => {
             <Button size="sm" onClick={() => props.ChangeDayHandler(moment().date(), moment().month() + 1, moment().year())}>
                 Today
             </Button>
-            <i className="fas fa-angle-left datepicker-caret" onClick={(e: React.MouseEvent<HTMLElement>) => ChangeMonth(e, 0)}></i>
-
-            <DropdownButton title={moment().month(props.currentMonth).format('MMMM').toString()} className="datepicker-toolbar btn-group-sm">
-                {arrMonth.map((monthIndex) => {
-                    return (
-                        <Dropdown.Item
-                            key={`select-month-${monthIndex}`}
-                            className={props.currentMonth === monthIndex ? 'active' : ''}
-                            value={monthIndex}
-                            onClick={() => props.ChangeMonthHandler(monthIndex, props.currentYear)}
-                        >
-                            {moment().month(monthIndex).format('MMMM').toString()}
-                        </Dropdown.Item>
-                    );
-                })}
-            </DropdownButton>
-            <i className="fas fa-angle-right datepicker-caret" onClick={(e: React.MouseEvent<HTMLElement>) => ChangeMonth(e, 1)}></i>
+            <div className="calendar-select-month">
+                <i className="fas fa-angle-left calendar-caret" onClick={(e: React.MouseEvent<HTMLElement>) => ChangeMonth(e, 0)}></i>
+                <FormControl as="select" size="sm" onChange={(e) => props.ChangeMonthHandler(parseInt(e.currentTarget.value), props.currentYear)} value={props.currentMonth}>
+                    {arrMonth.map((monthIndex) => {
+                        return (
+                            <option key={`select-month-${monthIndex}`} value={monthIndex}>
+                                {moment().month(monthIndex).format('MMMM').toString()}
+                            </option>
+                        );
+                    })}
+                </FormControl>
+                <i className="fas fa-angle-right calendar-caret" onClick={(e: React.MouseEvent<HTMLElement>) => ChangeMonth(e, 1)}></i>
+            </div>
             <FormControl
                 /* using very unique key here, so react will always re-render year input. not a big deal */
                 key={`${moment().format('HHmmss.SSS').toString()}-yearinput`}
                 type="text"
-                className="datepicker-toolbar datepicker-toolbar-year-input"
+                className="calendar-select-year"
                 defaultValue={moment().year(props.currentYear).month(props.currentMonth).format('YYYY').toString()}
                 onDoubleClick={() => toggleYearDisabled(false)}
                 onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -104,7 +100,7 @@ type DateComponentPropsType = {
     currentYear: number;
     currentMonth: number;
     currentDay: number;
-    datepickerData: { [key: string]: string }[] | null;
+    calendarData: { [key: string]: string }[] | null;
 
     ChangeDayHandler: (day: number, month: number, year: number) => void;
 };
@@ -121,16 +117,17 @@ const DateComponent = (props: DateComponentPropsType) => {
     const currentDateMonthFormat = currentDate.format('MM').toString();
     const currentDateYearFormat = currentDate.format('YYYY').toString();
 
-    const datepickerDate = moment().year(props.currentYear).month(props.currentMonth).week(props.weekIndex).day(props.dayIndex);
-    const datepickerDateDayFormat = datepickerDate.format('D').toString();
-    const datepickerDateMonthFormat = datepickerDate.format('MM').toString();
-    const datepickerDateYearFormat = datepickerDate.format('YYYY').toString();
+    const calendarDate = moment().week(props.weekIndex).day(props.dayIndex);
+    calendarDate.year(props.currentYear);
+    const calendarDateDayFormat = calendarDate.format('D').toString();
+    const calendarDateMonthFormat = calendarDate.format('MM').toString();
+    const calendarDateYearFormat = calendarDate.format('YYYY').toString();
 
-    if (datepickerDate.format('DDMMYYYY').toString() === currentDate.format('DDMMYYYY').toString()) {
+    if (calendarDate.format('DDMMYYYY').toString() === currentDate.format('DDMMYYYY').toString()) {
         dateAttr['data-active'] = true;
     }
 
-    if (currentDateMonthFormat !== datepickerDateMonthFormat || currentDateYearFormat !== datepickerDateYearFormat) {
+    if (currentDateMonthFormat !== calendarDateMonthFormat || currentDateYearFormat !== calendarDateYearFormat) {
         dateAttr['data-not-currentmonth'] = true;
     }
 
@@ -138,16 +135,16 @@ const DateComponent = (props: DateComponentPropsType) => {
         <div
             day-index={props.dayIndex}
             {...dateAttr}
-            data-datepickerdate={`${datepickerDate.format('DD-MM-YYYY')}`}
-            onClick={() => props.ChangeDayHandler(parseInt(datepickerDateDayFormat), parseInt(datepickerDateMonthFormat), parseInt(datepickerDateYearFormat))}
+            data-calendardate={`${calendarDate.format('DD-MM-YYYY')}`}
+            onClick={() => props.ChangeDayHandler(parseInt(calendarDateDayFormat), parseInt(calendarDateMonthFormat), parseInt(calendarDateYearFormat))}
         >
-            <span>{datepickerDateDayFormat}</span>
+            <span>{calendarDateDayFormat}</span>
         </div>
     );
 };
 
 type DatepickerPropsType = {
-    type?: 'datepicker' | 'datepicker-range';
+    type?: 'calendar' | 'calendar-range';
     ToolbarPosition?: string;
 };
 
@@ -155,20 +152,20 @@ type DatepickerStateType = {
     currentYear: number;
     currentMonth: number;
     currentDay: number;
-    datepickerData: { [key: string]: string }[];
+    calendarData: { [key: string]: string }[];
 };
 
 class DatePicker extends Component<DatepickerPropsType, DatepickerStateType> {
     _isMounted = false;
-    _Type = this.props.type === undefined ? 'datepicker' : this.props.type;
-    _DatePickerHeader: HTMLDivElement | null | undefined;
+    _Type = this.props.type === undefined ? 'calendar' : this.props.type;
+    _DatepickerHeader: HTMLDivElement | null | undefined;
     _ToolbarPosition = this.props.ToolbarPosition !== undefined && this.props.ToolbarPosition;
 
     state = {
         currentYear: moment().year(),
         currentMonth: moment().month(),
         currentDay: moment().date(),
-        datepickerData: [],
+        calendarData: [],
     };
 
     TotalDays(): number[] {
@@ -184,6 +181,12 @@ class DatePicker extends Component<DatepickerPropsType, DatepickerStateType> {
     TotalWeeks(): number[] {
         const date = moment().year(this.state.currentYear).month(this.state.currentMonth).date(1);
         const currentWeekIndex = date.week();
+
+        // if (this.state.currentMonth === 0) {
+        //     // currentWeekIndex = 0;
+        // }
+        // console.log(date.format('DD-MMM-YYYY').toString(), date.week());
+
         const arr: number[] = [];
 
         for (let i = 0 + currentWeekIndex; i < 6 + currentWeekIndex; i++) {
@@ -199,22 +202,20 @@ class DatePicker extends Component<DatepickerPropsType, DatepickerStateType> {
 
     SetStateCallBack() {
         this.AddToolbarToDOM();
-        this.SetdatepickerData();
+        this.SetcalendarData();
     }
 
     RemoveAddedAttributes() {
         /* since react only re-render changing components, then everytime user change to year, remove all updated attributes if any */
-        const findDate = document.querySelectorAll(`div[data-datepickerdate]`);
-        const arrKeepAttr = ['day-index', 'data-active', 'data-not-currentmonth', 'data-datepickerdate'];
+        const findDate = document.querySelectorAll(`div[data-calendardate]`);
+        const arrKeepAttr = ['day-index', 'data-active', 'data-not-currentmonth', 'data-calendardate'];
 
         if (findDate) {
             for (let i = 0; i < findDate.length; i++) {
                 const element = findDate[i];
-                // console.log(element.attributes);
                 element.removeAttribute('title');
                 for (let x = 0; x < element.attributes.length; x++) {
                     const attr = element.attributes[x];
-                    // console.log(attr);
                     if (arrKeepAttr.indexOf(attr.nodeName) < 0) {
                         element.removeAttribute(attr.nodeName);
                     }
@@ -264,7 +265,7 @@ class DatePicker extends Component<DatepickerPropsType, DatepickerStateType> {
         if (this._ToolbarPosition) {
             DOMElement = document.getElementById(this._ToolbarPosition);
         } else {
-            DOMElement = this._DatePickerHeader;
+            DOMElement = this._DatepickerHeader;
         }
 
         if (DOMElement) {
@@ -280,10 +281,10 @@ class DatePicker extends Component<DatepickerPropsType, DatepickerStateType> {
         }
     }
 
-    GetdatepickerData() {
+    GetcalendarData() {
         // axios.post()
         if (this._isMounted) {
-            // const datepickerData = ;
+            // const calendarData = ;
             const path = `${process.env.REACT_APP_API_PATH}/system/application/GetHoliday`;
             axios
                 .post(path, null, { withCredentials: true })
@@ -291,9 +292,9 @@ class DatePicker extends Component<DatepickerPropsType, DatepickerStateType> {
                     if (res && res.data) {
                         this.setState(
                             (prevState) => {
-                                return { ...prevState, datepickerData: [...res.data.holiday] };
+                                return { ...prevState, calendarData: [...res.data.holiday] };
                             },
-                            () => this.SetdatepickerData(),
+                            () => this.SetcalendarData(),
                         );
                     }
                 })
@@ -303,19 +304,17 @@ class DatePicker extends Component<DatepickerPropsType, DatepickerStateType> {
         }
     }
 
-    SetdatepickerData() {
-        if (this.state.datepickerData.length) {
-            for (let i = 0; i < this.state.datepickerData.length; i++) {
-                const calData: { [key: string]: string } = this.state.datepickerData[i];
+    SetcalendarData() {
+        if (this.state.calendarData.length) {
+            for (let i = 0; i < this.state.calendarData.length; i++) {
+                const calData: { [key: string]: string } = this.state.calendarData[i];
                 let tempData = '';
-                // console.log(calData);
                 if (calData.date.indexOf('YYYY') >= 0) {
                     tempData = calData.date.replaceAll('YYYY', '');
                     tempData = tempData.substring(0, tempData.length - 1);
                 }
 
-                const findDate = document.querySelectorAll(`div[data-datepickerdate*='${tempData}']`);
-                // console.log(findDate, tempData);
+                const findDate = document.querySelectorAll(`div[data-calendardate*='${tempData}']`);
 
                 if (findDate.length) {
                     for (let i = 0; i < findDate.length; i++) {
@@ -326,11 +325,9 @@ class DatePicker extends Component<DatepickerPropsType, DatepickerStateType> {
                 }
             }
 
-            const allDate = document.querySelectorAll('div[data-datepickerdate]');
-            // console.log(allDate);
+            const allDate = document.querySelectorAll('div[data-calendardate]');
             for (let i = 0; i < allDate.length; i++) {
                 const dateBox = allDate[i] as HTMLDivElement;
-                // console.log();
                 dateBox.style.height = `${dateBox.offsetWidth}px`;
             }
         }
@@ -339,7 +336,7 @@ class DatePicker extends Component<DatepickerPropsType, DatepickerStateType> {
     componentDidMount() {
         this._isMounted = true;
         this.AddToolbarToDOM();
-        this.GetdatepickerData();
+        this.GetcalendarData();
     }
 
     componentWillUnmount() {
@@ -349,7 +346,7 @@ class DatePicker extends Component<DatepickerPropsType, DatepickerStateType> {
     render() {
         const DaynamesRow = () => {
             return (
-                <div className="datepicker-day-row">
+                <div className="calendar-day-row">
                     {this.TotalDays().map((dayIndex) => {
                         return (
                             <div key={`days-name-${dayIndex}`} day-index={dayIndex}>
@@ -369,11 +366,20 @@ class DatePicker extends Component<DatepickerPropsType, DatepickerStateType> {
 
             for (let i = 0; i < totalWeeks.length; i++) {
                 const weekIndex = totalWeeks[i];
-                const startOfWeek = moment().year(this.state.currentYear).month(this.state.currentMonth).week(weekIndex).startOf('week');
-                const endOfWeek = moment().year(this.state.currentYear).month(this.state.currentMonth).week(weekIndex).endOf('week');
+                const startOfWeek = moment().week(weekIndex).startOf('week');
+                const endOfWeek = moment().week(weekIndex).endOf('week');
+
+                const startOfMonth = moment().year(this.state.currentYear).month(this.state.currentMonth).startOf('month');
                 const endOfMonth = moment().year(this.state.currentYear).month(this.state.currentMonth).endOf('month');
 
-                if (startOfWeek <= endOfMonth || endOfWeek <= endOfMonth) {
+                startOfWeek.year(this.state.currentYear);
+                endOfWeek.year(this.state.currentYear);
+                // endOfMonth.year(this.state.currentYear).month(this.state.currentMonth);
+
+                console.log(startOfMonth, endOfMonth, startOfWeek, endOfWeek, startOfWeek >= startOfMonth && endOfWeek <= endOfMonth);
+
+                // if (startOfWeek <= endOfMonth || endOfWeek <= endOfMonth) {
+                if (endOfWeek >= startOfMonth && endOfWeek <= endOfMonth) {
                     const arrDay: JSX.Element[] = [];
 
                     for (let x = 0; x < totalDays.length; x++) {
@@ -387,14 +393,14 @@ class DatePicker extends Component<DatepickerPropsType, DatepickerStateType> {
                                 currentMonth={this.state.currentMonth}
                                 currentDay={this.state.currentDay}
                                 ChangeDayHandler={(day: number, month: number, year: number) => this.ChangeDayHandler(day, month, year)}
-                                datepickerData={this.state.datepickerData}
+                                calendarData={this.state.calendarData}
                             />,
                         );
                     }
 
                     returnElement.push(
                         <React.Fragment key={`week-num-${weekIndex}`}>
-                            <div className="datepicker-date-row" week-index={weekIndex}>
+                            <div className="calendar-date-row" week-index={weekIndex}>
                                 {arrDay}
                             </div>
                         </React.Fragment>,
@@ -406,9 +412,9 @@ class DatePicker extends Component<DatepickerPropsType, DatepickerStateType> {
         };
 
         return (
-            <div className="datepicker-container">
-                <div className="datepicker-header" id="datepicker-header" ref={(ref) => (this._DatePickerHeader = ref)} />
-                <div className="datepicker-body">
+            <div className="calendar-container">
+                <div className="calendar-header" id="calendar-header" ref={(ref) => (this._DatepickerHeader = ref)} />
+                <div className="calendar-body">
                     <DaynamesRow />
                     <DatesRow />
                 </div>

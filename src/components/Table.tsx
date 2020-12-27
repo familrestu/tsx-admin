@@ -371,7 +371,11 @@ class Table extends Component<TablePropsType, TableStateType> {
     render() {
         return (
             <React.Fragment>
-                <div className={`table ${this.props.className ? `table-${this.props.className}` : ''} loading`.trim()} id={`${this.props.id ? `table-${this.props.id}` : ''}`.trim()} ref={this._Table}>
+                <div
+                    className={`table ${this.props.className ? `table-${this.props.className}` : ''} loading`.trim()}
+                    id={`table ${this.props.id ? `table-${this.props.id}` : ''}`.trim()}
+                    ref={this._Table}
+                >
                     <div className="column-group">
                         <div className="row-header number">
                             <span className="text-center">#</span>

@@ -147,11 +147,11 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
         this.CheckLoginState();
 
         // console.log();
-        if (window.location.pathname !== `/${process.env.REACT_APP_SUBDIRECTORY}`) {
-            if (process.env.REACT_APP_SUBDIRECTORY) {
-                window.location.href = process.env.REACT_APP_SUBDIRECTORY;
-            }
-        }
+        // if (window.location.pathname !== `/${process.env.REACT_APP_SUBDIRECTORY}`) {
+        //     if (process.env.REACT_APP_SUBDIRECTORY) {
+        //         window.location.href = process.env.REACT_APP_SUBDIRECTORY;
+        //     }
+        // }
         // window.history.pushState(null, '/admin-template');
     }
 
