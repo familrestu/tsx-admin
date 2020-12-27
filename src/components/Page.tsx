@@ -1,9 +1,11 @@
 import React from 'react';
 import Icon from 'components/Icon';
 import SimpleBar from 'simplebar-react';
+import CSS from 'csstype';
 
 type PageProps = {
     breadCrumb?: string;
+    style?: CSS.Properties;
     children?: React.ReactChild[] | React.ReactChild | Element | Element[];
 };
 
@@ -80,7 +82,7 @@ class Page extends React.Component<PageProps, PageState> {
             <React.Fragment>
                 {this.PrintBreadCrumb()}
                 <SimpleBar style={{ minHeight: `${this.state.maxHeight}px`, maxHeight: `${this.state.maxHeight}px`, maxWidth: `${this.state.maxWidth}px` }}>
-                    <div id="body-content" className="body-content">
+                    <div id="body-content" className="body-content" style={{ ...this.props.style }}>
                         {this.props.children}
                     </div>
                 </SimpleBar>
