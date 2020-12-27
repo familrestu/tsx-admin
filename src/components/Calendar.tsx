@@ -368,8 +368,8 @@ class DatePicker extends Component<DatepickerPropsType, DatepickerStateType> {
                 const startOfMonth = moment().year(this.state.currentYear).month(this.state.currentMonth).startOf('month');
                 const endOfMonth = moment().year(this.state.currentYear).month(this.state.currentMonth).endOf('month');
 
-                // startOfWeek.year(this.state.currentYear);
-                // endOfWeek.year(this.state.currentYear);
+                startOfWeek.year(this.state.currentYear);
+                endOfWeek.year(this.state.currentYear);
                 // endOfMonth.year(this.state.currentYear).month(this.state.currentMonth);
                 // console.log(startOfMonth, endOfMonth, startOfWeek, endOfWeek, startOfWeek >= startOfMonth && endOfWeek <= endOfMonth);
 
