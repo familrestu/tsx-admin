@@ -6,37 +6,39 @@ import { DividerHorizontal } from 'components/Divider';
 import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
 
-type CompanyDetailsType = {
+type AppLogoDetailsType = {
     name: string;
     name_short: string;
-    company_id: number;
-    company_code: string;
-    company_logo: string | null;
-    company_logo_small: string | null;
+    app_id: number;
+    app_code: string;
+    app_logo: string | null;
+    app_logo_small: string | null;
 };
 
-const CompanyDetails: CompanyDetailsType = {
+const AppLogoDetails: AppLogoDetailsType = {
     name: 'Ersys Admin',
     name_short: 'EA',
-    company_id: 1,
-    company_code: 'EA',
-    company_logo: null,
-    company_logo_small: null,
+    app_id: 1,
+    app_code: 'EA',
+    app_logo: null,
+    app_logo_small: null,
 };
 
-class Company extends React.Component<CompanyDetailsType> {
+class AppLogo extends React.Component<AppLogoDetailsType> {
     render() {
         const imgUrl = '';
 
         return (
             <li>
-                <div id="company-nav-container" className="company-nav-container pointer" onClick={() => (window.location.href = `${process.env.REACT_APP_SUBDIRECTORY}/`)}>
-                    <div id="company" className="company">
-                        {this.props.company_logo !== null ? <img src={`${imgUrl}/${this.props.company_logo}`} alt={this.props.name} /> : this.props.name}
-                    </div>
-                    <div id="company-small" className="company-small">
-                        {this.props.company_logo_small !== null ? <img src={`${imgUrl}/${this.props.company_logo_small}`} alt={this.props.name} /> : this.props.name_short}
-                    </div>
+                <div id="app-nav-container" className="app-nav-container pointer" /* onClick={() => (window.location.href = `/`)} */>
+                    <NavLink to="/">
+                        <div id="app" className="app">
+                            {this.props.app_logo !== null ? <img src={`${imgUrl}/${this.props.app_logo}`} alt={this.props.name} /> : this.props.name}
+                        </div>
+                        <div id="app-small" className="app-small">
+                            {this.props.app_logo_small !== null ? <img src={`${imgUrl}/${this.props.app_logo_small}`} alt={this.props.name} /> : this.props.name_short}
+                        </div>
+                    </NavLink>
                 </div>
             </li>
         );
@@ -222,7 +224,7 @@ class TempNavbarLeft extends React.Component<AppState, NavbarLeftState> {
         return (
             <div id="navbar-left" className="d-flex navbar-left shadow-sm">
                 <ul>
-                    <Company {...CompanyDetails} />
+                    <AppLogo {...AppLogoDetails} />
                     <DividerHorizontal />
                     {this.state.element}
                 </ul>

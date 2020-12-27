@@ -10,16 +10,19 @@
 
 	ul:not(.navitem-children-parent) {
 		color: var(--white);
+		
 		li {
 			position: relative;
 
-			.company, .company-small {
+			.app, .app-small {
 				padding: 1rem 1.75rem;
 				font-size: 1.5rem;
 				font-weight: 600;
+
+				color: var(--white);
 			}
 
-			.company-small {
+			.app-small {
 				display: none;
 			}
 
@@ -158,11 +161,11 @@
 		width: 6rem !important;
 		ul {
 			li {
-				.company {
+				.app {
 					display: none;
 				}
 
-				.company-small {
+				.app-small {
 					display: block;
 					text-align: center;
 				}
