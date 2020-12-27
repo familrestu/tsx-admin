@@ -1,5 +1,7 @@
-import React, { Fragment, useState } from 'react';
-import { FormControl, Row, Col, FormGroup, FormLabel, FormCheck, FormText } from 'react-bootstrap';
+import React, { Component, Fragment, useState } from 'react';
+import { FormControl, Row, Col, FormGroup, FormLabel, FormCheck, FormText, InputGroup, Button } from 'react-bootstrap';
+import Calendar from 'components/Calendar';
+import ReactDOM from 'react-dom';
 
 const Label = (props: any) => {
     if (props.required) {
@@ -127,29 +129,46 @@ const Input = (props: any) => {
                 </Col>
             </Wrapper>
         );
-    } else {
-        let Icon = null;
-
-        if ((props.type as string).toUpperCase() === 'PASSWORD') {
-            Icon = (
-                <div className="form-icon">
-                    <i
-                        className={`pointer fas ${!showPassword ? 'fa-eye' : 'fa-eye-slash'} text-grey`}
-                        onMouseDown={(e) => onMouseDownHandler(e, showPassword, setShowPassword)}
-                        onMouseUp={(e) => onMouseUpHandler(e, showPassword, setShowPassword)}
-                        onDoubleClick={(e) => onDoubleClickHandler(e, showPassword, setShowPassword)}
-                    ></i>
-                </div>
-            );
-        }
-
+    } else if ((props.type as string).toUpperCase() === 'PASSWORD') {
         return (
             <Wrapper>
                 <Col xs={12} sm={props.size === undefined ? 'auto' : props.size} className="pl-0">
                     <FormGroup className="position-relative">
                         {ShowLabel && <Label text={props.label} required={props.formrequired} />}
                         <FormControl {...props} />
-                        {Icon}
+                        <div className="form-icon">
+                            <i
+                                className={`pointer fas ${!showPassword ? 'fa-eye' : 'fa-eye-slash'} text-grey`}
+                                onMouseDown={(e) => onMouseDownHandler(e, showPassword, setShowPassword)}
+                                onMouseUp={(e) => onMouseUpHandler(e, showPassword, setShowPassword)}
+                                onDoubleClick={(e) => onDoubleClickHandler(e, showPassword, setShowPassword)}
+                            ></i>
+                        </div>
+                        {props.text && <FormText>{props.text}</FormText>}
+                    </FormGroup>
+                </Col>
+            </Wrapper>
+        );
+    } else if ((props.type as string).toUpperCase() === 'DATE') {
+        return (
+            <Wrapper>
+                <Col xs={12} sm={props.size === undefined ? 'auto' : props.size} className="pl-0">
+                    <FormGroup className="position-relative">
+                        {ShowLabel && <Label text={props.label} required={props.formrequired} />}
+                        {/* <FormControl {...props} /> */}
+                        <DatePicker {...props} />
+                        {props.text && <FormText>{props.text}</FormText>}
+                    </FormGroup>
+                </Col>
+            </Wrapper>
+        );
+    } else {
+        return (
+            <Wrapper>
+                <Col xs={12} sm={props.size === undefined ? 'auto' : props.size} className="pl-0">
+                    <FormGroup className="position-relative">
+                        {ShowLabel && <Label text={props.label} required={props.formrequired} />}
+                        <FormControl {...props} />
                         {props.text && <FormText>{props.text}</FormText>}
                     </FormGroup>
                 </Col>
@@ -157,5 +176,97 @@ const Input = (props: any) => {
         );
     }
 };
+
+type InputPortalPropsType = {
+    children?: React.ReactChild[] | React.ReactChild | Element | Element[];
+    sourceElement?: HTMLButtonElement | null | undefined;
+};
+
+class InputPortal extends Component<InputPortalPropsType> {
+    element: HTMLDivElement;
+    bodyElement: HTMLElement | null;
+
+    constructor(props: InputPortalPropsType) {
+        super(props);
+
+        this.bodyElement = document.getElementById('body-content');
+
+        /* create new element, to append to body element */
+        this.element = document.createElement('div');
+        this.element.classList.add('input-portal');
+        this.element.classList.add('shadow');
+
+        // console.log(this.props.sourceElement);
+
+        if (this.props.sourceElement) {
+            const inputGroupPos = this.props.sourceElement.parentElement?.parentElement?.getBoundingClientRect();
+
+            // console.log(inputGroupPos);
+            const bodyElementPos = this.bodyElement?.getBoundingClientRect();
+
+            if (inputGroupPos && bodyElementPos) {
+                this.element.style.left = `${inputGroupPos.left - bodyElementPos.left}px`;
+                this.element.style.top = `${inputGroupPos.top - bodyElementPos.top}px`;
+            }
+        }
+    }
+
+    componentDidMount() {
+        if (this.bodyElement) {
+            this.bodyElement.appendChild(this.element);
+        }
+    }
+
+    componentWillUnmount() {
+        if (this.bodyElement) {
+            this.bodyElement.removeChild(this.element);
+        }
+    }
+
+    render() {
+        return ReactDOM.createPortal(this.props.children, this.element);
+    }
+}
+
+let DatePickerRef: HTMLButtonElement;
+const DatePicker = (props: any) => {
+    const [datePickerOpened, setToggleDatePicker] = useState(false);
+
+    const Selector = (props: any) => {
+        return (
+            <InputGroup.Append>
+                <Button
+                    onClick={() => setToggleDatePicker(!datePickerOpened)}
+                    size={props.size}
+                    ref={(ref: HTMLButtonElement) => {
+                        DatePickerRef = ref;
+                    }}
+                >
+                    <i className="fas fa-calendar-day"></i>
+                </Button>
+                {datePickerOpened && (
+                    <InputPortal sourceElement={DatePickerRef}>
+                        <Calendar />
+                    </InputPortal>
+                )}
+            </InputGroup.Append>
+        );
+    };
+
+    return (
+        <InputGroup>
+            <FormControl
+                {...props}
+                type="text"
+                placeholder="dd/mm/yyyy"
+                // onBlur={(e: React.FocusEvent<HTMLInputElement>) => this.ToggleSearch(e)}
+                // onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => this.OnKeyPressSearchHandler(e)}
+            />
+            <Selector {...props} />
+        </InputGroup>
+    );
+};
+
+export { DatePicker };
 
 export default Input;
