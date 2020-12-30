@@ -1,19 +1,23 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { connect, useSelector } from 'react-redux';
 import { AppState } from 'redux/store';
 import { MenuAuthStateType } from 'redux/reducers/MenuAuthState';
+import axios from 'axios';
 
 import Header from 'components/Header';
 import { NavbarLeft } from 'components/Navbar';
+import LoadingSuspense from 'components/LoadingSuspense';
 
-import LoginScreen from 'screens/LoginScreen';
-import PageNotFoundScreen from 'screens/PageNotFoundScreen';
-// import AttendanceScreen from 'screens/hris/attendance/AttendanceDataScreen';
+// import LoginScreen from 'screens/LoginScreen';
+// import PageNotFoundScreen from 'screens/PageNotFoundScreen';
+// import HomeScreen from 'screens/HomeScreen';
+// import ProfileScreen from 'screens/profile/ProfileScreen';
 
-import HomeScreen from 'screens/HomeScreen';
-import ProfileScreen from 'screens/profile/ProfileScreen';
-import axios from 'axios';
+const LoginScreen = lazy(() => import('screens/LoginScreen'));
+const PageNotFoundScreen = lazy(() => import('screens/PageNotFoundScreen'));
+const HomeScreen = lazy(() => import('screens/HomeScreen'));
+const ProfileScreen = lazy(() => import('screens/profile/ProfileScreen'));
 
 type AuthorizedScreenPropsType = {
     GetToken: () => void;
@@ -44,33 +48,39 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
             <div className="content-container">
                 <Header />
                 <div id="body" className="body">
-                    <Switch>
-                        <Route exact path="/" component={HomeScreen} />
+                    <Suspense fallback={<LoadingSuspense />}>
+                        <Switch>
+                            <Route exact path="/" component={HomeScreen} />
 
-                        {menuAuth &&
-                            menuAuth.map((item, index) => {
-                                try {
-                                    if (index > 0) {
-                                        if (item.isGlobal === 'Yes' || item.isGlobal === 1) {
-                                            // eslint-disable-next-line @typescript-eslint/no-var-requires
-                                            component = require(`../screens${item.componentPath}`);
-                                            return <Route key={`dynamic-route-${index}`} exact path={item.link} component={component.default} />;
+                            {menuAuth &&
+                                menuAuth.map((item, index) => {
+                                    try {
+                                        if (index > 0) {
+                                            if (item.isGlobal === 'Yes' || item.isGlobal === 1) {
+                                                // eslint-disable-next-line @typescript-eslint/no-var-requires
+                                                // component = require(`../screens${item.componentPath}`);
+                                                // return <Route key={`dynamic-route-${index}`} exact path={item.link} component={component.default} />;
+                                                component = lazy(() => import(`../screens${item.componentPath}`));
+                                                return <Route key={`dynamic-route-${index}`} exact path={item.link} component={component} />;
+                                            } else {
+                                                // component = require(`screens/${currentApp}${item.componentPath}`);
+                                                // return <Route key={`dynamic-route-${index}`} exact path={item.link} component={component.default} />;
+                                                component = lazy(() => import(`screens/${currentApp}${item.componentPath}`));
+                                                return <Route key={`dynamic-route-${index}`} exact path={item.link} component={component} />;
+                                            }
                                         } else {
-                                            component = require(`screens/${currentApp}${item.componentPath}`);
-                                            return <Route key={`dynamic-route-${index}`} exact path={item.link} component={component.default} />;
+                                            return null;
                                         }
-                                    } else {
+                                    } catch (error) {
+                                        console.error(error.message);
                                         return null;
                                     }
-                                } catch (error) {
-                                    console.error(error.message);
-                                    return null;
-                                }
-                            })}
+                                })}
 
-                        <Route path="/pagenotfound" component={PageNotFoundScreen} />
-                        <Redirect to="/pagenotfound" />
-                    </Switch>
+                            <Route path="/pagenotfound" component={PageNotFoundScreen} />
+                            <Redirect to="/pagenotfound" />
+                        </Switch>
+                    </Suspense>
                 </div>
             </div>
         </BrowserRouter>
@@ -80,11 +90,13 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
 const NotAuthorizedScreen = () => (
     <BrowserRouter basename={`/${process.env.REACT_APP_SUBDIRECTORY}`}>
         <div className="content-container">
-            <Switch>
-                <Route exact path={`/`} component={LoginScreen} />
-                <Route exact path={`/forgotpassword`} component={ProfileScreen} />
-                <Redirect to={`/`} />
-            </Switch>
+            <Suspense fallback={<LoadingSuspense />}>
+                <Switch>
+                    <Route exact path={`/`} component={LoginScreen} />
+                    <Route exact path={`/forgotpassword`} component={ProfileScreen} />
+                    <Redirect to={`/`} />
+                </Switch>
+            </Suspense>
         </div>
     </BrowserRouter>
 );
@@ -145,14 +157,6 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
     componentDidMount() {
         this.GetMenuAuth();
         this.CheckLoginState();
-
-        // console.log();
-        // if (window.location.pathname !== `/${process.env.REACT_APP_SUBDIRECTORY}`) {
-        //     if (process.env.REACT_APP_SUBDIRECTORY) {
-        //         window.location.href = process.env.REACT_APP_SUBDIRECTORY;
-        //     }
-        // }
-        // window.history.pushState(null, '/admin-template');
     }
 
     render() {
