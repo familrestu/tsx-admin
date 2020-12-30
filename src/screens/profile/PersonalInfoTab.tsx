@@ -64,12 +64,13 @@ class PersonalInfoTab extends React.Component<AppState> {
                 <Input type="text" label="Tax File No." placeholder="XX.XXX.XXX.X-XXX.XXX" name="taxfile_no" formrequired="true" className="required" npwp-value="1" maxLength={15} size={4} />
 
                 <Row>
-                    <Input type="text" label="Birth Place" placeholder="Birth Place" name="birth_place" formrequired="true" size={2} row="false" />
+                    <Input type="text" label="Birth Place" placeholder="Birth Place" name="birth_place" formrequired="true" size={4} row="false" />
                     <Input type="date" label="Birth Date" placeholder="Birth Date" name="birth_date" formrequired="true" size={3} row="false" />
+                    <Input type="time" label="Birth Time" name="birth_date" formrequired="true" size={3} row="false" />
                 </Row>
 
-                <Input type="text" label="Phone" placeholder="+62 21 XXX XXXX XXXX" name="phone" size={2} />
-                <Input type="text" label="Mobile Phone" placeholder="+62 21 XXX XXXX XXXX" name="mobile_phone" size={2} />
+                <Input type="text" label="Phone" placeholder="+62 21 XXX XXXX XXXX" name="phone" size={4} />
+                <Input type="text" label="Mobile Phone" placeholder="+62 21 XXX XXXX XXXX" name="mobile_phone" size={4} />
                 <Input as="textarea" type="text" label="Address" name="address" size={6} rows={5} style={{ resize: 'none' }} />
             </Form>
         );

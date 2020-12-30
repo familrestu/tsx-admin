@@ -16,34 +16,66 @@ const Label = (props: any) => {
     }
 };
 
-const onMouseDownHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>, showPassword: boolean, setShowPassword: React.Dispatch<React.SetStateAction<boolean>>) => {
-    const target = e.currentTarget.parentElement?.previousElementSibling;
-    if (target && !showPassword) {
-        target.setAttribute('type', 'text');
-        setShowPassword(true);
-    }
-};
-
-const onMouseUpHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>, showPassword: boolean, setShowPassword: React.Dispatch<React.SetStateAction<boolean>>) => {
-    const target = e.currentTarget.parentElement?.previousElementSibling;
-    if (target && showPassword) {
-        target.setAttribute('type', 'password');
-        setShowPassword(false);
-    }
-};
-
-const onDoubleClickHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>, showPassword: boolean, setShowPassword: React.Dispatch<React.SetStateAction<boolean>>) => {
+const onMouseDownHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     const target = e.currentTarget.parentElement?.previousElementSibling;
     if (target) {
-        target.setAttribute('type', showPassword ? 'password' : 'text');
-        setShowPassword(!showPassword);
+        target.setAttribute('type', 'text');
+        e.currentTarget.classList.remove('fa-eye');
+        e.currentTarget.classList.add('fa-eye-slash');
+        // setShowPassword(true);
+    }
+};
+
+const onMouseUpHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    const target = e.currentTarget.parentElement?.previousElementSibling;
+    if (target) {
+        target.setAttribute('type', 'password');
+        e.currentTarget.classList.add('fa-eye');
+        e.currentTarget.classList.remove('fa-eye-slash');
+        // setShowPassword(false);
+    }
+};
+
+const onDoubleClickHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    const target = e.currentTarget.parentElement?.previousElementSibling;
+    if (target) {
+        // console.log(target?.getAttribute('type'));
+        if (target.getAttribute('type') === 'password') {
+            target.setAttribute('type', 'text');
+            e.currentTarget.classList.remove('fa-eye');
+            e.currentTarget.classList.add('fa-eye-slash');
+        } else {
+            target.setAttribute('type', 'password');
+            e.currentTarget.classList.add('fa-eye');
+            e.currentTarget.classList.remove('fa-eye-slash');
+        }
+        // target.setAttribute('type', showPassword ? 'password' : 'text');
+        // setShowPassword(!showPassword);
+    }
+};
+
+const AddDateSeparator = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const value = e.currentTarget.value;
+    if (e.key !== 'Backspace' && (value.length === 2 || value.length === 5)) {
+        if (value[value.length] !== '/') {
+            e.currentTarget.value = value + '/';
+        }
+    } else if (e.key === 'Backspace' && value[value.length] === '/') {
+        e.currentTarget.value = value.substring(0, value.length - 1);
     }
 };
 
 const Input = (props: any) => {
     const Wrapper = props.row === undefined ? Row : props.row === 'true' ? Row : Fragment;
     const ShowLabel = props.label === undefined ? false : true;
-    const [showPassword, setShowPassword] = useState(false);
+
+    const Columns = (props: any) => {
+        return (
+            <Col sm={props.size === undefined ? 'auto' : 12} md={props.size === undefined ? 'auto' : props.size * 1.5} lg={props.size === undefined ? 'auto' : props.size} className="pl-0">
+                {props.children}
+            </Col>
+        );
+    };
 
     if ((props.type as string).toUpperCase() === 'RADIO' || (props.type as string).toUpperCase() === 'CHECKBOX') {
         const arrInput = [];
@@ -72,24 +104,24 @@ const Input = (props: any) => {
 
         return (
             <Wrapper>
-                <Col xs={12} sm={props.size === undefined ? 'auto' : props.size} className="pl-0">
+                <Columns {...props}>
                     <FormGroup className="position-relative">
                         {ShowLabel && <Label text={props.label} required={props.formrequired} />}
                         <Row>{arrInput}</Row>
                         {props.text && <FormText>{props.text}</FormText>}
                     </FormGroup>
-                </Col>
+                </Columns>
             </Wrapper>
         );
     } else if ((props.type as string).toUpperCase() === 'BUTTON') {
         return (
             <Wrapper>
-                <Col xs={12} sm={props.size === undefined ? 'auto' : props.size}>
+                <Columns {...props}>
                     <FormGroup className="position-relative">
                         {ShowLabel && <Label text="&nbsp;" required={props.formrequired} />}
                         <FormControl {...props} />
                     </FormGroup>
-                </Col>
+                </Columns>
             </Wrapper>
         );
     } else if ((props.type as string).toUpperCase() === 'SELECT') {
@@ -118,7 +150,7 @@ const Input = (props: any) => {
 
         return (
             <Wrapper>
-                <Col xs={12} sm={props.size === undefined ? 'auto' : props.size} className="pl-0">
+                <Columns {...props}>
                     <FormGroup className="position-relative">
                         {ShowLabel && <Label text={props.label} required={props.formrequired} />}
                         <FormControl {...allProps} as="select">
@@ -126,52 +158,67 @@ const Input = (props: any) => {
                         </FormControl>
                         {props.text && <FormText>{props.text}</FormText>}
                     </FormGroup>
-                </Col>
+                </Columns>
             </Wrapper>
         );
     } else if ((props.type as string).toUpperCase() === 'PASSWORD') {
         return (
             <Wrapper>
-                <Col xs={12} sm={props.size === undefined ? 'auto' : props.size} className="pl-0">
+                <Columns {...props}>
                     <FormGroup className="position-relative">
                         {ShowLabel && <Label text={props.label} required={props.formrequired} />}
                         <FormControl {...props} />
                         <div className="form-icon">
                             <i
-                                className={`pointer fas ${!showPassword ? 'fa-eye' : 'fa-eye-slash'} text-grey`}
-                                onMouseDown={(e) => onMouseDownHandler(e, showPassword, setShowPassword)}
-                                onMouseUp={(e) => onMouseUpHandler(e, showPassword, setShowPassword)}
-                                onDoubleClick={(e) => onDoubleClickHandler(e, showPassword, setShowPassword)}
+                                // className={`pointer fas ${!showPassword ? 'fa-eye' : 'fa-eye-slash'} text-grey`}
+                                className={`pointer fas fa-eye text-grey`}
+                                onMouseDown={(e) => onMouseDownHandler(e)}
+                                onMouseUp={(e) => onMouseUpHandler(e)}
+                                onDoubleClick={(e) => onDoubleClickHandler(e)}
                             ></i>
                         </div>
                         {props.text && <FormText>{props.text}</FormText>}
                     </FormGroup>
-                </Col>
+                </Columns>
             </Wrapper>
         );
     } else if ((props.type as string).toUpperCase() === 'DATE') {
         return (
             <Wrapper>
-                <Col xs={12} sm={props.size === undefined ? 'auto' : props.size} className="pl-0">
+                <Columns {...props}>
                     <FormGroup className="position-relative">
                         {ShowLabel && <Label text={props.label} required={props.formrequired} />}
-                        {/* <FormControl {...props} /> */}
                         <DatePicker {...props} />
                         {props.text && <FormText>{props.text}</FormText>}
                     </FormGroup>
-                </Col>
+                </Columns>
+            </Wrapper>
+        );
+    } else if ((props.type as string).toUpperCase() === 'TIME') {
+        return (
+            <Wrapper>
+                <Columns {...props}>
+                    <FormGroup className="position-relative">
+                        {ShowLabel && <Label text={props.label} required={props.formrequired} />}
+                        <FormControl {...props} type="text" placeholder="--:--" />
+                        <div className="form-icon">
+                            <i className="fas fa-clock"></i>
+                        </div>
+                        {props.text && <FormText>{props.text}</FormText>}
+                    </FormGroup>
+                </Columns>
             </Wrapper>
         );
     } else {
         return (
             <Wrapper>
-                <Col xs={12} sm={props.size === undefined ? 'auto' : props.size} className="pl-0">
+                <Columns {...props}>
                     <FormGroup className="position-relative">
                         {ShowLabel && <Label text={props.label} required={props.formrequired} />}
                         <FormControl {...props} />
                         {props.text && <FormText>{props.text}</FormText>}
                     </FormGroup>
-                </Col>
+                </Columns>
             </Wrapper>
         );
     }
@@ -195,6 +242,7 @@ class InputPortal extends Component<InputPortalPropsType> {
         this.element = document.createElement('div');
         this.element.classList.add('input-portal');
         this.element.classList.add('shadow');
+        this.element.id = 'input-portal';
 
         // console.log(this.props.sourceElement);
 
@@ -229,6 +277,8 @@ class InputPortal extends Component<InputPortalPropsType> {
 }
 
 let DatePickerRef: HTMLButtonElement;
+let DatePickerInputRef: HTMLInputElement;
+
 const DatePicker = (props: any) => {
     const [datePickerOpened, setToggleDatePicker] = useState(false);
 
@@ -246,21 +296,74 @@ const DatePicker = (props: any) => {
                 </Button>
                 {datePickerOpened && (
                     <InputPortal sourceElement={DatePickerRef}>
-                        <Calendar />
+                        <Calendar DatePickerInputRef={DatePickerInputRef} />
                     </InputPortal>
                 )}
             </InputGroup.Append>
         );
     };
 
+    const newProps = {
+        ...props,
+    };
+
+    delete newProps.onBlur;
+    delete newProps.OnKeyPressSearchHandler;
+    delete newProps.autoFocus;
+
+    const CheckDate = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.currentTarget.value.length === 10) {
+            const date = parseInt(e.currentTarget.value.substring(0, 2));
+            const month = parseInt(e.currentTarget.value.substring(3, 5));
+            const year = parseInt(e.currentTarget.value.substring(6, 10));
+
+            const dates = new Date(`${year}-${month}-${date}`);
+            if (dates.toString().toUpperCase() === 'INVALID DATE') {
+                console.log(dates);
+                e.currentTarget.classList.add('danger');
+            }
+        }
+    };
+
+    const KeyUpHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        AddDateSeparator(e);
+        CheckDate(e);
+    };
+
+    const KeyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        // console.log(e.key);
+        if (e.key.match(/^[0-9]|Backspace|ArrowLeft|ArrowRight|Enter/) === null) {
+            e.preventDefault();
+        } else {
+            AddDateSeparator(e);
+
+            if (typeof props.OnKeyPressSearchHandler !== 'undefined' && e.key === 'Enter') {
+                // setToggleDatePicker(false);
+                props.OnKeyPressSearchHandler(e);
+            }
+        }
+    };
+
     return (
         <InputGroup>
             <FormControl
-                {...props}
+                {...newProps}
                 type="text"
                 placeholder="dd/mm/yyyy"
-                // onBlur={(e: React.FocusEvent<HTMLInputElement>) => this.ToggleSearch(e)}
-                // onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => this.OnKeyPressSearchHandler(e)}
+                ref={(ref: HTMLInputElement) => {
+                    DatePickerInputRef = ref;
+                }}
+                autoFocus={props.autoFocus !== undefined ? props.autoFocus : false}
+                onBlur={() => {
+                    if (props.onBlur !== undefined) {
+                        props.onBlur();
+                    }
+                    setToggleDatePicker(false);
+                }}
+                onFocus={() => setToggleDatePicker(true)}
+                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => KeyDownHandler(e)}
+                onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => KeyUpHandler(e)}
+                maxLength={10}
             />
             <Selector {...props} />
         </InputGroup>

@@ -10,7 +10,6 @@ type PageProps = {
 };
 
 type PageState = {
-    maxWidth: number;
     maxHeight: number;
 };
 
@@ -18,7 +17,6 @@ class Page extends React.Component<PageProps, PageState> {
     BreadCrumbRight: HTMLDivElement | null | undefined;
 
     state = {
-        maxWidth: 0,
         maxHeight: 0,
     };
 
@@ -54,34 +52,31 @@ class Page extends React.Component<PageProps, PageState> {
         );
     }
 
-    SetSimpleBarMaxWidth() {
-        let maxWidth = 0;
+    SetSimpleBarMaxDimensions() {
         let maxHeight = 0;
+
         const headerElement = document.getElementById('header');
         const breadcrumbElement = document.getElementById('bread-crumb');
         const navbarElement = document.getElementById('navbar-left');
 
-        // console.log(headerElement, breadcrumbElement, navbarElement);
-
         if (headerElement && breadcrumbElement && navbarElement) {
             maxHeight = window.innerHeight - headerElement.offsetHeight - breadcrumbElement.offsetHeight - 16;
-            maxWidth = window.outerWidth - navbarElement.offsetWidth;
 
             this.setState((prevState) => {
-                return { ...prevState, maxHeight: maxHeight, maxWidth: maxWidth };
+                return { ...prevState, maxHeight: maxHeight };
             });
         }
     }
 
     componentDidMount() {
-        this.SetSimpleBarMaxWidth();
+        this.SetSimpleBarMaxDimensions();
     }
 
     render() {
         return (
             <React.Fragment>
                 {this.PrintBreadCrumb()}
-                <SimpleBar style={{ minHeight: `${this.state.maxHeight}px`, maxHeight: `${this.state.maxHeight}px`, maxWidth: `${this.state.maxWidth}px` }}>
+                <SimpleBar style={{ minHeight: `${this.state.maxHeight}px`, maxHeight: `${this.state.maxHeight}px`, maxWidth: `100%` }} id="simplebar-page">
                     <div id="body-content" className="body-content" style={{ ...this.props.style }}>
                         {this.props.children}
                     </div>

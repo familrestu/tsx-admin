@@ -78,24 +78,27 @@ const OpenChildrenHandler = (id: string) => {
 
 const CloseChildrenHandler = (event: MouseEvent) => {
     const navbarActive = document.querySelectorAll('.navbar-left .open');
-    const nextSibling = (event.target as HTMLDivElement).nextSibling as HTMLDivElement;
-    const haveSibling = nextSibling !== null;
 
-    if (haveSibling && nextSibling.classList.value.indexOf('avitem-children-parent') >= 0) return false;
+    if (navbarActive.length) {
+        const nextSibling = (event.target as HTMLDivElement).nextSibling as HTMLDivElement;
+        const haveSibling = nextSibling !== null;
 
-    for (let i = 0; i < navbarActive.length; i++) {
-        const element = navbarActive[i];
-        element.classList.add('closing');
+        if (haveSibling && nextSibling.classList.value.indexOf('navitem-children-parent') >= 0) return false;
 
-        setTimeout(() => {
-            element.classList.remove('open');
-            element.classList.remove('closing');
+        for (let i = 0; i < navbarActive.length; i++) {
+            const element = navbarActive[i];
+            element.classList.add('closing');
 
-            const elementSibling = element.nextElementSibling;
-            if (elementSibling !== null) {
-                elementSibling.removeAttribute('style');
-            }
-        }, 100);
+            setTimeout(() => {
+                element.classList.remove('open');
+                element.classList.remove('closing');
+
+                const elementSibling = element.nextElementSibling;
+                if (elementSibling !== null) {
+                    elementSibling.removeAttribute('style');
+                }
+            }, 100);
+        }
     }
 };
 
@@ -134,15 +137,8 @@ const Navitem = (props: NavitemPropsType) => {
         });
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const Div = (props: any) => (
-        <div
-            id={props.id}
-            className="navitem-container pointer"
-            tabIndex={0}
-            onClick={() => OpenChildrenHandler(props.id)}
-            // onBlur={() => CloseChildrenHandler()}
-        >
+    const Div = (props: { id: string; children: React.ReactNode }) => (
+        <div id={props.id} className="navitem-container pointer" tabIndex={0} onClick={() => OpenChildrenHandler(props.id)}>
             {props.children}
         </div>
     );

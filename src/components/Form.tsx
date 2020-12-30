@@ -14,7 +14,7 @@ const CancelButton = () => {
     );
 };
 
-interface FormProps {
+type FormProps = {
     id?: string;
     className?: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -24,7 +24,8 @@ interface FormProps {
     buttonGroup?: boolean;
     onSubmitSuccessCallBack?: (res: any) => void;
     onSubmitErrorCallBack?: () => void;
-}
+    children?: React.ReactNode;
+};
 
 type FormState = {
     isLoaded: boolean;

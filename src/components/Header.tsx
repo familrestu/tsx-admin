@@ -138,13 +138,7 @@ class Header extends React.Component<AppState> {
         if (arrBtnDropDown !== null) {
             for (let i = 0; i < arrBtnDropDown.length; i++) {
                 const element = arrBtnDropDown[i];
-
-                /* element.addEventListener('click', (e: Event) =>
-                    this.OpenDropDownHandler(e, element),
-                ); */
-
                 element.addEventListener('click', (e: Event) => this.OpenDropDownHandler(e, element));
-
                 element.addEventListener('blur', () => this.DropDownOnBlurHandler(element));
             }
         }

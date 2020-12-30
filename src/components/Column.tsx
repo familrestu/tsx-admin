@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import moment from 'moment';
 
-import { FormControl /* InputGroup , DropdownButton, Dropdown, Button */ } from 'react-bootstrap';
+import { FormControl, InputGroup, Button } from 'react-bootstrap';
 import { DatePicker } from './Input';
 
 let mouseMove: any;
@@ -125,10 +125,16 @@ class Column extends Component<ColumnPropsType, ColumnStateType> {
     }
 
     ToggleSearch(e?: React.FocusEvent<HTMLInputElement>) {
-        // console.log(e);
         let changeState = true;
 
+        const portalExists = document.getElementById('input-portal');
+
+        if (portalExists) {
+            changeState = false;
+        }
+
         if (e !== undefined) {
+            console.log(e);
             const target = e.currentTarget;
             const keepFocus = target.getAttribute('keep-focus');
             if (keepFocus === 'true') {
@@ -227,7 +233,49 @@ class Column extends Component<ColumnPropsType, ColumnStateType> {
                     </FormControl>
                 );
             } else {
-                if (type === 'text') {
+                if (type === 'date') {
+                    return (
+                        <DatePicker
+                            size="sm"
+                            autoFocus={true}
+                            onBlur={() => this.ToggleSearch()}
+                            OnKeyPressSearchHandler={(e: React.KeyboardEvent<HTMLInputElement>) => this.OnKeyPressSearchHandler(e)}
+                        />
+                    );
+                } else if (type === 'time') {
+                    return (
+                        <InputGroup>
+                            <FormControl
+                                size="sm"
+                                name={this.props.name}
+                                placeholder="--:--"
+                                type="text"
+                                autoFocus={true}
+                                onBlur={() => this.ToggleSearch()}
+                                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.key.match(/^[0-9]|Backspace/) === null) {
+                                        e.preventDefault();
+                                    }
+                                    this.OnKeyPressSearchHandler(e);
+                                }}
+                                onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    const value = e.currentTarget.value;
+                                    if (e.key !== 'Backspace') {
+                                        if (value.length === 2) {
+                                            e.currentTarget.value = value + ':';
+                                        }
+                                    }
+                                }}
+                                maxLength={5}
+                            />
+                            <InputGroup.Append>
+                                <Button size="sm">
+                                    <i className="fas fa-clock"></i>
+                                </Button>
+                            </InputGroup.Append>
+                        </InputGroup>
+                    );
+                } else {
                     return (
                         <FormControl
                             size="sm"
@@ -238,15 +286,18 @@ class Column extends Component<ColumnPropsType, ColumnStateType> {
                             onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => this.OnKeyPressSearchHandler(e)}
                         />
                     );
-                } else {
-                    return <DatePicker size="sm" />;
                 }
             }
         };
 
         row.push(
             <div key={`header-${this.props.name}`} className="row-header">
-                <span className="left pointer" onDoubleClick={() => this.ToggleSearch()}>
+                <span
+                    className="left pointer"
+                    onDoubleClick={() => {
+                        this.ToggleSearch();
+                    }}
+                >
                     {this.state.isSearch ? <InputSearch /> : this.props.label}
                 </span>
                 {!this.state.isSearch && (

@@ -10,10 +10,14 @@ class CalendarScreen extends Component {
         return (
             <Page breadCrumb="Components|Calendar" style={{ height: '100vh' }}>
                 <Row>
-                    <Calendar />
+                    <Col>
+                        <p>Calendar</p>
+                        <Calendar />
+                    </Col>
                 </Row>
                 <Row>
                     <Col sm={4}>
+                        <p>Datepicker</p>
                         <DatePicker />
                     </Col>
                 </Row>
