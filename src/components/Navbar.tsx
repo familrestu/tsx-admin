@@ -202,10 +202,15 @@ class TempNavbarLeft extends React.Component<AppState, NavbarLeftState> {
         document.addEventListener('click', CloseChildrenHandler);
     }
 
+    /* not yet implemented */
+    SetResizeListener() {
+        /*  */
+    }
+
     componentDidMount() {
         this.currentMenu = this.props.MenuAuthState;
-        // this.GetMenuAuth();
         this.SetCloseChildrenListener();
+        this.SetResizeListener();
         this.BuildNav();
     }
 

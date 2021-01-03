@@ -10,7 +10,7 @@ type ToolbarPropsType = {
     ChangeDayHandler: (day: number, month: number, year: number) => void;
 };
 
-const Toolbar = (props: ToolbarPropsType & DatepickerStateType) => {
+const Toolbar = (props: ToolbarPropsType & CalendarStateType) => {
     const arrMonth: number[] = [];
 
     for (let i = 0; i <= 11; i++) {
@@ -42,6 +42,19 @@ const Toolbar = (props: ToolbarPropsType & DatepickerStateType) => {
         props.ChangeMonthHandler(month, year);
     };
 
+    const OptYear = () => {
+        const arrOptYear: React.DetailedHTMLProps<React.OptionHTMLAttributes<HTMLOptionElement>, HTMLOptionElement>[] = [];
+        for (let i = parseInt(moment().year().toString()) + 5; i >= 1950; i--) {
+            arrOptYear.push(
+                <option value={i} key={`year-${i}`}>
+                    {i}
+                </option>,
+            );
+        }
+
+        return arrOptYear;
+    };
+
     return (
         <React.Fragment>
             <Button size="sm" onClick={() => props.ChangeDayHandler(moment().date(), moment().month() + 1, moment().year())}>
@@ -60,8 +73,8 @@ const Toolbar = (props: ToolbarPropsType & DatepickerStateType) => {
                 </FormControl>
                 <i className="fas fa-angle-right calendar-caret" onClick={(e: React.MouseEvent<HTMLElement>) => ChangeMonth(e, 1)}></i>
             </div>
-            <FormControl
-                /* using very unique key here, so react will always re-render year input. not a big deal */
+            {/* using very unique key here, so react will always re-render year input. not a big deal */}
+            {/* <FormControl
                 key={`${moment().format('HHmmss.SSS').toString()}-yearinput`}
                 type="text"
                 className="calendar-select-year"
@@ -83,7 +96,10 @@ const Toolbar = (props: ToolbarPropsType & DatepickerStateType) => {
                     props.ChangeYearHandler(year);
                 }}
                 readOnly
-            />
+            /> */}
+            <FormControl as="select" onChange={(e) => props.ChangeYearHandler(parseInt(e.currentTarget.value))} value={props.currentYear} className="calendar-select-year">
+                {OptYear()}
+            </FormControl>
         </React.Fragment>
     );
 };
@@ -143,21 +159,25 @@ const DateComponent = (props: DateComponentPropsType) => {
     );
 };
 
-type DatepickerPropsType = {
+type CalendarPropsType = {
     ToolbarPosition?: string;
     DatePickerInputRef?: HTMLInputElement;
+    // DatePickerIconRef?: HTMLButtonElement;
+
+    setToggleDatePicker?: () => void;
 };
 
-type DatepickerStateType = {
+type CalendarStateType = {
     currentYear: number;
     currentMonth: number;
     currentDay: number;
     calendarData: { [key: string]: string }[];
 };
 
-class Calendar extends Component<DatepickerPropsType, DatepickerStateType> {
+class Calendar extends Component<CalendarPropsType, CalendarStateType> {
     _isMounted = false;
     _DatepickerHeader: HTMLDivElement | null | undefined;
+    _DatepickerContainer: HTMLDivElement | null | undefined;
     _ToolbarPosition = this.props.ToolbarPosition !== undefined && this.props.ToolbarPosition;
 
     state = {
@@ -166,6 +186,8 @@ class Calendar extends Component<DatepickerPropsType, DatepickerStateType> {
         currentDay: moment().date(),
         calendarData: [],
     };
+    mouseEnterEvent: (() => void) | undefined;
+    mouseLeaveEvent: (() => void) | undefined;
 
     TotalDays(): number[] {
         const arr: number[] = [];
@@ -244,12 +266,17 @@ class Calendar extends Component<DatepickerPropsType, DatepickerStateType> {
     ChangeDayHandler(day: number, month: number, year: number) {
         if (this.state.currentDay !== day || this.state.currentMonth !== month || this.state.currentYear !== year) {
             if (this.props.DatePickerInputRef) {
+                this.props.DatePickerInputRef.focus();
                 this.props.DatePickerInputRef.value = moment()
                     .year(this.MinimumYear(year))
                     .month(month - 1)
                     .date(day)
                     .format('DD/MM/yyyy')
                     .toString();
+
+                if (this.props.setToggleDatePicker) {
+                    this.props.setToggleDatePicker();
+                }
             }
 
             this.RemoveAddedAttributes();
@@ -333,14 +360,67 @@ class Calendar extends Component<DatepickerPropsType, DatepickerStateType> {
         }
     }
 
+    SetListener() {
+        if (this._DatepickerContainer) {
+            this._DatepickerContainer.addEventListener(
+                'mouseenter',
+                (this.mouseEnterEvent = () => {
+                    // console.log(this._DatepickerContainer?.parentElement);
+                    if (this._DatepickerContainer && this._DatepickerContainer.parentElement) {
+                        const parent = this._DatepickerContainer.parentElement;
+                        parent.setAttribute('keep-focus', '1');
+                    }
+                }),
+            );
+
+            this._DatepickerContainer.addEventListener(
+                'mouseleave',
+                (this.mouseLeaveEvent = () => {
+                    // console.log('mouseleave');
+                    if (this._DatepickerContainer && this._DatepickerContainer.parentElement) {
+                        const parent = this._DatepickerContainer.parentElement;
+                        parent.removeAttribute('keep-focus');
+                    }
+                }),
+            );
+        }
+    }
+
+    RemoveListener() {
+        if (this._DatepickerContainer && this.mouseEnterEvent && this.mouseLeaveEvent) {
+            this._DatepickerContainer.removeEventListener('mouseenter', this.mouseEnterEvent);
+            this._DatepickerContainer.removeEventListener('mouseleave', this.mouseLeaveEvent);
+        }
+    }
+
+    SetSelectedDate() {
+        if (this.props.DatePickerInputRef) {
+            if (this.props.DatePickerInputRef.value !== '') {
+                const day = parseInt(this.props.DatePickerInputRef.value.substring(0, 2));
+                const month = parseInt(this.props.DatePickerInputRef.value.substring(3, 5));
+                const year = parseInt(this.props.DatePickerInputRef.value.substring(6, 10));
+
+                this.setState(
+                    (prevState) => {
+                        return { ...prevState, currentDay: day, currentMonth: month - 1, currentYear: this.MinimumYear(year) };
+                    },
+                    () => this.SetStateCallBack(),
+                );
+            }
+        }
+    }
+
     componentDidMount() {
         this._isMounted = true;
         this.AddToolbarToDOM();
         this.GetcalendarData();
+        this.SetSelectedDate();
+        this.SetListener();
     }
 
     componentWillUnmount() {
         this._isMounted = false;
+        this.RemoveListener();
     }
 
     render() {
@@ -401,8 +481,20 @@ class Calendar extends Component<DatepickerPropsType, DatepickerStateType> {
         };
 
         return (
-            <div className="calendar-container">
-                <div className="calendar-header" id="calendar-header" onDoubleClick={() => null} ref={(ref) => (this._DatepickerHeader = ref)} />
+            <div
+                className="calendar-container"
+                ref={(ref) => {
+                    this._DatepickerContainer = ref;
+                }}
+            >
+                <div
+                    className="calendar-header"
+                    id="calendar-header"
+                    onDoubleClick={() => null}
+                    ref={(ref) => {
+                        this._DatepickerHeader = ref;
+                    }}
+                />
                 <div className="calendar-body" onDoubleClick={() => null}>
                     <DaynamesRow />
                     <DatesRow />

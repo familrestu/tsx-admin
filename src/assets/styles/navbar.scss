@@ -1,10 +1,20 @@
+@media (min-width: 320px) and (max-width: 480px) {
+	.navbar-left {
+		position: absolute;
+		
+		&.closed {
+			left: -100%;
+		}
+	}
+}
+
 .navbar-left {
 	flex-direction: column;
 	width: 14.5rem !important;
 	background-color: var(--primary);
 	height: 100%;
 	flex-shrink: 0;
-	z-index: 1020;
+	z-index: 105;
 
 	transition: all 0.2s linear;
 

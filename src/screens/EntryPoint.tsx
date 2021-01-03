@@ -21,6 +21,7 @@ const ProfileScreen = lazy(() => import('screens/profile/ProfileScreen'));
 
 type AuthorizedScreenPropsType = {
     GetToken: () => void;
+    isError: boolean;
 };
 
 let interval: number;
@@ -42,6 +43,11 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
 
     CheckTokenInterval(props);
 
+    /* if error / page is not exists */
+    if (props.isError) {
+        window.location.href = `/${process.env.REACT_APP_SUBDIRECTORY}/pagenotfound`;
+    }
+
     return (
         <BrowserRouter basename={`/${process.env.REACT_APP_SUBDIRECTORY}`}>
             <NavbarLeft />
@@ -57,14 +63,9 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
                                     try {
                                         if (index > 0) {
                                             if (item.isGlobal === 'Yes' || item.isGlobal === 1) {
-                                                // eslint-disable-next-line @typescript-eslint/no-var-requires
-                                                // component = require(`../screens${item.componentPath}`);
-                                                // return <Route key={`dynamic-route-${index}`} exact path={item.link} component={component.default} />;
                                                 component = lazy(() => import(`../screens${item.componentPath}`));
                                                 return <Route key={`dynamic-route-${index}`} exact path={item.link} component={component} />;
                                             } else {
-                                                // component = require(`screens/${currentApp}${item.componentPath}`);
-                                                // return <Route key={`dynamic-route-${index}`} exact path={item.link} component={component.default} />;
                                                 component = lazy(() => import(`screens/${currentApp}${item.componentPath}`));
                                                 return <Route key={`dynamic-route-${index}`} exact path={item.link} component={component} />;
                                             }
@@ -103,11 +104,13 @@ const NotAuthorizedScreen = () => (
 
 type LocalState = {
     loggedIn: boolean | null;
+    error: boolean;
 };
 
 class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalState> {
     state = {
         loggedIn: null,
+        error: false,
     };
 
     CheckLoginState() {
@@ -154,9 +157,23 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
         axios.get(`${process.env.REACT_APP_API_PATH}/system/application/GetToken`, { withCredentials: true });
     }
 
+    // SetDocumentListener() {
+    /*  */
+    // }
+
     componentDidMount() {
         this.GetMenuAuth();
         this.CheckLoginState();
+
+        // this.SetDocumentListener();
+    }
+
+    static getDerivedStateFromError() {
+        return { error: true };
+    }
+
+    componentDidCatch() {
+        console.log('error');
     }
 
     render() {
@@ -164,7 +181,7 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
             return null;
         } else {
             if (this.state.loggedIn) {
-                return <AuthorizedScreen GetToken={() => this.GetToken()} />;
+                return <AuthorizedScreen GetToken={() => this.GetToken()} isError={this.state.error} />;
             } else {
                 return <NotAuthorizedScreen />;
             }

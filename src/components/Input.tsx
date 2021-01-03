@@ -276,7 +276,7 @@ class InputPortal extends Component<InputPortalPropsType> {
     }
 }
 
-let DatePickerRef: HTMLButtonElement;
+let DatePickerIconRef: HTMLButtonElement;
 let DatePickerInputRef: HTMLInputElement;
 
 const DatePicker = (props: any) => {
@@ -286,17 +286,25 @@ const DatePicker = (props: any) => {
         return (
             <InputGroup.Append>
                 <Button
+                    id="datepicker-icon"
                     onClick={() => setToggleDatePicker(!datePickerOpened)}
                     size={props.size}
                     ref={(ref: HTMLButtonElement) => {
-                        DatePickerRef = ref;
+                        DatePickerIconRef = ref;
                     }}
+                    onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
+                        e.currentTarget.setAttribute('keep-focus', '1');
+                    }}
+                    onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
+                        e.currentTarget.removeAttribute('keep-focus');
+                    }}
+                    // keep-focus="1"
                 >
                     <i className="fas fa-calendar-day"></i>
                 </Button>
                 {datePickerOpened && (
-                    <InputPortal sourceElement={DatePickerRef}>
-                        <Calendar DatePickerInputRef={DatePickerInputRef} />
+                    <InputPortal sourceElement={DatePickerIconRef}>
+                        <Calendar DatePickerInputRef={DatePickerInputRef} setToggleDatePicker={() => setToggleDatePicker(false)} />
                     </InputPortal>
                 )}
             </InputGroup.Append>
@@ -307,10 +315,11 @@ const DatePicker = (props: any) => {
         ...props,
     };
 
-    delete newProps.onBlur;
+    delete newProps.ToggleSearch;
     delete newProps.OnKeyPressSearchHandler;
     delete newProps.autoFocus;
 
+    /* not complete */
     const CheckDate = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.currentTarget.value.length === 10) {
             const date = parseInt(e.currentTarget.value.substring(0, 2));
@@ -320,7 +329,7 @@ const DatePicker = (props: any) => {
             const dates = new Date(`${year}-${month}-${date}`);
             if (dates.toString().toUpperCase() === 'INVALID DATE') {
                 console.log(dates);
-                e.currentTarget.classList.add('danger');
+                e.currentTarget.parentElement?.classList.add('danger');
             }
         }
     };
@@ -355,10 +364,10 @@ const DatePicker = (props: any) => {
                 }}
                 autoFocus={props.autoFocus !== undefined ? props.autoFocus : false}
                 onBlur={() => {
-                    if (props.onBlur !== undefined) {
-                        props.onBlur();
+                    if (props.ToggleSearch !== undefined) {
+                        props.ToggleSearch();
                     }
-                    setToggleDatePicker(false);
+                    // setToggleDatePicker(false);
                 }}
                 onFocus={() => setToggleDatePicker(true)}
                 onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => KeyDownHandler(e)}

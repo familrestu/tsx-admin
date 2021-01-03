@@ -138,8 +138,10 @@
 
 	.calendar-select-year {
 		display: flex;
+		justify-content: center;
+		align-items: center;
 
-		&.form-control {
+		/* &.form-control {
 			width: 3.45rem;
 			background-color: var(--primary);
 			border: unset;
@@ -148,6 +150,24 @@
 			&[readonly] {
 				cursor: pointer;
 			}
+		} */
+
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		text-indent: 1px;
+		text-overflow: '';
+
+		width: min-content;
+		text-align: center;
+		background-color: unset;
+		border: unset;
+
+		text-align: center;
+		text-align-last:center;
+
+		option {
+			color: black;
+			text-align: center;
 		}
 	}
 }

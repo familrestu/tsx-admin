@@ -124,22 +124,27 @@ class Column extends Component<ColumnPropsType, ColumnStateType> {
         }
     }
 
-    ToggleSearch(e?: React.FocusEvent<HTMLInputElement>) {
+    ToggleSearch() {
         let changeState = true;
 
+        /* datepicker keep focus */
         const portalExists = document.getElementById('input-portal');
-
         if (portalExists) {
-            changeState = false;
+            if (portalExists.getAttribute('keep-focus')) {
+                changeState = false;
+            }
         }
 
-        if (e !== undefined) {
-            console.log(e);
-            const target = e.currentTarget;
-            const keepFocus = target.getAttribute('keep-focus');
-            if (keepFocus === 'true') {
+        /* datepicker icon keep focus */
+        const datePickerIcon = document.getElementById('datepicker-icon');
+        // console.log(datePickerIcon);
+        if (datePickerIcon) {
+            if (datePickerIcon.getAttribute('keep-focus')) {
                 changeState = false;
-                target.focus();
+            }
+
+            if (datePickerIcon.parentElement && datePickerIcon.parentElement.previousElementSibling) {
+                (datePickerIcon.parentElement.previousElementSibling as HTMLInputElement).focus();
             }
         }
 
@@ -154,7 +159,7 @@ class Column extends Component<ColumnPropsType, ColumnStateType> {
         if (e.key.toUpperCase() === 'ENTER') {
             const value = (e.target as HTMLInputElement).value;
             // console.log('enter pressed', value);
-            if (this.props.SearchClickHandler) {
+            if (this.props.SearchClickHandler && value !== '') {
                 this.props.SearchClickHandler(this.props.name, this.props.label, value);
                 this.ToggleSearch();
             }
@@ -238,11 +243,21 @@ class Column extends Component<ColumnPropsType, ColumnStateType> {
                         <DatePicker
                             size="sm"
                             autoFocus={true}
-                            onBlur={() => this.ToggleSearch()}
+                            ToggleSearch={() => this.ToggleSearch()}
                             OnKeyPressSearchHandler={(e: React.KeyboardEvent<HTMLInputElement>) => this.OnKeyPressSearchHandler(e)}
                         />
                     );
                 } else if (type === 'time') {
+                    const AddTimeSeparator = (e: React.KeyboardEvent<HTMLInputElement>) => {
+                        const value = e.currentTarget.value;
+                        if (e.key !== 'Backspace' && value.length === 2) {
+                            if (value[value.length] !== ':') {
+                                e.currentTarget.value = value + ':';
+                            }
+                        } else if (e.key === 'Backspace' && value[value.length] === ':') {
+                            e.currentTarget.value = value.substring(0, value.length - 1);
+                        }
+                    };
                     return (
                         <InputGroup>
                             <FormControl
@@ -255,16 +270,13 @@ class Column extends Component<ColumnPropsType, ColumnStateType> {
                                 onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                                     if (e.key.match(/^[0-9]|Backspace/) === null) {
                                         e.preventDefault();
+                                    } else {
+                                        AddTimeSeparator(e);
                                     }
                                     this.OnKeyPressSearchHandler(e);
                                 }}
                                 onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                    const value = e.currentTarget.value;
-                                    if (e.key !== 'Backspace') {
-                                        if (value.length === 2) {
-                                            e.currentTarget.value = value + ':';
-                                        }
-                                    }
+                                    AddTimeSeparator(e);
                                 }}
                                 maxLength={5}
                             />

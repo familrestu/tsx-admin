@@ -21,6 +21,13 @@ class CalendarScreen extends Component {
                         <DatePicker />
                     </Col>
                 </Row>
+
+                <Row>
+                    <Col>
+                        <p>HTML 5 Datepicker</p>
+                        <input type="date" />
+                    </Col>
+                </Row>
             </Page>
         );
     }
