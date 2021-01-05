@@ -218,8 +218,10 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
 
         this.SetResizeListener();
 
-        if (window.location.pathname.indexOf('admin-template') < 0) {
-            window.history.replaceState('admin-template', 'Ersys', 'admin-template');
+        if (process.env.REACT_APP_SUBDIRECTORY) {
+            if (window.location.pathname.indexOf(process.env.REACT_APP_SUBDIRECTORY) < 0) {
+                window.history.replaceState(null, 'Ersys', process.env.REACT_APP_SUBDIRECTORY);
+            }
         }
 
         console.log(process.env);
