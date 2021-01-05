@@ -73,7 +73,7 @@ export class AvatarImage extends React.Component<AvatarProps, AvatarState> {
         return (
             <div
                 id="avatar"
-                className={`avatar ${this.props.dropdownParent !== undefined ? 'btn-open-dropdown' : ''} ${this.props.className !== undefined ? this.props.className : ''}`}
+                className={`avatar ${this.props.dropdownParent !== undefined ? 'btn-open-dropdown' : ''} ${this.props.className !== undefined ? this.props.className : ''}`.trim()}
                 {...this.props.attributes}
                 style={{
                     backgroundImage: this.props.image !== undefined ? `url(${this.props.image})` : '',
@@ -122,25 +122,13 @@ class Avatar extends React.Component<AvatarProps & AppState & typeof MapDispatch
 
     render() {
         return (
-            <div className="position-relative avatar-container d-flex align-items-center br-4">
-                <div className="mr-3">{this.props.name}</div>
+            <div className="avatar-container">
+                <div className="avatar-user-name">{this.props.name}</div>
                 <AvatarImage attributes={{ tabIndex: 0 }} dropdownParent {...this.props}>
-                    <div className="position-absolute dropdown-menu p-0 shadow">
+                    <div className="dropdown-menu p-0 shadow">
                         <div className="d-flex justify-content-center dropdown-item border-bottom nohover">
                             <div className="d-flex flex-column">
-                                {/* <div className="d-flex justify-content-center align-items-center mb-4">
-                                    <AvatarImage
-                                        style={{
-                                            width: '50px',
-                                            height: '50px',
-                                            fontSize: '1rem',
-                                        }}
-                                        {...this.props}
-                                    />
-                                </div> */}
                                 <div className="nowrap text-center">{this.props.name}</div>
-                                {/* <div className="nowrap text-center text-black small">{this.props.position}</div>
-                                <div className="nowrap text-center text-black small">{this.props.company}</div> */}
                             </div>
                         </div>
                         <NavLink
@@ -168,12 +156,8 @@ class Avatar extends React.Component<AvatarProps & AppState & typeof MapDispatch
                                 <span className="text-black">Change Password</span>
                             </div>
                         </NavLink>
-                        {/* <div className="d-flex justify-content-center" onClick={() => this.SignOutHandler()}>
-                            <div className="btn btn-primary btn-sm">Sign out</div>
-                        </div> */}
                         <div onClick={() => this.SignOutHandler()}>
                             <div className="d-flex dropdown-item small justify-content-start align-items-center">
-                                {/* <i className="fas fa-key mr-2"></i> */}
                                 <span className="text-black">Sign out</span>
                             </div>
                         </div>

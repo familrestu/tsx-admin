@@ -40,27 +40,30 @@ class Page extends React.Component<PageProps, PageState> {
                     }
                 }
             }
-        }
-
-        return (
-            <div id="bread-crumb" className="bread-crumb font-large pt-3 pb-3">
-                <div className="bread-crumb-left" id="bread-crumb-left">
-                    {element}
+            return (
+                <div id="bread-crumb" className="bread-crumb font-large pt-3 pb-3">
+                    <div className="bread-crumb-left" id="bread-crumb-left">
+                        {element}
+                    </div>
+                    <div className="bread-crumb-right" id="bread-crumb-right"></div>
                 </div>
-                <div className="bread-crumb-right" id="bread-crumb-right"></div>
-            </div>
-        );
+            );
+        } else {
+            return <React.Fragment />;
+        }
     }
 
     SetSimpleBarMaxDimensions() {
         let maxHeight = 0;
 
-        const headerElement = document.getElementById('header');
+        const headerElement = document.getElementById('header-container');
         const breadcrumbElement = document.getElementById('bread-crumb');
-        const navbarElement = document.getElementById('navbar-left');
+        // const navbarElement = document.getElementById('navbar-left');
 
-        if (headerElement && breadcrumbElement && navbarElement) {
-            maxHeight = window.innerHeight - headerElement.offsetHeight - breadcrumbElement.offsetHeight - 16;
+        if (headerElement || breadcrumbElement) {
+            const breadCrumbHeight = breadcrumbElement ? breadcrumbElement.offsetHeight : 0;
+            const headerHeight = headerElement ? headerElement.offsetHeight : 0;
+            maxHeight = window.innerHeight - headerHeight - breadCrumbHeight - 16;
 
             this.setState((prevState) => {
                 return { ...prevState, maxHeight: maxHeight };

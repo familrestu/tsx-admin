@@ -6,22 +6,19 @@ import { MenuAuthStateType } from 'redux/reducers/MenuAuthState';
 import axios from 'axios';
 
 import Header from 'components/Header';
-import { NavbarLeft } from 'components/Navbar';
+import Navbar from 'components/Navbar';
 import LoadingSuspense from 'components/LoadingSuspense';
 
-// import LoginScreen from 'screens/LoginScreen';
-// import PageNotFoundScreen from 'screens/PageNotFoundScreen';
-// import HomeScreen from 'screens/HomeScreen';
-// import ProfileScreen from 'screens/profile/ProfileScreen';
+import LoginScreen from 'screens/LoginScreen';
+import HomeScreen from 'screens/HomeScreen';
 
-const LoginScreen = lazy(() => import('screens/LoginScreen'));
 const PageNotFoundScreen = lazy(() => import('screens/PageNotFoundScreen'));
-const HomeScreen = lazy(() => import('screens/HomeScreen'));
-const ProfileScreen = lazy(() => import('screens/profile/ProfileScreen'));
+const ForgotPasswordScreen = lazy(() => import('screens/ForgotPasswordScreen'));
+const NotificationScreen = lazy(() => import('screens/NotificationScreen'));
 
 type AuthorizedScreenPropsType = {
     GetToken: () => void;
-    isError: boolean;
+    isMobile: boolean;
 };
 
 let interval: number;
@@ -38,46 +35,54 @@ const CheckTokenInterval = (props: AuthorizedScreenPropsType) => {
 
 const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
     const currentApp = useSelector((state: any) => state.UserState.current_app);
-    const menuAuth: MenuAuthStateType = useSelector((state: any) => state.MenuAuthState);
-    let component;
+    const MenuAuthState: MenuAuthStateType = useSelector((state: AppState) => state.MenuAuthState);
 
     CheckTokenInterval(props);
 
-    /* if error / page is not exists */
-    if (props.isError) {
-        window.location.href = `/${process.env.REACT_APP_SUBDIRECTORY}/pagenotfound`;
-    }
+    const ToggleNavbarHandler = () => {
+        const navbar = document.getElementById('navbar-left');
+
+        if (navbar !== null) {
+            if (navbar.classList.contains('mobile')) {
+                navbar.classList.toggle('mobile-opened');
+            } else {
+                navbar.classList.toggle('closed');
+            }
+        }
+    };
 
     return (
         <BrowserRouter basename={`/${process.env.REACT_APP_SUBDIRECTORY}`}>
-            <NavbarLeft />
+            <Navbar ToggleNavbarHandler={() => ToggleNavbarHandler()} isMobile={props.isMobile} />
             <div className="content-container">
-                <Header />
+                <Header ToggleNavbarHandler={() => ToggleNavbarHandler()} isMobile={props.isMobile} />
                 <div id="body" className="body">
                     <Suspense fallback={<LoadingSuspense />}>
                         <Switch>
                             <Route exact path="/" component={HomeScreen} />
 
-                            {menuAuth &&
-                                menuAuth.map((item, index) => {
-                                    try {
-                                        if (index > 0) {
-                                            if (item.isGlobal === 'Yes' || item.isGlobal === 1) {
-                                                component = lazy(() => import(`../screens${item.componentPath}`));
-                                                return <Route key={`dynamic-route-${index}`} exact path={item.link} component={component} />;
-                                            } else {
-                                                component = lazy(() => import(`screens/${currentApp}${item.componentPath}`));
-                                                return <Route key={`dynamic-route-${index}`} exact path={item.link} component={component} />;
-                                            }
+                            {MenuAuthState &&
+                                MenuAuthState.map((item, index) => {
+                                    let component;
+
+                                    if (item.children === undefined && item.componentPath !== '' && item.componentPath !== null) {
+                                        if (item.isGlobal === 'Yes' || item.isGlobal === 1) {
+                                            component = lazy(() => import(`../screens${item.componentPath}`));
                                         } else {
-                                            return null;
+                                            component = lazy(() => import(`../screens/${currentApp}${item.componentPath}`));
                                         }
-                                    } catch (error) {
-                                        console.error(error.message);
-                                        return null;
+
+                                        return <Route key={`dynamic-route-${index}`} exact path={item.link} component={component} />;
+                                    } else {
+                                        const retEl = GetChildrenRoute(item.children, currentApp);
+
+                                        return <React.Fragment key={`dynamic-route-${index}`}>{retEl}</React.Fragment>;
                                     }
                                 })}
 
+                            {/* <DynamicRouter MenuAuthState={MenuAuthState} currentApp={currentApp} /> */}
+
+                            <Route path="/notification" component={NotificationScreen} />
                             <Route path="/pagenotfound" component={PageNotFoundScreen} />
                             <Redirect to="/pagenotfound" />
                         </Switch>
@@ -88,14 +93,42 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
     );
 };
 
+const GetChildrenRoute = (children: MenuAuthStateType | undefined, currentApp: string) => {
+    const retEl: JSX.Element[] = [];
+
+    if (children) {
+        children.forEach((item, index) => {
+            let component;
+
+            if (item.children === undefined && item.componentPath !== '' && item.componentPath !== null) {
+                if (item.isGlobal === 'Yes' || item.isGlobal === 1) {
+                    component = lazy(() => import(`../screens${item.componentPath}`));
+                } else {
+                    component = lazy(() => import(`../screens/${currentApp}${item.componentPath}`));
+                }
+
+                retEl.push(<Route key={`dynamic-route-children-${index}`} exact path={item.link} component={component} />);
+            } else {
+                const retEl = GetChildrenRoute(item.children, currentApp);
+
+                retEl.push(<React.Fragment key={`dynamic-route-children-${index}`}>{retEl}</React.Fragment>);
+            }
+        });
+    }
+
+    console.log(retEl);
+
+    return retEl;
+};
+
 const NotAuthorizedScreen = () => (
     <BrowserRouter basename={`/${process.env.REACT_APP_SUBDIRECTORY}`}>
         <div className="content-container">
             <Suspense fallback={<LoadingSuspense />}>
                 <Switch>
-                    <Route exact path={`/`} component={LoginScreen} />
-                    <Route exact path={`/forgotpassword`} component={ProfileScreen} />
-                    <Redirect to={`/`} />
+                    <Route exact path="/" component={LoginScreen} />
+                    <Route exact path="/forgotpassword" component={ForgotPasswordScreen} />
+                    <Redirect to="/" />
                 </Switch>
             </Suspense>
         </div>
@@ -105,12 +138,14 @@ const NotAuthorizedScreen = () => (
 type LocalState = {
     loggedIn: boolean | null;
     error: boolean;
+    isMobile: boolean;
 };
 
 class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalState> {
     state = {
         loggedIn: null,
         error: false,
+        isMobile: window.innerWidth <= 480 ? true : false,
     };
 
     CheckLoginState() {
@@ -157,23 +192,35 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
         axios.get(`${process.env.REACT_APP_API_PATH}/system/application/GetToken`, { withCredentials: true });
     }
 
-    // SetDocumentListener() {
-    /*  */
-    // }
+    ResizeHandler() {
+        // console.log('test');
+        let isMobile = false;
+        if (window.innerWidth <= 480) {
+            isMobile = true;
+        } else {
+            isMobile = false;
+        }
+
+        if (this.state.isMobile !== isMobile) {
+            this.setState((prevState) => {
+                return { ...prevState, isMobile };
+            });
+        }
+    }
+
+    SetResizeListener() {
+        window.addEventListener('resize', () => this.ResizeHandler());
+    }
 
     componentDidMount() {
         this.GetMenuAuth();
         this.CheckLoginState();
 
-        // this.SetDocumentListener();
-    }
+        this.SetResizeListener();
 
-    static getDerivedStateFromError() {
-        return { error: true };
-    }
-
-    componentDidCatch() {
-        console.log('error');
+        if (window.location.pathname.indexOf('admin-template') < 0) {
+            window.history.replaceState('admin-template', 'Ersys', 'admin-template');
+        }
     }
 
     render() {
@@ -181,7 +228,7 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
             return null;
         } else {
             if (this.state.loggedIn) {
-                return <AuthorizedScreen GetToken={() => this.GetToken()} isError={this.state.error} />;
+                return <AuthorizedScreen GetToken={() => this.GetToken()} isMobile={this.state.isMobile} />;
             } else {
                 return <NotAuthorizedScreen />;
             }

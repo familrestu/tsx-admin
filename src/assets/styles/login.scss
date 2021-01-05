@@ -1,5 +1,10 @@
 .login-container {
+	display: flex;
 	flex: 1;
+
+	.left-container, .right-container {
+		padding: 1.5rem;
+	}
 
 	.left-container {
 		flex: 2;
@@ -15,5 +20,18 @@
 
 	.right-container {
 		flex: 1;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+	.login-container {
+		flex-direction: column;
+		
+		.left-container {
+			display: none;
+		}
 	}
 }

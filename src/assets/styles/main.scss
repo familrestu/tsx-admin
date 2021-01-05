@@ -1,4 +1,5 @@
 @import 'header.scss';
+@import 'notification.scss';
 @import 'body.scss';
 @import 'avatar.scss';
 @import 'navbar.scss';
@@ -64,8 +65,8 @@ ul {
 // a { color: var(--primary) !important; }
 
 .form-control {
-	background-color: rgba(42, 81, 110, 0.1);
-	border-color: rgba(42, 81, 110, 0.1);
+	background-color: rgb(233, 237, 240);
+	border-color: rgb(233, 237, 240);
 }
 
 .form-control:focus, .btn-primary:focus {

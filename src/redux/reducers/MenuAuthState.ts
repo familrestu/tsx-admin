@@ -11,8 +11,7 @@ export type MenuAuthStateType = {
     isMenu: 0 | 1 | 'No' | 'Yes';
     isGlobal: 0 | 1 | 'No' | 'Yes';
     accessmode?: 0 | 1 | 2 | 3 | 'read' | 'write' | 'update' | 'delete';
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    children?: any;
+    children?: MenuAuthStateType;
 }[];
 
 const DefaultState: MenuAuthStateType = [
@@ -23,6 +22,7 @@ const DefaultState: MenuAuthStateType = [
         icon: 'fas fa-tachometer-alt',
         name: 'Dashboard',
         link: '/',
+        componentPath: '/',
         isMenu: 0,
         isGlobal: 0,
     },

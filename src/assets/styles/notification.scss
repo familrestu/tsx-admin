@@ -1,0 +1,41 @@
+.header-container {
+    .icon-groups {
+        .badge, i.fas {
+			pointer-events: none;
+		}
+
+		.badge-counter {
+			transform: scale(0.6);
+            margin-left: 10px;
+            margin-bottom: 10px;
+			// right: -5px;
+			// top: 5px;
+			z-index: 120;
+		}
+    }
+}
+
+.notification {
+    .dropdown-header {
+        color: var(--white) !important;
+    }
+}
+
+@media (max-width: 480px) {
+	.navbar-left {
+		.navitem-group-avatar {
+			.avatar-user-name {
+				.notification {
+					.badge-counter {
+						margin-left: .7rem;
+					}
+
+					i {
+						color: var(--white);
+						font-size: 1.25rem;
+					}
+				}
+			}
+		}
+	}
+}

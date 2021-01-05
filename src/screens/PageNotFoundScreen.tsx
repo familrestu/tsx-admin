@@ -4,7 +4,7 @@ import Page from 'components/Page';
 const NotAuthorized = () => {
     return (
         <Page>
-            <div>{`Page Not Found or You're not Authorized`}</div>
+            <div className="pt-4">{`Page Not Found or You're not Authorized`}</div>
         </Page>
     );
 };

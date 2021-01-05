@@ -188,7 +188,7 @@ class Form extends React.Component<FormProps, FormState> {
                 {this.props.children}
                 {(this.props.buttonGroup === undefined || this.props.buttonGroup) && (
                     <Row>
-                        <Col sm={6}>
+                        <Col xs={6}>
                             <Button variant="primary" className="mr-2">
                                 {this.props.datasource ? 'Save' : 'Submit'}
                             </Button>
@@ -197,7 +197,7 @@ class Form extends React.Component<FormProps, FormState> {
                             </Button>
                         </Col>
 
-                        <Col sm={6} className="d-flex justify-content-end">
+                        <Col xs={6} className="d-flex justify-content-end">
                             <CancelButton />
                         </Col>
                     </Row>

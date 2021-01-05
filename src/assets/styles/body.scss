@@ -6,7 +6,7 @@
 		background-color: var(--white);
 		padding: 0 1rem;
 		padding-bottom: 1rem;
-		z-index: 1000;
+		z-index: 105;
 		height: 100%;
 
 		.bread-crumb { 
@@ -15,18 +15,34 @@
 			.bread-crumb-left {
 				display: flex;
 				flex: 1;
-				align-items: center;
+				align-items: baseline;
 				font-size: 1.125rem;
+
+				span {
+					text-transform: capitalize;
+				}
 			}
 
 			.bread-crumb-right {
 				flex: 1;
 				display: flex;
 				justify-content: flex-end;
-				align-items: center;
+				align-items: baseline;
 
 				.btn {
 					margin: 0rem 0.125rem;
+				}
+			}
+		}
+	}
+}
+
+@media (max-width: 480px) {
+	.content-container {
+		.body {
+			.bread-crumb {
+				.bread-crumb-right {
+					display: none;
 				}
 			}
 		}

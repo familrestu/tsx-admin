@@ -1,8 +1,28 @@
-.header {
+.header-container {
+	position: relative;
+	display: flex;
+	align-items: center;
 	height: 4.5rem;
 	padding: 0.5rem 1rem;
 	background-color: var(--white);
-	z-index: 1050;
+	z-index: 115;
+
+	.header-left, .header-right {
+		position: relative;
+		display: flex;
+		height: 100%;
+		align-items: center;
+	}
+
+	.header-left {
+		justify-content: center;
+		flex: .5 1 auto;
+	}
+
+	.header-right {
+		justify-content: flex-end;
+		flex: 1 1 auto;
+	}
 
 	.icon-groups {
 		position: relative;
@@ -13,18 +33,7 @@
 		height: 2.5rem;
 		padding: 0.25rem;
 		border-radius: 50%;
-		z-index: 1000;
-
-		.badge, i.fas {
-			pointer-events: none;
-		}
-
-		.badge-counter {
-			transform: scale(0.7);
-			right: -5px;
-			top: 5px;
-			z-index: 2000;
-		}
+		z-index: 100;
 
 		.dropdown-menu {
 			top: 100%;
@@ -144,6 +153,18 @@
 
 		.dropdown-menu:focus {
 			outline: unset;
+		}
+	}
+}
+
+@media (max-width: 480px) {
+	.header-container {
+		.header-left {
+			flex: 1;
+		}
+
+		.header-right {
+			display: none;
 		}
 	}
 }

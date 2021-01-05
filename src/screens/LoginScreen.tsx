@@ -3,8 +3,6 @@ import { Row, Col, FormGroup, Button } from 'react-bootstrap';
 import Input from 'components/Input';
 import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
-// import { UserStateType } from 'redux/reducers/UserState';
-// import jwt from 'jsonwebtoken';
 
 import { NavLink } from 'react-router-dom';
 
@@ -31,12 +29,12 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
 
     render() {
         return (
-            <div className="login-container d-flex flex-row">
-                <div className="left-container shadow">
+            <div className="login-container">
+                <div className="left-container">
                     <LoginSVG />
                 </div>
 
-                <div className="right-container p-4 d-flex align-items-center">
+                <div className="right-container">
                     <Form className="p-4 flex-1" buttonGroup={false} action="system/application/Login" onSubmitSuccessCallBack={(res) => this.Login(res)}>
                         <Row>
                             <Col>

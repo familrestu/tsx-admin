@@ -1,6 +1,13 @@
 .avatar-container {
+	position: relative;
+	display: flex;
+	align-items: center;
 	border-radius: 0.25rem;
 	padding: 0.25rem;
+
+	.avatar-user-name {
+		margin-right: 1rem;
+	}
 }
 
 .avatar {
@@ -23,7 +30,7 @@
 	}
 
 	.dropdown-menu {
-		top: 100%;
+		// top: 100%;
 		right: 0;
 		left: unset !important; /* override bootstrap */
 		border-radius: .35rem;
