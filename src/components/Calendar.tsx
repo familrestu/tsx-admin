@@ -4,6 +4,8 @@ import moment from 'moment';
 import { Button, FormControl } from 'react-bootstrap';
 import axios from 'axios';
 
+const apiPath = process.env.REACT_APP_API_PATH || 'https://api.familrestu.com';
+
 type ToolbarPropsType = {
     ChangeYearHandler: (year: number) => void;
     ChangeMonthHandler: (month: number, year: number) => void;
@@ -312,7 +314,7 @@ class Calendar extends Component<CalendarPropsType, CalendarStateType> {
 
     GetcalendarData() {
         if (this._isMounted) {
-            const path = `${process.env.REACT_APP_API_PATH}/system/application/GetHoliday`;
+            const path = `${apiPath}/system/application/GetHoliday`;
             axios
                 .post(path, null, { withCredentials: true })
                 .then((res) => {

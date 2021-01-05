@@ -3,6 +3,8 @@ import { Button, Badge } from 'react-bootstrap';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 
+const apiPath = process.env.REACT_APP_API_PATH || 'https://api.familrestu.com';
+
 type ToolbarPropsType = {
     access?: 1 | 2 | 3 | 4 | 'read' | 'write' | 'update' | 'delete';
     ClearFilter?: () => void;
@@ -196,9 +198,9 @@ class Table extends Component<TablePropsType, TableStateType> {
         if (this.props.datasource && this.state.arrTableData) {
             let path: string;
             if (this.props.datasource.split('/').length < 3) {
-                path = `${process.env.REACT_APP_API_PATH}/${this.props.datasource}/TableData`;
+                path = `${apiPath}/${this.props.datasource}/TableData`;
             } else {
-                path = `${process.env.REACT_APP_API_PATH}/${this.props.datasource}`;
+                path = `${apiPath}/${this.props.datasource}`;
             }
 
             const maxLength = this.GetDataMaxLength(this.state.arrTableData.body);
