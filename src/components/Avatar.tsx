@@ -5,8 +5,6 @@ import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
 import axios from 'axios';
 
-const apiPath = process.env.REACT_APP_API_PATH || 'https://api.familrestu.com';
-
 type AvatarState = {
     isImageLoaded: boolean;
 };
@@ -108,7 +106,7 @@ class Avatar extends React.Component<AvatarProps & AppState & typeof MapDispatch
 
     SignOutHandler() {
         axios
-            .post(`${apiPath}/system/application/Logout`, null, { withCredentials: true })
+            .post(`${process.env.REACT_APP_API_PATH}/system/application/Logout`, null, { withCredentials: true })
             .then((res: any) => {
                 if (res.data.loginStatus) {
                     this.props.Logout();

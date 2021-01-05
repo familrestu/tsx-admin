@@ -16,9 +16,6 @@ const PageNotFoundScreen = lazy(() => import('screens/PageNotFoundScreen'));
 const ForgotPasswordScreen = lazy(() => import('screens/ForgotPasswordScreen'));
 const NotificationScreen = lazy(() => import('screens/NotificationScreen'));
 
-const SubDirectory = process.env.REACT_APP_SUBDIRECTORY;
-const apiPath = process.env.REACT_APP_API_PATH || 'https://api.familrestu.com';
-
 type AuthorizedScreenPropsType = {
     GetToken: () => void;
     isMobile: boolean;
@@ -55,7 +52,7 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
     };
 
     return (
-        <BrowserRouter basename={`/${SubDirectory}`}>
+        <BrowserRouter basename={`/${process.env.REACT_APP_SUBDIRECTORY}`}>
             <Navbar ToggleNavbarHandler={() => ToggleNavbarHandler()} isMobile={props.isMobile} />
             <div className="content-container">
                 <Header ToggleNavbarHandler={() => ToggleNavbarHandler()} isMobile={props.isMobile} />
@@ -125,7 +122,7 @@ const GetChildrenRoute = (children: MenuAuthStateType | undefined, currentApp: s
 };
 
 const NotAuthorizedScreen = () => (
-    <BrowserRouter basename={`/${SubDirectory}`}>
+    <BrowserRouter basename={`/${process.env.REACT_APP_SUBDIRECTORY}`}>
         <div className="content-container">
             <Suspense fallback={<LoadingSuspense />}>
                 <Switch>
@@ -153,7 +150,7 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
 
     CheckLoginState() {
         axios
-            .get(`${apiPath}/system/application/LoginStatus`, { withCredentials: true })
+            .get(`${process.env.REACT_APP_API_PATH}/system/application/LoginStatus`, { withCredentials: true })
             .then((res) => {
                 if (res.data) {
                     if (res.data.loginStatus) {
@@ -177,7 +174,7 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
 
     GetMenuAuth() {
         axios
-            .get(`${apiPath}/system/application/GetMenuAuth`, { withCredentials: true })
+            .get(`${process.env.REACT_APP_API_PATH}/system/application/GetMenuAuth`, { withCredentials: true })
             .then((res) => {
                 if (res.data && res.data.menuData) {
                     const { menuData } = res.data;
@@ -192,7 +189,7 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
     }
 
     GetToken() {
-        axios.get(`${apiPath}/system/application/GetToken`, { withCredentials: true });
+        axios.get(`${process.env.REACT_APP_API_PATH}/system/application/GetToken`, { withCredentials: true });
     }
 
     ResizeHandler() {
@@ -221,9 +218,11 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
 
         this.SetResizeListener();
 
-        if (window.location.pathname.indexOf(`${SubDirectory}`) < 0) {
-            window.history.replaceState(`${SubDirectory}`, `Ersys`, `${SubDirectory}`);
+        if (window.location.pathname.indexOf('admin-template') < 0) {
+            window.history.replaceState('admin-template', 'Ersys', 'admin-template');
         }
+
+        console.log(process.env);
     }
 
     render() {

@@ -3,11 +3,12 @@ import { Row, Col, FormGroup, Button } from 'react-bootstrap';
 import Input from 'components/Input';
 import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
+
 import { NavLink } from 'react-router-dom';
+
 import { ReactComponent as LoginSVG } from 'assets/svg/login.svg';
 import Form from 'components/Form';
 
-const version = process.env.REACT_APP_VERSION || process.env.VERSION || '0.1.0a';
 type LoginScreenState = {
     useAccountCode: boolean;
 };
@@ -80,7 +81,7 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
                             </Col>
                         </Row>
                         <Row>
-                            <Col className="text-center small text-grey">Web app version {version}</Col>
+                            <Col className="text-center small text-grey">Web app version {process.env.REACT_APP_VERSION}</Col>
                         </Row>
                     </Form>
                 </div>

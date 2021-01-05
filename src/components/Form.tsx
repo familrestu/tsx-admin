@@ -4,8 +4,6 @@ import { Row, Col, Button } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
-const apiPath = process.env.REACT_APP_API_PATH || 'https://api.familrestu.com';
-
 const CancelButton = () => {
     const history = useHistory();
 
@@ -139,7 +137,7 @@ class Form extends React.Component<FormProps, FormState> {
 
             const formData = JSON.stringify(tempFormData);
             axios
-                .post(`${apiPath}/${this.props.action}`, JSON.parse(formData), {
+                .post(`${process.env.REACT_APP_API_PATH}/${this.props.action}`, JSON.parse(formData), {
                     withCredentials: true,
                 })
                 .then((res: any) => {
