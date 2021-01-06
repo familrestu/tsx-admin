@@ -52,7 +52,7 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
     };
 
     return (
-        <BrowserRouter basename={`/${process.env.REACT_APP_SUBDIRECTORY}`}>
+        <BrowserRouter basename={`/`}>
             <Navbar ToggleNavbarHandler={() => ToggleNavbarHandler()} isMobile={props.isMobile} />
             <div className="content-container">
                 <Header ToggleNavbarHandler={() => ToggleNavbarHandler()} isMobile={props.isMobile} />
@@ -122,7 +122,7 @@ const GetChildrenRoute = (children: MenuAuthStateType | undefined, currentApp: s
 };
 
 const NotAuthorizedScreen = () => (
-    <BrowserRouter basename={`/${process.env.REACT_APP_SUBDIRECTORY}`}>
+    <BrowserRouter basename={`/`}>
         <div className="content-container">
             <Suspense fallback={<LoadingSuspense />}>
                 <Switch>
@@ -218,13 +218,11 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
 
         this.SetResizeListener();
 
-        if (process.env.REACT_APP_SUBDIRECTORY) {
+        /* if (process.env.REACT_APP_SUBDIRECTORY) {
             if (window.location.pathname.indexOf(process.env.REACT_APP_SUBDIRECTORY) < 0) {
                 window.history.replaceState(null, 'Ersys', process.env.REACT_APP_SUBDIRECTORY);
             }
-        }
-
-        console.log(process.env);
+        } */
     }
 
     render() {

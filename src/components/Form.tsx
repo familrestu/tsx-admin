@@ -2,7 +2,9 @@ import React from 'react';
 import { KTPFormat, NPWPFormat } from 'libs/form';
 import { Row, Col, Button } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
-import axios from 'axios';
+
+import { /* axios,  */ AxiosError, AxiosResponse } from 'axios';
+import { post } from 'libs/fetch';
 
 const CancelButton = () => {
     const history = useHistory();
@@ -17,8 +19,7 @@ const CancelButton = () => {
 type FormProps = {
     id?: string;
     className?: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    datasource?: any;
+    datasource?: string;
     action?: string;
     encType?: string;
     buttonGroup?: boolean;
@@ -29,8 +30,7 @@ type FormProps = {
 
 type FormState = {
     isLoaded: boolean;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    datasource: any;
+    datasource: string | null;
     isSubmiting: boolean;
 };
 
@@ -135,33 +135,53 @@ class Form extends React.Component<FormProps, FormState> {
                 }
             }
 
-            const formData = JSON.stringify(tempFormData);
-            axios
-                .post(`${process.env.REACT_APP_API_PATH}/${this.props.action}`, JSON.parse(formData), {
-                    withCredentials: true,
-                })
-                .then((res: any) => {
-                    if (res) {
-                        // alert('succkess');
-                        if (this.props.onSubmitSuccessCallBack) {
-                            this.props.onSubmitSuccessCallBack(res);
-                        }
-                    } else {
-                        alert(res.data.message);
-                        console.log(res.data.error);
-                        if (this.props.onSubmitErrorCallBack) {
-                            this.props.onSubmitErrorCallBack();
-                        }
-                    }
-                })
-                .catch((err) => {
-                    // console.log(err);
-                    alert(err.message);
-                    console.log(err.error);
+            // const formData = JSON.stringify(tempFormData);
+            // axios
+            //     .post(`${process.env.REACT_APP_API_PATH}/${this.props.action}`, JSON.parse(formData), {
+            //         withCredentials: true,
+            //     })
+            //     .then((res: any) => {
+            //         if (res) {
+            //             if (this.props.onSubmitSuccessCallBack) {
+            //                 this.props.onSubmitSuccessCallBack(res);
+            //             }
+            //         } else {
+            //             alert(res.data.message);
+            //             console.log(res.data.error);
+            //             if (this.props.onSubmitErrorCallBack) {
+            //                 this.props.onSubmitErrorCallBack();
+            //             }
+            //         }
+            //     })
+            //     .catch((err) => {
+            //         alert(err.message);
+            //         if (this.props.onSubmitErrorCallBack) {
+            //             this.props.onSubmitErrorCallBack();
+            //         }
+            //     });
+
+            const onSuccessPost = (res: AxiosResponse) => {
+                if (res) {
                     if (this.props.onSubmitSuccessCallBack) {
-                        this.props.onSubmitSuccessCallBack(err);
+                        this.props.onSubmitSuccessCallBack(res);
                     }
-                });
+                }
+            };
+
+            const onErrorPost = (err: AxiosError) => {
+                alert(err.message);
+                if (this.props.onSubmitErrorCallBack) {
+                    this.props.onSubmitErrorCallBack();
+                }
+            };
+
+            post(
+                tempFormData,
+                this.props.action,
+                { withCredentials: true },
+                (res: AxiosResponse) => onSuccessPost(res),
+                (err: AxiosError) => onErrorPost(err),
+            );
         }
     }
 
