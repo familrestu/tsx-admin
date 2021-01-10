@@ -234,6 +234,7 @@ const Navitem = (props: NavitemPropsType) => {
 
 type NavbarPropsType = {
     ToggleNavbarHandler: () => void;
+    SignOutHandler: () => void;
     isMobile: boolean;
 };
 
@@ -278,6 +279,19 @@ class TempNavbarLeft extends React.Component<NavbarPropsType & AppState> {
                                       return arrNav;
                                   })
                                 : null}
+                            {this.props.isMobile && (
+                                <React.Fragment>
+                                    <DividerHorizontal />
+                                    <li className="" onClick={() => this.props.SignOutHandler()}>
+                                        <div className="navitem-container">
+                                            <div className="d-flex navitem-string">
+                                                <i className={`fas fa-sign-out-alt mr-2 item-left`}></i>
+                                                <div className="item-center">Sign out</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </React.Fragment>
+                            )}
                         </ul>
                     </SimpleBar>
                 </div>

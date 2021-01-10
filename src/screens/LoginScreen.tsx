@@ -3,9 +3,7 @@ import { Row, Col, FormGroup, Button } from 'react-bootstrap';
 import Input from 'components/Input';
 import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
-
 import { NavLink } from 'react-router-dom';
-
 import { ReactComponent as LoginSVG } from 'assets/svg/login.svg';
 import Form from 'components/Form';
 
@@ -23,6 +21,7 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
             this.props.Login(res.data);
             if (res.data.loginStatus) {
                 window.location.reload();
+            } else {
             }
         }
     }

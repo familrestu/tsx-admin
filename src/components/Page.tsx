@@ -80,7 +80,7 @@ class Page extends React.Component<PageProps, PageState> {
             <React.Fragment>
                 {this.PrintBreadCrumb()}
                 <SimpleBar style={{ minHeight: `${this.state.maxHeight}px`, maxHeight: `${this.state.maxHeight}px`, maxWidth: `100%` }} id="simplebar-page">
-                    <div id="body-content" className="body-content" style={{ ...this.props.style }}>
+                    <div id="body-content" className="body-content" style={{ ...this.props.style, minHeight: `${this.state.maxHeight}px` }}>
                         {this.props.children}
                     </div>
                 </SimpleBar>

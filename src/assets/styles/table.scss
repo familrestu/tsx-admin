@@ -133,33 +133,6 @@
 		}
 	}
 
-	&.loading .row-body span {
-		width: 100%;
-		border-radius: .25rem;
-
-		animation-duration: 3s;
-		animation-fill-mode: forwards;
-		animation-iteration-count: infinite;
-		animation-name: placeHolderShimmer;
-		animation-timing-function: linear;
-		-webkit-animation-duration: 1s;
-		-webkit-animation-fill-mode: forwards;
-		-webkit-animation-iteration-count: infinite;
-		-webkit-animation-name: placeHolderShimmer;
-		-webkit-animation-timing-function: linear;
-		background: #e6e6e6;
-		background-image: linear-gradient(to right, #e6e6e6 0%, #d6d6d6 20%, #e6e6e6 40%, #e6e6e6 100%);
-		background-repeat: no-repeat;
-		background-size: 800px 104px;
-		// height: 104px;
-		color: transparent;
-		position: relative;
-
-		a {
-			color: transparent
-		}
-	}
-
 	.row-body:nth-child(even) {
 		background-color: rgb(240, 240, 240);
 	}

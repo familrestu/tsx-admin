@@ -12,6 +12,7 @@ import Notification from 'components/Notification';
 
 type HeaderPropsType = {
     ToggleNavbarHandler: () => void;
+    SignOutHandler: () => void;
     isMobile: boolean;
 };
 
@@ -76,7 +77,7 @@ class Header extends React.Component<HeaderPropsType & AppState> {
                 <div className="header-right">
                     <Notification isMobile={this.props.isMobile} />
                     <DividerVertical marginLeft marginRight />
-                    <Avatar {...AvatarProps} DropDownOnBlurHandler={this.DropDownOnBlurHandler} />
+                    <Avatar {...AvatarProps} DropDownOnBlurHandler={this.DropDownOnBlurHandler} SignOutHandler={() => this.props.SignOutHandler()} />
                 </div>
             </div>
         );

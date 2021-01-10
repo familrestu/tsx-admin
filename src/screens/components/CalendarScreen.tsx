@@ -8,7 +8,7 @@ import { Col, Row } from 'react-bootstrap';
 class CalendarScreen extends Component {
     render() {
         return (
-            <Page breadCrumb="Components|Calendar" style={{ height: '100vh' }}>
+            <Page breadCrumb="Components|Calendar">
                 <Row>
                     <Col>
                         <p>Calendar</p>

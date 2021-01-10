@@ -1,0 +1,33 @@
+.alert-container {
+	background-color: var(--white);
+	padding: 1rem;
+	border-radius: .25rem;
+	min-width: 25rem;
+
+	.alert-header, .alert-body {
+		padding: .5rem;
+	}
+
+	.alert-header {
+		.icon {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			svg {
+				width: 10rem;
+				height: 10rem;
+			}
+		}
+
+		.text {
+			font-size: 1.5rem;
+			font-weight: bold;
+		}
+	}
+}
+
+@media (max-width: 480px) {
+	.alert-container {
+		min-width: 90%;
+	}
+}

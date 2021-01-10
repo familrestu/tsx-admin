@@ -10,6 +10,11 @@
 @import 'table.scss';
 @import 'calendar.scss';
 
+@import 'overlay.scss';
+@import 'alert.scss';
+
+
+@import 'loading.scss';
 
 @import 'login.scss';
 
@@ -106,5 +111,18 @@ a:hover { text-decoration: none; }
 /* simplebar */
 .simplebar-track.simplebar-vertical { margin-right: .15rem; } 
 
-body[have-table=true] .simplebar-track.simplebar-vertical { top: 55px; }
-body[have-calendar=true] .simplebar-track.simplebar-vertical { top: 50px; }
+body[have-table=true] {
+	.body {
+		.simplebar-track.simplebar-vertical {
+			top: 55px;
+		}
+	}
+}
+
+body[have-calendar=true] {
+	.body {
+		.simplebar-track.simplebar-vertical {
+			top: 50px;
+		}
+	}
+}

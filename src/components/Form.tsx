@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 
 import { /* axios,  */ AxiosError, AxiosResponse } from 'axios';
 import { post } from 'libs/fetch';
+import Alert from 'components/Alert';
 
 const CancelButton = () => {
     const history = useHistory();
@@ -32,6 +33,7 @@ type FormState = {
     isLoaded: boolean;
     datasource: string | null;
     isSubmiting: boolean;
+    isError: boolean;
 };
 
 class Form extends React.Component<FormProps, FormState> {
@@ -41,6 +43,7 @@ class Form extends React.Component<FormProps, FormState> {
         isLoaded: false,
         datasource: null,
         isSubmiting: false,
+        isError: false,
     };
 
     FormDataHandler() {
@@ -120,8 +123,6 @@ class Form extends React.Component<FormProps, FormState> {
 
             for (let i = 0; i < arrInputs.length; i++) {
                 const element = arrInputs[i] as HTMLInputElement;
-                // tempFormData[element.name] = element.getAttribute('actualValue');
-
                 const elementType = element.getAttribute('type');
 
                 if (elementType !== null) {
@@ -135,44 +136,27 @@ class Form extends React.Component<FormProps, FormState> {
                 }
             }
 
-            // const formData = JSON.stringify(tempFormData);
-            // axios
-            //     .post(`${process.env.REACT_APP_API_PATH}/${this.props.action}`, JSON.parse(formData), {
-            //         withCredentials: true,
-            //     })
-            //     .then((res: any) => {
-            //         if (res) {
-            //             if (this.props.onSubmitSuccessCallBack) {
-            //                 this.props.onSubmitSuccessCallBack(res);
-            //             }
-            //         } else {
-            //             alert(res.data.message);
-            //             console.log(res.data.error);
-            //             if (this.props.onSubmitErrorCallBack) {
-            //                 this.props.onSubmitErrorCallBack();
-            //             }
-            //         }
-            //     })
-            //     .catch((err) => {
-            //         alert(err.message);
-            //         if (this.props.onSubmitErrorCallBack) {
-            //             this.props.onSubmitErrorCallBack();
-            //         }
-            //     });
+            form.classList.add('loading');
 
             const onSuccessPost = (res: AxiosResponse) => {
                 if (res) {
                     if (this.props.onSubmitSuccessCallBack) {
                         this.props.onSubmitSuccessCallBack(res);
                     }
+                    /* on success didnt remove class loading on form */
+                    // form.classList.remove('loading');
                 }
             };
 
             const onErrorPost = (err: AxiosError) => {
-                alert(err.message);
                 if (this.props.onSubmitErrorCallBack) {
                     this.props.onSubmitErrorCallBack();
+                } else {
+                    this.setState({ isError: true });
                 }
+
+                form.classList.remove('loading');
+                console.error(err);
             };
 
             post(
@@ -197,32 +181,35 @@ class Form extends React.Component<FormProps, FormState> {
 
     render() {
         return (
-            <form
-                ref={(ref) => (this.form = ref)}
-                id={this.props.id}
-                className={`${this.props.className ? ` ${this.props.className}` : ''}`}
-                encType={this.props.encType}
-                action={this.props.action}
-                onSubmit={(e: React.FormEvent) => this.FormSubmitHandler(e)}
-            >
-                {this.props.children}
-                {(this.props.buttonGroup === undefined || this.props.buttonGroup) && (
-                    <Row>
-                        <Col xs={6}>
-                            <Button variant="primary" className="mr-2">
-                                {this.props.datasource ? 'Save' : 'Submit'}
-                            </Button>
-                            <Button variant="secondary" type="reset" className="mr-2">
-                                Reset
-                            </Button>
-                        </Col>
+            <React.Fragment>
+                <form
+                    ref={(ref) => (this.form = ref)}
+                    id={`${this.props.id ? `${this.props.id}` : ''}`.trim()}
+                    className={`form ${this.props.className ? `${this.props.className}` : ''}`.trim()}
+                    encType={this.props.encType}
+                    action={this.props.action}
+                    onSubmit={(e: React.FormEvent) => this.FormSubmitHandler(e)}
+                >
+                    {this.props.children}
+                    {(this.props.buttonGroup === undefined || this.props.buttonGroup) && (
+                        <Row>
+                            <Col xs={6}>
+                                <Button variant="primary" className="mr-2" type="submit">
+                                    {this.props.datasource ? 'Save' : 'Submit'}
+                                </Button>
+                                <Button variant="secondary" type="reset" className="mr-2">
+                                    Reset
+                                </Button>
+                            </Col>
 
-                        <Col xs={6} className="d-flex justify-content-end">
-                            <CancelButton />
-                        </Col>
-                    </Row>
-                )}
-            </form>
+                            <Col xs={6} className="d-flex justify-content-end">
+                                <CancelButton />
+                            </Col>
+                        </Row>
+                    )}
+                </form>
+                {this.state.isError && <Alert header="Oops..." body="Something wrong" close={() => this.setState({ isError: false })}></Alert>}
+            </React.Fragment>
         );
     }
 }

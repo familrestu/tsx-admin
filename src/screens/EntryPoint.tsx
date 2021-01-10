@@ -18,6 +18,7 @@ const NotificationScreen = lazy(() => import('screens/NotificationScreen'));
 
 type AuthorizedScreenPropsType = {
     GetToken: () => void;
+    SignOutHandler: () => void;
     isMobile: boolean;
 };
 
@@ -53,9 +54,9 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
 
     return (
         <BrowserRouter basename={`/`}>
-            <Navbar ToggleNavbarHandler={() => ToggleNavbarHandler()} isMobile={props.isMobile} />
+            <Navbar ToggleNavbarHandler={() => ToggleNavbarHandler()} SignOutHandler={() => props.SignOutHandler()} isMobile={props.isMobile} />
             <div className="content-container">
-                <Header ToggleNavbarHandler={() => ToggleNavbarHandler()} isMobile={props.isMobile} />
+                <Header ToggleNavbarHandler={() => ToggleNavbarHandler()} isMobile={props.isMobile} SignOutHandler={() => props.SignOutHandler()} />
                 <div id="body" className="body">
                     <Suspense fallback={<LoadingSuspense />}>
                         <Switch>
@@ -93,6 +94,7 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
     );
 };
 
+/* still error */
 const GetChildrenRoute = (children: MenuAuthStateType | undefined, currentApp: string) => {
     const retEl: JSX.Element[] = [];
 
@@ -192,6 +194,22 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
         axios.get(`${process.env.REACT_APP_API_PATH}/system/application/GetToken`, { withCredentials: true });
     }
 
+    SignOutHandler() {
+        axios
+            .post(`${process.env.REACT_APP_API_PATH}/system/application/Logout`, null, { withCredentials: true })
+            .then((res: any) => {
+                if (res.data.loginStatus) {
+                    this.props.Logout();
+                    window.location.reload();
+                }
+            })
+            .catch((err: any) => {
+                console.error(err);
+                alert(err.message);
+                window.location.reload();
+            });
+    }
+
     ResizeHandler() {
         // console.log('test');
         let isMobile = false;
@@ -230,7 +248,7 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
             return null;
         } else {
             if (this.state.loggedIn) {
-                return <AuthorizedScreen GetToken={() => this.GetToken()} isMobile={this.state.isMobile} />;
+                return <AuthorizedScreen GetToken={() => this.GetToken()} isMobile={this.state.isMobile} SignOutHandler={() => this.SignOutHandler()} />;
             } else {
                 return <NotAuthorizedScreen />;
             }
@@ -244,6 +262,7 @@ const MapStateToProps = (state: AppState) => ({
 
 const MapDispatch = {
     Login: (data: any) => ({ type: 'LOGIN', data }),
+    Logout: () => ({ type: 'LOGOUT' }),
     SetUserMenu: (data: any) => ({ type: 'SETUSERMENU', data }),
 };
 

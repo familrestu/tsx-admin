@@ -22,6 +22,8 @@ export type AvatarProps = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     DropDownOnBlurHandler?: any;
     dropdownParent?: boolean;
+
+    SignOutHandler?: () => void;
 };
 
 export class AvatarImage extends React.Component<AvatarProps, AvatarState> {
@@ -156,7 +158,13 @@ class Avatar extends React.Component<AvatarProps & AppState & typeof MapDispatch
                                 <span className="text-black">Change Password</span>
                             </div>
                         </NavLink>
-                        <div onClick={() => this.SignOutHandler()}>
+                        <div
+                            onClick={() => {
+                                if (this.props.SignOutHandler) {
+                                    this.props.SignOutHandler();
+                                }
+                            }}
+                        >
                             <div className="d-flex dropdown-item small justify-content-start align-items-center">
                                 <span className="text-black">Sign out</span>
                             </div>

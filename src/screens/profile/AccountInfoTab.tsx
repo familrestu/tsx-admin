@@ -18,7 +18,9 @@ class AccountInfo extends React.Component<AppState, LocalState> {
         this.setState({
             isChangePassword: !this.state.isChangePassword,
         });
-        (document.getElementById('form-accountinfo') as HTMLFormElement).reset();
+        if (document.getElementById('form-accountinfo')) {
+            (document.getElementById('form-accountinfo') as HTMLFormElement).reset();
+        }
     }
 
     render() {

@@ -306,7 +306,7 @@ class Column extends Component<ColumnPropsType, ColumnStateType> {
             <div key={`header-${this.props.name}`} className="row-header">
                 <span
                     className="left pointer"
-                    onClick={() => {
+                    onDoubleClick={() => {
                         this.ToggleSearch();
                     }}
                 >
