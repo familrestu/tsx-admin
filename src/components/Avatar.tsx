@@ -3,7 +3,6 @@ import CSS from 'csstype';
 import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
-import axios from 'axios';
 
 type AvatarState = {
     isImageLoaded: boolean;
@@ -104,22 +103,6 @@ class Avatar extends React.Component<AvatarProps & AppState & typeof MapDispatch
                 }
             }
         }
-    }
-
-    SignOutHandler() {
-        axios
-            .post(`${process.env.REACT_APP_API_PATH}/system/application/Logout`, null, { withCredentials: true })
-            .then((res: any) => {
-                if (res.data.loginStatus) {
-                    this.props.Logout();
-                    window.location.reload();
-                }
-            })
-            .catch((err: any) => {
-                console.error(err);
-                alert(err.message);
-                window.location.reload();
-            });
     }
 
     render() {

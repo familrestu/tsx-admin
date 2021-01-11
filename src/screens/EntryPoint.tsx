@@ -198,15 +198,15 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
         axios
             .post(`${process.env.REACT_APP_API_PATH}/system/application/Logout`, null, { withCredentials: true })
             .then((res: any) => {
-                if (res.data.loginStatus) {
+                if (!res.data.loginStatus) {
                     this.props.Logout();
                     window.location.reload();
                 }
             })
             .catch((err: any) => {
                 console.error(err);
-                alert(err.message);
-                window.location.reload();
+                // alert(err.message);
+                // window.location.reload();
             });
     }
 
