@@ -6,6 +6,7 @@ import { AppState } from 'redux/store';
 import { NavLink } from 'react-router-dom';
 import { ReactComponent as LoginSVG } from 'assets/svg/login.svg';
 import Form from 'components/Form';
+import packagejson from '../../package.json';
 
 type LoginScreenState = {
     useAccountCode: boolean;
@@ -27,6 +28,8 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
     }
 
     render() {
+        console.log(process.env);
+
         return (
             <div className="login-container">
                 <div className="left-container">
@@ -43,10 +46,10 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
                         {this.state.useAccountCode ? (
                             <React.Fragment>
                                 <Input type="text" label="Account Code" size="12" placeholder="accountcode" name="accountcode" defaultValue="ersys" />
-                                <Input type="text" label="Username" size="12" placeholder="username" name="username" defaultValue="famil.restu" />
+                                <Input type="text" label="Username" size="12" placeholder="username" name="username" defaultValue="dev" />
                             </React.Fragment>
                         ) : (
-                            <Input type="email" label="Email" size="12" placeholder="example@companyemail.com" name="email" defaultValue="famil.restu@ersys.com" />
+                            <Input type="email" label="Email" size="12" placeholder="example@companyemail.com" name="email" defaultValue="dev@ersys.com" />
                         )}
                         <Input type="password" label="Password" size="12" placeholder="Password" name="password" defaultValue="password" />
 
@@ -80,7 +83,7 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
                             </Col>
                         </Row>
                         <Row>
-                            <Col className="text-center small text-grey">Web app version {process.env.REACT_APP_VERSION}</Col>
+                            <Col className="text-center small text-grey">Web app version {packagejson.version}</Col>
                         </Row>
                     </Form>
                 </div>
