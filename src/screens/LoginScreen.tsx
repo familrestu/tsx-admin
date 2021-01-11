@@ -28,8 +28,6 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
     }
 
     render() {
-        console.log(process.env);
-
         return (
             <div className="login-container">
                 <div className="left-container">
