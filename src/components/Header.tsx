@@ -84,7 +84,7 @@ class Header extends React.Component<HeaderPropsType & AppState> {
     }
 }
 
-export const MapStateToProps = (state: AppState) => ({
+const MapStateToProps = (state: AppState) => ({
     UserState: state.UserState,
 });
 
