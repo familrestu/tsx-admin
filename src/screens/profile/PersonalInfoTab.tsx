@@ -66,7 +66,6 @@ class PersonalInfoTab extends React.Component<AppState> {
                 <Row>
                     <Input type="text" label="Birth Place" placeholder="Birth Place" name="birth_place" formrequired="true" size={4} row="false" />
                     <Input type="date" label="Birth Date" placeholder="Birth Date" name="birth_date" formrequired="true" size={3} row="false" />
-                    <Input type="time" label="Birth Time" name="birth_date" formrequired="true" size={3} row="false" />
                 </Row>
 
                 <Input type="text" label="Phone" placeholder="+62 21 XXX XXXX XXXX" name="phone" size={4} />

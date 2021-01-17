@@ -340,7 +340,7 @@ class Column extends Component<ColumnPropsType, ColumnStateType> {
 
                         ValueElement = () => {
                             if (value === undefined || value === null) {
-                                return <React.Fragment>asd</React.Fragment>;
+                                return <React.Fragment>&nbsp;</React.Fragment>;
                             } else {
                                 return <React.Fragment>{moment(value).format(format).toString()}</React.Fragment>;
                             }
@@ -356,16 +356,25 @@ class Column extends Component<ColumnPropsType, ColumnStateType> {
                                     if (replaceThis && this.props.header) {
                                         const id = replaceThis[0].replace('[', '').replace(']', '');
                                         const indexOfId = this.props.header.indexOf(id);
-
+                                        let idValue = '';
                                         if (this.props.body && indexOfId !== undefined && indexOfId >= 0) {
-                                            const idValue = this.props.body[indexOfId][i];
+                                            idValue = this.props.body[indexOfId][i];
                                             link = link.replace(replaceThis[0], idValue);
                                         } else {
                                             link = link.replace(replaceThis[0], '');
                                         }
                                     }
 
-                                    return <NavLink to={`${link}`}> {value} </NavLink>;
+                                    return (
+                                        <NavLink
+                                            to={{
+                                                pathname: link,
+                                                // linkProps: idValue,
+                                            }}
+                                        >
+                                            {value}
+                                        </NavLink>
+                                    );
                                 } else {
                                     return <React.Fragment>{value}</React.Fragment>;
                                 }
@@ -427,7 +436,7 @@ class Column extends Component<ColumnPropsType, ColumnStateType> {
 
     render() {
         return (
-            <div className="column-group" style={this.props.width ? { width: `${this.props.width}px` } : {}}>
+            <div className="column-group" style={this.props.width ? { width: `${this.props.width}px`, minWidth: `${this.props.width}px` } : {}}>
                 {this.GetColumn()}
                 <div className="table-separator" onMouseDown={(e: React.MouseEvent<HTMLDivElement>) => MouseDownResizeHandler(e)}></div>
             </div>

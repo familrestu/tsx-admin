@@ -44,7 +44,7 @@ const Toolbar = (props: ToolbarPropsType & CalendarStateType) => {
 
     const OptYear = () => {
         const arrOptYear: React.DetailedHTMLProps<React.OptionHTMLAttributes<HTMLOptionElement>, HTMLOptionElement>[] = [];
-        for (let i = parseInt(moment().year().toString()) + 5; i >= 1950; i--) {
+        for (let i = parseInt(moment().year().toString()) + 5; i >= 1900; i--) {
             arrOptYear.push(
                 <option value={i} key={`year-${i}`}>
                     {i}
@@ -336,18 +336,23 @@ class Calendar extends Component<CalendarPropsType, CalendarStateType> {
             for (let i = 0; i < this.state.calendarData.length; i++) {
                 const calData: { [key: string]: string } = this.state.calendarData[i];
                 let tempData = '';
-                if (calData.date.indexOf('YYYY') >= 0) {
-                    tempData = calData.date.replaceAll('YYYY', '');
-                    tempData = tempData.substring(0, tempData.length - 1);
-                }
 
-                const findDate = document.querySelectorAll(`div[data-calendardate*='${tempData}']`);
+                if (calData.date) {
+                    if (calData.date.indexOf('YYYY') >= 0) {
+                        tempData = calData.date.replaceAll('YYYY', '');
+                        tempData = tempData.substring(0, tempData.length - 1);
+                    } else {
+                        tempData = calData.date;
+                    }
 
-                if (findDate.length) {
-                    for (let i = 0; i < findDate.length; i++) {
-                        const element = findDate[i] as HTMLDivElement;
-                        element.setAttribute('data-holiday', 'true');
-                        element.setAttribute('title', calData.name);
+                    const findDate = document.querySelectorAll(`div[data-calendardate*='${tempData}']`);
+
+                    if (findDate.length) {
+                        for (let i = 0; i < findDate.length; i++) {
+                            const element = findDate[i] as HTMLDivElement;
+                            element.setAttribute('data-holiday', 'true');
+                            element.setAttribute('title', calData.name);
+                        }
                     }
                 }
             }

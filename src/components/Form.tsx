@@ -3,6 +3,7 @@ import { KTPFormat, NPWPFormat } from 'libs/form';
 import { Row, Col, Button } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
+import moment from 'moment';
 import { AxiosError, AxiosResponse } from 'axios';
 import { post } from 'libs/fetch';
 import Alert from 'components/Alert';
@@ -26,6 +27,7 @@ type FormProps = {
     buttonGroup?: boolean;
     onSubmitSuccessCallBack?: (res: any) => void;
     onSubmitErrorCallBack?: () => void;
+    data?: { [key: string]: string | number | Date | string[] | number[] } | { [key: string]: string | number | Date | string[] | number[] }[];
     children?: React.ReactNode;
 };
 
@@ -47,24 +49,54 @@ class Form extends React.Component<FormProps, FormState> {
     };
 
     FormDataHandler() {
-        const { datasource } = this.props;
-
-        if (typeof datasource !== 'undefined') {
+        if (this.props.datasource) {
             /* if datasource is an object, set is as local datasource state */
-            if (typeof datasource === 'object') {
-                this.setState({ isLoaded: true, datasource: datasource });
-            } else if (typeof datasource === 'string') {
-                const pathDsn = datasource as string;
-                if (pathDsn.substr(0, 4) === 'http' || pathDsn.substr(0, 5) === 'https') {
-                    console.log('lets fetch data');
+            if (typeof this.props.datasource === 'object') {
+                this.setState({ isLoaded: true, datasource: this.props.datasource }, () => this.SetFormData());
+                /* if datasource is a string, fetch it  */
+            } else if (typeof this.props.datasource === 'string') {
+                const onSuccessPost = (res: AxiosResponse) => {
+                    if (res) {
+                        if (this.props.onSubmitSuccessCallBack) {
+                            this.props.onSubmitSuccessCallBack(res);
+                        }
+
+                        this.setState({ isLoaded: true, datasource: res.data }, () => this.SetFormData());
+                    }
+                };
+
+                const onErrorPost = (err: AxiosError) => {
+                    if (this.props.onSubmitErrorCallBack) {
+                        this.props.onSubmitErrorCallBack();
+                    }
+
+                    if (this.form) {
+                        this.form.classList.remove('loading');
+                        console.error(err);
+                    }
+                };
+
+                let path: string;
+                if (this.props.datasource.split('/').length < 3) {
+                    path = `${this.props.datasource}/FormData`;
+                } else {
+                    path = `${this.props.datasource}`;
                 }
+
+                post(
+                    this.props.data ? this.props.data : null,
+                    path,
+                    { withCredentials: true },
+                    (res: AxiosResponse) => onSuccessPost(res),
+                    (err: AxiosError) => onErrorPost(err),
+                );
             }
         }
     }
 
     SetFormData() {
         if (this.state.datasource !== null) {
-            const datasource = this.state.datasource;
+            const formData = this.state.datasource;
             if (this.form !== null && this.form !== undefined) {
                 // find all input inside this form
                 const arrInputs = this.form.querySelectorAll('input, textarea, select');
@@ -78,9 +110,9 @@ class Form extends React.Component<FormProps, FormState> {
 
                     if (tagName === 'INPUT' || tagName === 'TEXTAREA') {
                         if (elementType === 'text' || elementType === 'email' || elementType === 'date') {
-                            if (elementName !== null && datasource !== null && datasource[elementName]) {
+                            if (elementName !== null && formData !== null && formData[elementName]) {
                                 if (element.getAttribute('ktp-value')) {
-                                    element.defaultValue = KTPFormat(datasource[elementName]);
+                                    element.defaultValue = KTPFormat(formData[elementName]);
 
                                     element.addEventListener('blur', (e: Event) => {
                                         element.value = KTPFormat((e.currentTarget as HTMLInputElement).value);
@@ -89,7 +121,7 @@ class Form extends React.Component<FormProps, FormState> {
                                         element.value = (e.currentTarget as HTMLInputElement).value.toString().replaceAll('-', '');
                                     });
                                 } else if (element.getAttribute('npwp-value')) {
-                                    element.defaultValue = NPWPFormat(datasource[elementName]);
+                                    element.defaultValue = NPWPFormat(formData[elementName]);
                                     element.addEventListener('blur', (e: Event) => {
                                         element.value = NPWPFormat((e.currentTarget as HTMLInputElement).value);
                                     });
@@ -97,14 +129,20 @@ class Form extends React.Component<FormProps, FormState> {
                                         element.value = (e.currentTarget as HTMLInputElement).value.toString().replaceAll('.', '').replaceAll('-', '');
                                     });
                                 } else {
-                                    element.defaultValue = datasource[elementName] === undefined ? '' : datasource[elementName];
+                                    let formValue = formData[elementName] as string;
+                                    if (element.getAttribute('data-type') === 'date') {
+                                        formValue = formValue.toString().replace(/[`~!@#$%^&*()_|+-=?;:'",.<>{}[]]/gi, '/');
+                                        formValue = moment(new Date(formValue)).format('DD/MM/YYYY');
+                                    }
+
+                                    element.defaultValue = formValue === undefined ? '' : formValue;
                                 }
                             }
                         } else if (elementType === 'checkbox' || elementType === 'radio') {
                             const elementValue = element.value;
-
-                            if (elementName !== null && datasource !== null && datasource[elementName]) {
-                                element.defaultChecked = elementValue === (datasource[elementName] as string).toString();
+                            if (elementName !== null && formData !== null) {
+                                // console.log(elementValue, formData[elementName], elementValue.toString() === (formData[elementName] as string).toString());
+                                element.defaultChecked = elementValue.toString() === (formData[elementName] as string).toString();
                             }
                         }
                     }
@@ -136,15 +174,15 @@ class Form extends React.Component<FormProps, FormState> {
                 }
             }
 
-            form.classList.add('loading');
+            if (this.form) {
+                this.form.classList.add('loading');
+            }
 
             const onSuccessPost = (res: AxiosResponse) => {
                 if (res) {
                     if (this.props.onSubmitSuccessCallBack) {
                         this.props.onSubmitSuccessCallBack(res);
                     }
-                    /* on success didnt remove class loading on form */
-                    // form.classList.remove('loading');
                 }
             };
 
@@ -155,8 +193,10 @@ class Form extends React.Component<FormProps, FormState> {
                     this.setState({ isError: true });
                 }
 
-                form.classList.remove('loading');
-                console.error(err);
+                if (this.form) {
+                    this.form.classList.remove('loading');
+                    console.error(err);
+                }
             };
 
             post(
@@ -173,11 +213,11 @@ class Form extends React.Component<FormProps, FormState> {
         this.FormDataHandler();
     }
 
-    componentDidUpdate() {
+    /* componentDidUpdate() {
         if (this.state.isLoaded) {
             this.SetFormData();
         }
-    }
+    } */
 
     render() {
         return (

@@ -369,6 +369,7 @@ const DatePicker = (props: any) => {
                     }
                     // setToggleDatePicker(false);
                 }}
+                data-type="date"
                 onFocus={() => setToggleDatePicker(true)}
                 onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => KeyDownHandler(e)}
                 onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => KeyUpHandler(e)}

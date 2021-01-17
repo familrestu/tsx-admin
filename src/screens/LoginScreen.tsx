@@ -21,7 +21,7 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
         if (res.data) {
             this.props.Login(res.data);
             if (res.data.loginStatus) {
-                window.location.reload();
+                // window.location.reload();
             }
         }
     }

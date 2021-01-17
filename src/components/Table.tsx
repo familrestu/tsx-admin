@@ -37,6 +37,16 @@ class Toolbar extends Component<ToolbarPropsType & TablePropsType & TableStateTy
         console.log(this.props.arrTableData);
     }
 
+    ExportToPDFHandler() {
+        console.log(this.props.arrTableData);
+    }
+
+    PrintPreviewHandler() {
+        console.log(this.props.arrTableData);
+        // window.print();
+        window.open('/printpreview', 'popUpWindow', 'height=500,width=400,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=no,menubar=no,location=no,directories=no,status=yes');
+    }
+
     render() {
         return (
             <div className="toolbar-wrapper" id="toolbar-wrapper">
@@ -52,10 +62,10 @@ class Toolbar extends Component<ToolbarPropsType & TablePropsType & TableStateTy
                 <Button title="Export to MS Excel" onClick={() => this.ExportToMsExcelHandler()}>
                     <i className="fas fa-file-excel"></i>
                 </Button>
-                <Button title="Export to PDF">
+                <Button title="Export to PDF" onClick={() => this.ExportToMsExcelHandler()}>
                     <i className="fas fa-file-pdf"></i>
                 </Button>
-                <Button title="Print Preview">
+                <Button title="Print Preview" onClick={() => this.PrintPreviewHandler()}>
                     <i className="fas fa-print"></i>
                 </Button>
             </div>

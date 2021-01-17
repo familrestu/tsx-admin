@@ -15,6 +15,7 @@ import HomeScreen from 'screens/HomeScreen';
 const PageNotFoundScreen = lazy(() => import('screens/PageNotFoundScreen'));
 const ForgotPasswordScreen = lazy(() => import('screens/ForgotPasswordScreen'));
 const NotificationScreen = lazy(() => import('screens/NotificationScreen'));
+const PrintPreviewScreen = lazy(() => import('screens/PrintPreviewScreen'));
 
 type AuthorizedScreenPropsType = {
     GetToken: () => void;
@@ -54,9 +55,9 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
 
     return (
         <BrowserRouter basename={`/`}>
-            <Navbar ToggleNavbarHandler={() => ToggleNavbarHandler()} SignOutHandler={() => props.SignOutHandler()} isMobile={props.isMobile} />
+            {window.location.pathname !== '/printpreview' && <Navbar ToggleNavbarHandler={() => ToggleNavbarHandler()} SignOutHandler={() => props.SignOutHandler()} isMobile={props.isMobile} />}
             <div className="content-container">
-                <Header ToggleNavbarHandler={() => ToggleNavbarHandler()} isMobile={props.isMobile} SignOutHandler={() => props.SignOutHandler()} />
+                {window.location.pathname !== '/printpreview' && <Header ToggleNavbarHandler={() => ToggleNavbarHandler()} isMobile={props.isMobile} SignOutHandler={() => props.SignOutHandler()} />}
                 <div id="body" className="body">
                     <Suspense fallback={<LoadingSuspense />}>
                         <Switch>
@@ -84,6 +85,7 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
                             {/* <DynamicRouter MenuAuthState={MenuAuthState} currentApp={currentApp} /> */}
 
                             <Route path="/notification" component={NotificationScreen} />
+                            <Route path="/printpreview" component={PrintPreviewScreen} />
                             <Route path="/pagenotfound" component={PageNotFoundScreen} />
                             <Redirect to="/pagenotfound" />
                         </Switch>
@@ -117,8 +119,6 @@ const GetChildrenRoute = (children: MenuAuthStateType | undefined, currentApp: s
             }
         });
     }
-
-    console.log(retEl);
 
     return retEl;
 };
