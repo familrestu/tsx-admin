@@ -3,7 +3,7 @@ import { KTPFormat, NPWPFormat } from 'libs/form';
 import { Row, Col, Button } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
-import { /* axios,  */ AxiosError, AxiosResponse } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 import { post } from 'libs/fetch';
 import Alert from 'components/Alert';
 

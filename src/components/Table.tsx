@@ -1,7 +1,8 @@
 import React, { Component, createRef } from 'react';
 import { Button, Badge } from 'react-bootstrap';
 import ReactDOM from 'react-dom';
-import axios from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
+import { post } from 'libs/fetch';
 
 type ToolbarPropsType = {
     access?: 1 | 2 | 3 | 4 | 'read' | 'write' | 'update' | 'delete';
@@ -17,6 +18,8 @@ type TablePropsType = {
     datasource?: string;
     className?: string;
     id?: string;
+    onSubmitSuccessCallBack?: (res: any) => void;
+    onSubmitErrorCallBack?: () => void;
     children?: React.ReactChild[] | React.ReactChild | Element | Element[];
 };
 
@@ -196,9 +199,9 @@ class Table extends Component<TablePropsType, TableStateType> {
         if (this.props.datasource && this.state.arrTableData) {
             let path: string;
             if (this.props.datasource.split('/').length < 3) {
-                path = `${process.env.REACT_APP_API_PATH}/${this.props.datasource}/TableData`;
+                path = `${this.props.datasource}/TableData`;
             } else {
-                path = `${process.env.REACT_APP_API_PATH}/${this.props.datasource}`;
+                path = `${this.props.datasource}`;
             }
 
             const maxLength = this.GetDataMaxLength(this.state.arrTableData.body);
@@ -220,32 +223,68 @@ class Table extends Component<TablePropsType, TableStateType> {
                 }
             }
 
-            axios
-                .post(
-                    path,
-                    {
-                        arrSortColumn: this.state.arrSortColumn,
-                        arrSortType: this.state.arrSortType,
-                        arrSearchData: this.state.arrSearchData,
-                    },
-                    {
-                        withCredentials: true,
-                    },
-                )
-                .then((res) => {
+            const onSuccessPost = (res: AxiosResponse) => {
+                if (res) {
                     if (res.data && res.data.datasets) {
                         const { datasets } = res.data;
                         this.CloneChildren(datasets);
                         this.SetLoadingRow(true);
                         this.AddToolBarDOM();
                     }
-                })
-                .catch((err) => {
-                    /* set no data */
-                    console.log(err);
-                    this.CloneChildren({ header: [], body: [] });
-                    this.SetLoadingRow(true);
-                });
+
+                    if (this.props.onSubmitSuccessCallBack) {
+                        this.props.onSubmitSuccessCallBack(res);
+                    }
+                }
+            };
+
+            const onErrorPost = (err: AxiosError) => {
+                if (this.props.onSubmitErrorCallBack) {
+                    this.props.onSubmitErrorCallBack();
+                }
+                console.error(err);
+                this.CloneChildren({ header: [], body: [] });
+                this.SetLoadingRow(true);
+            };
+
+            post(
+                {
+                    arrSortColumn: this.state.arrSortColumn,
+                    arrSortType: this.state.arrSortType,
+                    arrSearchData: this.state.arrSearchData,
+                },
+                path,
+                { withCredentials: true },
+                (res: AxiosResponse) => onSuccessPost(res),
+                (err: AxiosError) => onErrorPost(err),
+            );
+
+            // axios
+            //     .post(
+            //         path,
+            //         {
+            //             arrSortColumn: this.state.arrSortColumn,
+            //             arrSortType: this.state.arrSortType,
+            //             arrSearchData: this.state.arrSearchData,
+            //         },
+            //         {
+            //             withCredentials: true,
+            //         },
+            //     )
+            //     .then((res) => {
+            //         if (res.data && res.data.datasets) {
+            //             const { datasets } = res.data;
+            //             this.CloneChildren(datasets);
+            //             this.SetLoadingRow(true);
+            //             this.AddToolBarDOM();
+            //         }
+            //     })
+            //     .catch((err) => {
+            //         /* set no data */
+            //         console.log(err);
+            //         this.CloneChildren({ header: [], body: [] });
+            //         this.SetLoadingRow(true);
+            //     });
         }
     }
 
