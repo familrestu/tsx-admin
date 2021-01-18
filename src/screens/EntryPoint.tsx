@@ -177,31 +177,9 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
             console.log(err);
         };
 
-        /* normalize fetch using fetch libs */
-        // axios
-        //     .get(`${process.env.REACT_APP_API_PATH}/system/application/LoginStatus`, { withCredentials: true })
-        //     .then((res) => {
-        //         if (res.data) {
-        //             if (res.data.loginStatus) {
-        //                 this.props.Login(res.data);
-        //                 this.setState((prevState) => {
-        //                     return { ...prevState, loggedIn: true };
-        //                 });
-        //             } else {
-        //                 this.setState((prevState) => {
-        //                     return { ...prevState, loggedIn: false };
-        //                 });
-        //             }
-        //         }
-        //     })
-        //     .catch(() => {
-        //         this.setState((prevState) => {
-        //             return { ...prevState, loggedIn: false };
-        //         });
-        //     });
         get(
             '/system/application/LoginStatus',
-            { withCredentials: true },
+            null,
             (res: AxiosResponse) => onSuccessPost(res),
             (err: AxiosError) => onErrorPost(err),
         );
@@ -223,32 +201,16 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
             console.log(err);
         };
 
-        /* normalize fetch using fetch libs */
-        // axios
-        //     .get(`${process.env.REACT_APP_API_PATH}/system/application/GetMenuAuth`, { withCredentials: true })
-        //     .then((res) => {
-        //         if (res.data && res.data.menuData) {
-        //             const { menuData } = res.data;
-        //             this.props.SetUserMenu(menuData);
-        //         } else {
-        //             console.error({ code: 'ErrUnknown', data: res.data, message: `Your might have bad data` });
-        //         }
-        //     })
-        //     .catch((err) => {
-        //         console.error(err);
-        //     });
         get(
             '/system/application/GetMenuAuth',
-            { withCredentials: true },
+            null,
             (res: AxiosResponse) => onSuccessPost(res),
             (err: AxiosError) => onErrorPost(err),
         );
     }
 
     GetToken() {
-        /* normalize fetch using fetch libs */
-        // axios.get(`${process.env.REACT_APP_API_PATH}/system/application/GetToken`, { withCredentials: true });
-        get(`/system/application/GetToken`, { withCredentials: true });
+        get(`/system/application/GetToken`, null);
     }
 
     SignOutHandler() {
@@ -269,24 +231,10 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
 
         get(
             '/system/application/Logout',
-            { withCredentials: true },
+            null,
             (res: AxiosResponse) => onSuccessPost(res),
             (err: AxiosError) => onErrorPost(err),
         );
-
-        // axios
-        //     .post(`${process.env.REACT_APP_API_PATH}/system/application/Logout`, null, { withCredentials: true })
-        //     .then((res: any) => {
-        //         if (!res.data.loginStatus) {
-        //             this.props.Logout();
-        //             window.location.reload();
-        //         }
-        //     })
-        //     .catch((err: any) => {
-        //         console.error(err);
-        //         // alert(err.message);
-        //         // window.location.reload();
-        //     });
     }
 
     ResizeHandler() {

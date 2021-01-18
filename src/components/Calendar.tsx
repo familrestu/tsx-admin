@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import moment from 'moment';
 import { Button, FormControl } from 'react-bootstrap';
-import axios from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
+import { get } from 'libs/fetch';
 
 type ToolbarPropsType = {
     ChangeYearHandler: (year: number) => void;
@@ -312,10 +313,10 @@ class Calendar extends Component<CalendarPropsType, CalendarStateType> {
 
     GetcalendarData() {
         if (this._isMounted) {
-            const path = `${process.env.REACT_APP_API_PATH}/system/application/GetHoliday`;
-            axios
-                .post(path, null, { withCredentials: true })
-                .then((res) => {
+            get(
+                '/system/application/GetHoliday',
+                {},
+                (res: AxiosResponse) => {
                     if (res && res.data) {
                         this.setState(
                             (prevState) => {
@@ -324,10 +325,11 @@ class Calendar extends Component<CalendarPropsType, CalendarStateType> {
                             () => this.SetcalendarData(),
                         );
                     }
-                })
-                .catch((err) => {
+                },
+                (err: AxiosError) => {
                     console.log(err);
-                });
+                },
+            );
         }
     }
 

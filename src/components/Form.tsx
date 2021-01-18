@@ -86,7 +86,7 @@ class Form extends React.Component<FormProps, FormState> {
                 post(
                     this.props.data ? this.props.data : null,
                     path,
-                    { withCredentials: true },
+                    null,
                     (res: AxiosResponse) => onSuccessPost(res),
                     (err: AxiosError) => onErrorPost(err),
                 );
@@ -140,9 +140,11 @@ class Form extends React.Component<FormProps, FormState> {
                             }
                         } else if (elementType === 'checkbox' || elementType === 'radio') {
                             const elementValue = element.value;
-                            if (elementName !== null && formData !== null) {
-                                // console.log(elementValue, formData[elementName], elementValue.toString() === (formData[elementName] as string).toString());
-                                element.defaultChecked = elementValue.toString() === (formData[elementName] as string).toString();
+                            if (elementValue && elementName !== null && formData !== null) {
+                                if (formData[elementName]) {
+                                    // console.log(elementValue, formData[elementName], elementValue.toString() === (formData[elementName] as string).toString());
+                                    element.defaultChecked = elementValue.toString() === (formData[elementName] as string).toString();
+                                }
                             }
                         }
                     }
@@ -202,7 +204,7 @@ class Form extends React.Component<FormProps, FormState> {
             post(
                 tempFormData,
                 this.props.action,
-                { withCredentials: true },
+                null,
                 (res: AxiosResponse) => onSuccessPost(res),
                 (err: AxiosError) => onErrorPost(err),
             );

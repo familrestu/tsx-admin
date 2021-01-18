@@ -264,37 +264,10 @@ class Table extends Component<TablePropsType, TableStateType> {
                     arrSearchData: this.state.arrSearchData,
                 },
                 path,
-                { withCredentials: true },
+                null,
                 (res: AxiosResponse) => onSuccessPost(res),
                 (err: AxiosError) => onErrorPost(err),
             );
-
-            // axios
-            //     .post(
-            //         path,
-            //         {
-            //             arrSortColumn: this.state.arrSortColumn,
-            //             arrSortType: this.state.arrSortType,
-            //             arrSearchData: this.state.arrSearchData,
-            //         },
-            //         {
-            //             withCredentials: true,
-            //         },
-            //     )
-            //     .then((res) => {
-            //         if (res.data && res.data.datasets) {
-            //             const { datasets } = res.data;
-            //             this.CloneChildren(datasets);
-            //             this.SetLoadingRow(true);
-            //             this.AddToolBarDOM();
-            //         }
-            //     })
-            //     .catch((err) => {
-            //         /* set no data */
-            //         console.log(err);
-            //         this.CloneChildren({ header: [], body: [] });
-            //         this.SetLoadingRow(true);
-            //     });
         }
     }
 
