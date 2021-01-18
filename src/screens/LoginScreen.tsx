@@ -3,7 +3,7 @@ import { Row, Col, FormGroup, Button } from 'react-bootstrap';
 import Input from 'components/Input';
 import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
-import { NavLink } from 'react-router-dom';
+// import { NavLink } from 'react-router-dom';
 import { ReactComponent as LoginSVG } from 'assets/svg/login.svg';
 import Form from 'components/Form';
 import packagejson from '../../package.json';
@@ -71,13 +71,14 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
                                     </Button>
                                 </FormGroup>
                             </Col>
-                            <Col sm="auto">
+                            {/* Temporary Remarked - Screen not year created */}
+                            {/* <Col sm="auto">
                                 <FormGroup>
                                     <NavLink className="btn-link small" to="/forgotpassword">
                                         Forgot Password ?
                                     </NavLink>
                                 </FormGroup>
-                            </Col>
+                            </Col> */}
                         </Row>
                         <Row>
                             <Col className="text-center small text-grey">Web app version {packagejson.version}</Col>
