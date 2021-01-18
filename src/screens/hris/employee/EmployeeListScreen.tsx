@@ -8,7 +8,7 @@ class EmployeeListScreen extends Component {
     render() {
         return (
             <Page breadCrumb="Employee|List">
-                <Table datasource="emp/empData">
+                <Table datasource="emp/EmpData">
                     <Column label="Employee No" name="employee_no" type="link" link="/employee/list/details/[employee_no]" />
                     <Column label="Full Name" name="full_name" />
                     <Column label="Position" name="position" />
