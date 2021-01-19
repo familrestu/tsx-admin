@@ -33,6 +33,8 @@ type TableStateType = {
 };
 
 class Toolbar extends Component<ToolbarPropsType & TablePropsType & TableStateType> {
+    _isMounted = false;
+
     ExportToMsExcelHandler() {
         console.log(this.props.arrTableData);
     }
@@ -42,17 +44,21 @@ class Toolbar extends Component<ToolbarPropsType & TablePropsType & TableStateTy
     }
 
     PrintPreviewHandler() {
-        console.log(this.props.arrTableData);
-        // window.print();
         window.open('/printpreview', 'popUpWindow', 'height=500,width=400,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=no,menubar=no,location=no,directories=no,status=yes');
+        window.postMessage({ message: this.props.arrTableData }, 'popUpWindow');
+    }
+
+    componentDidMount() {
+        this._isMounted = true;
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     render() {
         return (
             <div className="toolbar-wrapper" id="toolbar-wrapper">
-                {/* <Button title="Filter">
-                    <i className="fas fa-filter"></i>
-                </Button> */}
                 {this.props.arrSearchData && this.props.arrSearchData.length > 0 && (
                     <Button title="Clear Filter" style={{ position: 'relative' }} onClick={() => (this.props.ClearFilter !== undefined ? this.props.ClearFilter() : null)}>
                         <i className="fas fa-filter"></i>

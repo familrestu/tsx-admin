@@ -159,8 +159,6 @@ class Avatar extends React.Component<AvatarProps & AppState & typeof MapDispatch
     }
 }
 
-// export default Avatar;
-
 const MapStateToProps = (state: AppState) => ({
     UserState: state.UserState,
 });

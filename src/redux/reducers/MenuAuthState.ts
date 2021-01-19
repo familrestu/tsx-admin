@@ -10,7 +10,8 @@ export type MenuAuthStateType = {
     componentPath?: string;
     isMenu: 0 | 1 | 'No' | 'Yes';
     isGlobal: 0 | 1 | 'No' | 'Yes';
-    accessmode?: 0 | 1 | 2 | 3 | 'read' | 'write' | 'update' | 'delete';
+    accessmode: 0 | 1 | 2 | 3 | 'read' | 'write' | 'update' | 'delete';
+    pageType: string | 'dashboard' | 'form' | 'form-tabs' | 'table';
     children?: MenuAuthStateType;
 }[];
 
@@ -25,6 +26,8 @@ const DefaultState: MenuAuthStateType = [
         componentPath: '/',
         isMenu: 0,
         isGlobal: 0,
+        accessmode: 3,
+        pageType: 'dashboard',
     },
 ];
 

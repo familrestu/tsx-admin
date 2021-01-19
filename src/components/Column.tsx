@@ -345,7 +345,7 @@ class Column extends Component<ColumnPropsType, ColumnStateType> {
                                 return <React.Fragment>{moment(value).format(format).toString()}</React.Fragment>;
                             }
                         };
-                    } else if (this.props.type === 'link' && this.props.link !== undefined) {
+                    } else if (this.props.link !== undefined && this.props.type === 'link') {
                         ValueElement = () => {
                             if (value === undefined || value === null) {
                                 return <React.Fragment>&nbsp;</React.Fragment>;

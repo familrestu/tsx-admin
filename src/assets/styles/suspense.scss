@@ -1,0 +1,14 @@
+.suspense {
+    display: flex;
+    flex: 1;
+    width: 100%;
+    flex-wrap: wrap;
+    -webkit-flex-wrap: wrap;
+
+    .dashboard-skeleton { 
+        width: 14rem; 
+        height: 10rem; 
+        margin: .25rem;
+        border-radius: .25rem;
+    }
+}

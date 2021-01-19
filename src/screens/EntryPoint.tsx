@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useState } from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { connect, useSelector } from 'react-redux';
 import { AppState } from 'redux/store';
@@ -11,8 +11,11 @@ import Header from 'components/Header';
 import Navbar from 'components/Navbar';
 import LoadingSuspense from 'components/LoadingSuspense';
 
-import LoginScreen from 'screens/LoginScreen';
-import HomeScreen from 'screens/HomeScreen';
+/* import LoginScreen from 'screens/LoginScreen';
+import HomeScreen from 'screens/HomeScreen'; */
+
+const HomeScreen = lazy(() => import('screens/HomeScreen'));
+const LoginScreen = lazy(() => import('screens/LoginScreen'));
 
 const PageNotFoundScreen = lazy(() => import('screens/PageNotFoundScreen'));
 const ForgotPasswordScreen = lazy(() => import('screens/ForgotPasswordScreen'));
@@ -40,8 +43,14 @@ const CheckTokenInterval = (props: AuthorizedScreenPropsType) => {
 const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
     const currentApp = useSelector((state: any) => state.UserState.current_app);
     const MenuAuthState: MenuAuthStateType = useSelector((state: AppState) => state.MenuAuthState);
+    const [SuspenseType, SetSuspense] = useState(localStorage.getItem('pageType') === null ? 'dashboard' : localStorage.getItem('pageType'));
 
     CheckTokenInterval(props);
+
+    const SetSuspenseType = (type: string) => {
+        SetSuspense(type);
+        localStorage.setItem('pageType', type);
+    };
 
     const ToggleNavbarHandler = () => {
         const navbar = document.getElementById('navbar-left');
@@ -57,11 +66,18 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
 
     return (
         <BrowserRouter basename={`/`}>
-            {window.location.pathname !== '/printpreview' && <Navbar ToggleNavbarHandler={() => ToggleNavbarHandler()} SignOutHandler={() => props.SignOutHandler()} isMobile={props.isMobile} />}
+            {window.location.pathname !== '/printpreview' && (
+                <Navbar
+                    ToggleNavbarHandler={() => ToggleNavbarHandler()}
+                    SignOutHandler={() => props.SignOutHandler()}
+                    isMobile={props.isMobile}
+                    SetSuspenseType={(type: string) => SetSuspenseType(type)}
+                />
+            )}
             <div className="content-container">
                 {window.location.pathname !== '/printpreview' && <Header ToggleNavbarHandler={() => ToggleNavbarHandler()} isMobile={props.isMobile} SignOutHandler={() => props.SignOutHandler()} />}
                 <div id="body" className="body">
-                    <Suspense fallback={<LoadingSuspense />}>
+                    <Suspense fallback={<LoadingSuspense SuspenseType={SuspenseType} />}>
                         <Switch>
                             <Route exact path="/" component={HomeScreen} />
 
@@ -262,12 +278,6 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
         this.CheckLoginState();
 
         this.SetResizeListener();
-
-        /* if (process.env.REACT_APP_SUBDIRECTORY) {
-            if (window.location.pathname.indexOf(process.env.REACT_APP_SUBDIRECTORY) < 0) {
-                window.history.replaceState(null, 'Ersys', process.env.REACT_APP_SUBDIRECTORY);
-            }
-        } */
     }
 
     render() {

@@ -12,30 +12,49 @@
 	background: #e6e6e6;
 	background-image: linear-gradient(to right, #e6e6e6 0%, #d6d6d6 20%, #e6e6e6 40%, #e6e6e6 100%);
 	background-repeat: no-repeat;
-	background-size: 800px 104px;
+	background-size: 800px 800px;
 	color: transparent;
 	position: relative;
 }
 
 .table {
-	&.loading .row-body span {
-		width: 100%;
-		border-radius: .25rem;
+	&.loading {
+		.row-body span {
+			width: 100%;
+			border-radius: .25rem;
 
-		@include loadingAnimation;
+			@include loadingAnimation;
 
-		a {
-			color: transparent
+			a { color: transparent }
 		}
 	}
 }
 
 .form {
-	&.loading input {
-		@include loadingAnimation;
+	&.loading {
+		input {
+			@include loadingAnimation;
 
-		&::placeholder, &::-moz-placeholder, &::-webkit-input-placeholder {
-			color: transparent;
+			&::placeholder, &::-moz-placeholder, &::-webkit-input-placeholder {
+				color: transparent;
+			}
+		}
+	}
+}
+
+.suspense {
+	&.loading {
+		.skeleton {
+			@include loadingAnimation;
+		}
+		
+		/* breadcrumb */
+		div {
+			span {
+				width: 20rem;
+				border-radius: .25rem;
+				@include loadingAnimation;
+			}
 		}
 	}
 }

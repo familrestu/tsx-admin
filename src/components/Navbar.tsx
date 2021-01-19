@@ -172,20 +172,22 @@ type NavitemPropsType = {
     componentPath?: string;
     isMenu: 0 | 1 | 'No' | 'Yes';
     isGlobal: 0 | 1 | 'No' | 'Yes';
-    accessmode?: 0 | 1 | 2 | 3 | 'read' | 'write' | 'update' | 'delete';
+    accessmode: 0 | 1 | 2 | 3 | 'read' | 'write' | 'update' | 'delete';
+    pageType: string | 'dashboard' | 'form' | 'form-tabs' | 'table';
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     children?: any;
 
     isMobile: boolean;
     ToggleNavbarHandler: () => void;
+    SetSuspenseType: (type: string) => void;
 };
 
-const arrGroup: Array<string> = [];
+const arrGroup: string[] = [];
 
 const Navitem = (props: NavitemPropsType) => {
     const ChildrenElement: React.ReactNode[] = [];
     if (props.children !== undefined && props.children.length > 0) {
-        (props.children as Array<NavitemPropsType>).forEach((item, index) => {
+        (props.children as NavitemPropsType[]).forEach((item, index) => {
             if (item.group !== null && arrGroup.indexOf(item.group) < 0 && (item.isMenu === 1 || item.isMenu === 'Yes')) {
                 ChildrenElement.push(
                     <div key={`${item.id}-${index}-group`} className="navitem-group">
@@ -195,7 +197,15 @@ const Navitem = (props: NavitemPropsType) => {
                 arrGroup.push(item.group);
             }
             if (item.isMenu === 1 || item.isMenu === 'Yes') {
-                ChildrenElement.push(<Navitem key={`${item.id}-${index}`} {...item} isMobile={props.isMobile} ToggleNavbarHandler={props.ToggleNavbarHandler} />);
+                ChildrenElement.push(
+                    <Navitem
+                        key={`${item.id}-${index}`}
+                        {...item}
+                        isMobile={props.isMobile}
+                        ToggleNavbarHandler={props.ToggleNavbarHandler}
+                        SetSuspenseType={(type: string) => props.SetSuspenseType(type)}
+                    />,
+                );
             }
         });
     }
@@ -219,6 +229,9 @@ const Navitem = (props: NavitemPropsType) => {
                     if (props.isMobile) {
                         props.ToggleNavbarHandler();
                     }
+                    if (props.SetSuspenseType) {
+                        props.SetSuspenseType(props.pageType);
+                    }
                 }}
             >
                 <div className="d-flex navitem-string">
@@ -235,6 +248,7 @@ const Navitem = (props: NavitemPropsType) => {
 type NavbarPropsType = {
     ToggleNavbarHandler: () => void;
     SignOutHandler: () => void;
+    SetSuspenseType: (type: string) => void;
     isMobile: boolean;
 };
 
@@ -245,6 +259,10 @@ class TempNavbarLeft extends React.Component<NavbarPropsType & AppState> {
 
     componentDidMount() {
         this.SetCloseChildrenListener();
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('click', CloseChildrenHandler);
     }
 
     componentDidUpdate() {
@@ -273,7 +291,16 @@ class TempNavbarLeft extends React.Component<NavbarPropsType & AppState> {
                                       }
 
                                       if (item.isMenu === 1 || item.isMenu === 'Yes' || item.id === 'dashboard') {
-                                          arrNav.push(<Navitem key={`${item.id}-${index}`} {...item} isMobile={this.props.isMobile} ToggleNavbarHandler={this.props.ToggleNavbarHandler} />);
+                                          arrNav.push(
+                                              <Navitem
+                                                  key={`${item.id}-${index}`}
+                                                  {...item}
+                                                  isMobile={this.props.isMobile}
+                                                  ToggleNavbarHandler={this.props.ToggleNavbarHandler}
+                                                  pageType={item.pageType}
+                                                  SetSuspenseType={(type: string) => this.props.SetSuspenseType(type)}
+                                              />,
+                                          );
                                       }
 
                                       return arrNav;
