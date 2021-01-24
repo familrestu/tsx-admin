@@ -1,8 +1,9 @@
 import React, { Suspense, lazy, useState } from 'react';
-import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
+import { BrowserRouter, Switch, Route, Redirect, RouteProps } from 'react-router-dom';
 import { connect, useSelector } from 'react-redux';
 import { AppState } from 'redux/store';
-import { MenuAuthStateType } from 'redux/reducers/MenuAuthState';
+
+import { MenuAuthStateType, MenuAuthStateDetailType } from 'redux/reducers/MenuAuthState';
 
 import { AxiosError, AxiosResponse } from 'axios';
 import { get } from 'libs/fetch';
@@ -10,9 +11,6 @@ import { get } from 'libs/fetch';
 import Header from 'components/Header';
 import Navbar from 'components/Navbar';
 import LoadingSuspense from 'components/LoadingSuspense';
-
-/* import LoginScreen from 'screens/LoginScreen';
-import HomeScreen from 'screens/HomeScreen'; */
 
 const HomeScreen = lazy(() => import('screens/HomeScreen'));
 const LoginScreen = lazy(() => import('screens/LoginScreen'));
@@ -22,14 +20,14 @@ const ForgotPasswordScreen = lazy(() => import('screens/ForgotPasswordScreen'));
 const NotificationScreen = lazy(() => import('screens/NotificationScreen'));
 const PrintPreviewScreen = lazy(() => import('screens/PrintPreviewScreen'));
 
+let interval: number;
+const getTokenInterval = 14000;
+
 type AuthorizedScreenPropsType = {
     GetToken: () => void;
     SignOutHandler: () => void;
     isMobile: boolean;
 };
-
-let interval: number;
-const getTokenInterval = 14000;
 
 const CheckTokenInterval = (props: AuthorizedScreenPropsType) => {
     if (interval === undefined) {
@@ -40,9 +38,73 @@ const CheckTokenInterval = (props: AuthorizedScreenPropsType) => {
     }
 };
 
-const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
+const RouterChildren = (menuAuthDetail: MenuAuthStateType & RouteProps) => {
+    let ArrayRouter: { componentPath: MenuAuthStateDetailType['componentPath']; link: MenuAuthStateDetailType['link']; isGlobal: MenuAuthStateDetailType['isGlobal'] }[] = [];
+
+    if (menuAuthDetail.length > 1) {
+        for (let x = 0; x < menuAuthDetail.length; x++) {
+            const element = menuAuthDetail[x];
+
+            if (element.children) {
+                /* when have children, call RouterChildren function */
+                const tempArray = RouterChildren(element.children);
+                ArrayRouter = [...ArrayRouter, ...tempArray];
+            } else {
+                /* if not have children, push to ArrayRouter */
+                ArrayRouter.push({
+                    componentPath: element.componentPath,
+                    link: element.link,
+                    isGlobal: element.isGlobal,
+                });
+            }
+        }
+    }
+
+    return ArrayRouter;
+};
+
+const DynamicRouter = () => {
     const currentApp = useSelector((state: any) => state.UserState.current_app);
     const MenuAuthState: MenuAuthStateType = useSelector((state: AppState) => state.MenuAuthState);
+    const ArrRouterElement: JSX.Element[] = [];
+    let ArrayRouter: { componentPath: MenuAuthStateDetailType['componentPath']; link: MenuAuthStateDetailType['link']; isGlobal: MenuAuthStateDetailType['isGlobal'] }[] = [];
+
+    if (MenuAuthState.length > 1) {
+        for (let x = 0; x < MenuAuthState.length; x++) {
+            const element = MenuAuthState[x];
+
+            if (element.children) {
+                /* when have children, call RouterChildren function */
+                const tempArray = RouterChildren(element.children);
+                ArrayRouter = [...ArrayRouter, ...tempArray];
+            } else {
+                /* if not have children, push to ArrayRouter */
+                ArrayRouter.push({
+                    componentPath: element.componentPath,
+                    link: element.link,
+                    isGlobal: element.isGlobal,
+                });
+            }
+        }
+    }
+
+    for (let i = 0; i < ArrayRouter.length; i++) {
+        const element = ArrayRouter[i];
+        let component;
+
+        if (element.isGlobal === 'Yes' || element.isGlobal === 1) {
+            component = lazy(() => import(`../screens${element.componentPath}`));
+        } else {
+            component = lazy(() => import(`../screens/${currentApp}${element.componentPath}`));
+        }
+
+        ArrRouterElement.push(<Route key={`dynamic-route-${i}`} exact path={element.link} component={component} />);
+    }
+
+    return ArrRouterElement;
+};
+
+const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
     const [SuspenseType, SetSuspense] = useState(localStorage.getItem('pageType') === null ? 'dashboard' : localStorage.getItem('pageType'));
 
     CheckTokenInterval(props);
@@ -80,28 +142,7 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
                     <Suspense fallback={<LoadingSuspense SuspenseType={SuspenseType} />}>
                         <Switch>
                             <Route exact path="/" component={HomeScreen} />
-
-                            {MenuAuthState &&
-                                MenuAuthState.map((item, index) => {
-                                    let component;
-
-                                    if (item.children === undefined && item.componentPath !== '' && item.componentPath !== null) {
-                                        if (item.isGlobal === 'Yes' || item.isGlobal === 1) {
-                                            component = lazy(() => import(`../screens${item.componentPath}`));
-                                        } else {
-                                            component = lazy(() => import(`../screens/${currentApp}${item.componentPath}`));
-                                        }
-
-                                        return <Route key={`dynamic-route-${index}`} exact path={item.link} component={component} />;
-                                    } else {
-                                        const retEl = GetChildrenRoute(item.children, currentApp);
-
-                                        return <React.Fragment key={`dynamic-route-${index}`}>{retEl}</React.Fragment>;
-                                    }
-                                })}
-
-                            {/* <DynamicRouter MenuAuthState={MenuAuthState} currentApp={currentApp} /> */}
-
+                            {DynamicRouter()}
                             <Route path="/notification" component={NotificationScreen} />
                             <Route path="/printpreview" component={PrintPreviewScreen} />
                             <Route path="/pagenotfound" component={PageNotFoundScreen} />
@@ -112,33 +153,6 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
             </div>
         </BrowserRouter>
     );
-};
-
-/* still error */
-const GetChildrenRoute = (children: MenuAuthStateType | undefined, currentApp: string) => {
-    const retEl: JSX.Element[] = [];
-
-    if (children) {
-        children.forEach((item, index) => {
-            let component;
-
-            if (item.children === undefined && item.componentPath !== '' && item.componentPath !== null) {
-                if (item.isGlobal === 'Yes' || item.isGlobal === 1) {
-                    component = lazy(() => import(`../screens${item.componentPath}`));
-                } else {
-                    component = lazy(() => import(`../screens/${currentApp}${item.componentPath}`));
-                }
-
-                retEl.push(<Route key={`dynamic-route-children-${index}`} exact path={item.link} component={component} />);
-            } else {
-                const retEl = GetChildrenRoute(item.children, currentApp);
-
-                retEl.push(<React.Fragment key={`dynamic-route-children-${index}`}>{retEl}</React.Fragment>);
-            }
-        });
-    }
-
-    return retEl;
 };
 
 const NotAuthorizedScreen = () => (

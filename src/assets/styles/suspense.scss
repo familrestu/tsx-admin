@@ -1,14 +1,41 @@
 .suspense {
-    display: flex;
-    flex: 1;
-    width: 100%;
-    flex-wrap: wrap;
-    -webkit-flex-wrap: wrap;
-
-    .dashboard-skeleton { 
-        width: 14rem; 
+    .card-skeleton { 
         height: 10rem; 
-        margin: .25rem;
-        border-radius: .25rem;
+        border: 0;
+        margin-left: 0;
     }
+
+    .column-group {
+        div:not(.row-header) {
+            // background-color: transparent !important;
+            border: 1px solid var(--light-grey) !important;
+        }
+    }
+
+    &.loading {
+		.skeleton {
+			@include loadingAnimation;
+		}
+		
+		/* breadcrumb */
+		span:not(.text-danger) {
+			width: 20rem;
+			border-radius: .25rem;
+			@include loadingAnimation;
+		}
+
+        form {
+            label { width: 15rem; height: 2rem; }
+            label, input, button {
+                border-radius: .25rem;
+                border: 1px solid var(--light-grey) !important;
+                cursor: default;
+                @include loadingAnimation;
+            }
+
+            span {
+                background-color: unset !important;
+            }
+        }
+	}
 }

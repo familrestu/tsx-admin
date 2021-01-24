@@ -1,35 +1,15 @@
-@import 'header.scss';
-@import 'notification.scss';
-@import 'body.scss';
-@import 'avatar.scss';
-@import 'navbar.scss';
-@import 'button.scss';
-@import 'card.scss';
-@import 'tabs.scss';
-@import 'form.scss';
-@import 'table.scss';
-@import 'calendar.scss';
-
-@import 'overlay.scss';
-@import 'alert.scss';
-
-
-@import 'loading.scss';
-
-@import 'login.scss';
+$primary: #519a66;
 
 html { height: 100%; }
-
 body[themes=light] {
 	--danger: rgb(186, 74, 74);
 	--success: rgb(81, 186, 81);
 	--warning: rgb(237, 186, 57);
 	--neutral: rgb(57, 189, 237);
 	
-	--primary: #519a66;
+	--primary: #{$primary};
 	--light-primary: #f3fdf6;
-	--secondary: rgb(113, 192, 135);
-
+	--secondary: #71c087;
 	--white: #ffffff;
 	
 	--light-grey: #dee2e6;
@@ -126,3 +106,24 @@ body[have-calendar=true] {
 		}
 	}
 }
+
+@function hexToRGB($hex) {
+  @return red($hex), green($hex), blue($hex);
+}
+
+@import 'header.scss';
+@import 'notification.scss';
+@import 'body.scss';
+@import 'avatar.scss';
+@import 'navbar.scss';
+@import 'button.scss';
+@import 'card.scss';
+@import 'tabs.scss';
+@import 'form.scss';
+@import 'table.scss';
+@import 'calendar.scss';
+@import 'overlay.scss';
+@import 'alert.scss';
+@import 'loading.scss';
+@import 'suspense.scss';
+@import 'login.scss';

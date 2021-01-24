@@ -149,7 +149,7 @@ class Notification extends Component<NotificationPropsType, NotificationStateTyp
                                 ) : (
                                     <div className="d-flex justify-content-center align-items-center">
                                         <NotificationSVG />
-                                        <span className="position-absolute bg-white">Nothing new</span>
+                                        {/* <span className="position-absolute bg-white">Nothing new</span> */}
                                     </div>
                                 )}
                             </Simplebar>

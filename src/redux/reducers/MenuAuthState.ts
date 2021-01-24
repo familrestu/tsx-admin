@@ -1,19 +1,21 @@
 import { SETUSERMENU, MenuActions } from '../actions/MenuAuthActions';
 
-export type MenuAuthStateType = {
+export type MenuAuthStateDetailType = {
     group: string | null;
     groupid: string | null;
     id: string;
     icon: string | null;
     name: string;
     link: string;
-    componentPath?: string;
+    componentPath: string | null;
     isMenu: 0 | 1 | 'No' | 'Yes';
     isGlobal: 0 | 1 | 'No' | 'Yes';
     accessmode: 0 | 1 | 2 | 3 | 'read' | 'write' | 'update' | 'delete';
     pageType: string | 'dashboard' | 'form' | 'form-tabs' | 'table';
     children?: MenuAuthStateType;
-}[];
+};
+
+export type MenuAuthStateType = MenuAuthStateDetailType[];
 
 const DefaultState: MenuAuthStateType = [
     {
@@ -24,8 +26,8 @@ const DefaultState: MenuAuthStateType = [
         name: 'Dashboard',
         link: '/',
         componentPath: '/',
-        isMenu: 0,
-        isGlobal: 0,
+        isMenu: 'No',
+        isGlobal: 'No',
         accessmode: 3,
         pageType: 'dashboard',
     },

@@ -10,6 +10,8 @@ import { Button } from 'react-bootstrap';
 import Icon from 'components/Icon';
 import Notification from 'components/Notification';
 
+import { MenuAuthStateDetailType } from 'redux/reducers/MenuAuthState';
+
 type AppLogoPropsType = {
     isMobile: boolean;
     ToggleNavbarHandler: () => void;
@@ -136,47 +138,49 @@ const OpenChildrenHandler = (id: string) => {
     }
 };
 
-const CloseChildrenHandler = (event: MouseEvent) => {
+const CloseChildrenHandler = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, SetSuspenseType: (type: string) => void, pageType: string) => {
     const navbarActive = document.querySelectorAll('.navbar-left .open');
-
     if (navbarActive.length) {
         const nextSibling = (event.target as HTMLDivElement).nextSibling as HTMLDivElement;
         const haveSibling = nextSibling !== null;
 
         if (haveSibling && nextSibling.classList.value.indexOf('navitem-children-parent') >= 0) return false;
+        const WwaitLoop = () => {
+            return new Promise((resolve) => {
+                for (let i = 0; i < navbarActive.length; i++) {
+                    const element = navbarActive[i];
+                    element.classList.add('closing');
 
-        for (let i = 0; i < navbarActive.length; i++) {
-            const element = navbarActive[i];
-            element.classList.add('closing');
+                    setTimeout(() => {
+                        element.classList.remove('open');
+                        element.classList.remove('closing');
 
-            setTimeout(() => {
-                element.classList.remove('open');
-                element.classList.remove('closing');
+                        const elementSibling = element.nextElementSibling;
+                        if (elementSibling !== null) {
+                            elementSibling.removeAttribute('style');
+                        }
 
-                const elementSibling = element.nextElementSibling;
-                if (elementSibling !== null) {
-                    elementSibling.removeAttribute('style');
+                        if (i === navbarActive.length) {
+                            resolve('Done');
+                        }
+                    }, 100);
                 }
-            }, 100);
+            });
+        };
+
+        await WwaitLoop();
+
+        if (SetSuspenseType) {
+            SetSuspenseType(pageType);
+        }
+    } else {
+        if (SetSuspenseType) {
+            SetSuspenseType(pageType);
         }
     }
 };
 
 type NavitemPropsType = {
-    group: string | null;
-    groupid: string | null;
-    id: string;
-    icon: string | null;
-    name: string;
-    link: string;
-    componentPath?: string;
-    isMenu: 0 | 1 | 'No' | 'Yes';
-    isGlobal: 0 | 1 | 'No' | 'Yes';
-    accessmode: 0 | 1 | 2 | 3 | 'read' | 'write' | 'update' | 'delete';
-    pageType: string | 'dashboard' | 'form' | 'form-tabs' | 'table';
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    children?: any;
-
     isMobile: boolean;
     ToggleNavbarHandler: () => void;
     SetSuspenseType: (type: string) => void;
@@ -184,10 +188,10 @@ type NavitemPropsType = {
 
 const arrGroup: string[] = [];
 
-const Navitem = (props: NavitemPropsType) => {
+const Navitem = (props: MenuAuthStateDetailType & NavitemPropsType) => {
     const ChildrenElement: React.ReactNode[] = [];
     if (props.children !== undefined && props.children.length > 0) {
-        (props.children as NavitemPropsType[]).forEach((item, index) => {
+        props.children.forEach((item, index) => {
             if (item.group !== null && arrGroup.indexOf(item.group) < 0 && (item.isMenu === 1 || item.isMenu === 'Yes')) {
                 ChildrenElement.push(
                     <div key={`${item.id}-${index}-group`} className="navitem-group">
@@ -225,13 +229,11 @@ const Navitem = (props: NavitemPropsType) => {
                 className="navitem-container"
                 exact
                 to={props.link}
-                onClick={() => {
+                onClick={(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
                     if (props.isMobile) {
                         props.ToggleNavbarHandler();
                     }
-                    if (props.SetSuspenseType) {
-                        props.SetSuspenseType(props.pageType);
-                    }
+                    CloseChildrenHandler(e, props.SetSuspenseType, props.pageType);
                 }}
             >
                 <div className="d-flex navitem-string">
@@ -253,23 +255,8 @@ type NavbarPropsType = {
 };
 
 class TempNavbarLeft extends React.Component<NavbarPropsType & AppState> {
-    SetCloseChildrenListener() {
-        document.addEventListener('click', CloseChildrenHandler);
-    }
-
-    componentDidMount() {
-        this.SetCloseChildrenListener();
-    }
-
-    componentWillUnmount() {
-        document.removeEventListener('click', CloseChildrenHandler);
-    }
-
-    componentDidUpdate() {
-        arrGroup.length = 0;
-    }
-
     render() {
+        arrGroup.length = 0;
         return (
             <React.Fragment>
                 <div id="navbar-left" className={`navbar-left shadow-sm ${this.props.isMobile ? 'mobile' : ''}`.trim()}>

@@ -45,7 +45,7 @@ class Toolbar extends Component<ToolbarPropsType & TablePropsType & TableStateTy
 
     PrintPreviewHandler() {
         window.open('/printpreview', 'popUpWindow', 'height=500,width=400,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=no,menubar=no,location=no,directories=no,status=yes');
-        window.postMessage({ message: this.props.arrTableData }, 'popUpWindow');
+        // window.postMessage({ message: this.props.arrTableData }, 'popUpWindow');
     }
 
     componentDidMount() {

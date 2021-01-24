@@ -4,7 +4,7 @@ import LoadingSuspense from 'components/LoadingSuspense';
 
 class LoadingSuspenseScreen extends Component {
     render() {
-        return <LoadingSuspense SuspenseType="dashboard" />;
+        return <LoadingSuspense SuspenseType="table" />;
     }
 }
 

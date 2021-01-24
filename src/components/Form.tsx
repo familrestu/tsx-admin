@@ -6,7 +6,8 @@ import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 import { AxiosError, AxiosResponse } from 'axios';
 import { post } from 'libs/fetch';
-import Alert from 'components/Alert';
+
+// import Alert from 'components/Alert';
 
 const CancelButton = () => {
     const history = useHistory();
@@ -35,7 +36,6 @@ type FormState = {
     isLoaded: boolean;
     datasource: string | null;
     isSubmiting: boolean;
-    isError: boolean;
 };
 
 class Form extends React.Component<FormProps, FormState> {
@@ -45,7 +45,6 @@ class Form extends React.Component<FormProps, FormState> {
         isLoaded: false,
         datasource: null,
         isSubmiting: false,
-        isError: false,
     };
 
     FormDataHandler() {
@@ -142,7 +141,6 @@ class Form extends React.Component<FormProps, FormState> {
                             const elementValue = element.value;
                             if (elementValue && elementName !== null && formData !== null) {
                                 if (formData[elementName]) {
-                                    // console.log(elementValue, formData[elementName], elementValue.toString() === (formData[elementName] as string).toString());
                                     element.defaultChecked = elementValue.toString() === (formData[elementName] as string).toString();
                                 }
                             }
@@ -188,16 +186,15 @@ class Form extends React.Component<FormProps, FormState> {
                 }
             };
 
-            const onErrorPost = (err: AxiosError) => {
+            const onErrorPost = () => {
                 if (this.props.onSubmitErrorCallBack) {
                     this.props.onSubmitErrorCallBack();
                 } else {
-                    this.setState({ isError: true });
+                    // this.setState({ isError: true });
                 }
 
                 if (this.form) {
                     this.form.classList.remove('loading');
-                    console.error(err);
                 }
             };
 
@@ -206,7 +203,7 @@ class Form extends React.Component<FormProps, FormState> {
                 this.props.action,
                 null,
                 (res: AxiosResponse) => onSuccessPost(res),
-                (err: AxiosError) => onErrorPost(err),
+                () => onErrorPost(),
             );
         }
     }
@@ -214,12 +211,6 @@ class Form extends React.Component<FormProps, FormState> {
     componentDidMount() {
         this.FormDataHandler();
     }
-
-    /* componentDidUpdate() {
-        if (this.state.isLoaded) {
-            this.SetFormData();
-        }
-    } */
 
     render() {
         return (
@@ -250,7 +241,7 @@ class Form extends React.Component<FormProps, FormState> {
                         </Row>
                     )}
                 </form>
-                {this.state.isError && <Alert header="Oops..." body="Something wrong" close={() => this.setState({ isError: false })}></Alert>}
+                {/* {this.state.isError && <Alert header="Oops..." body="Something wrong" close={() => this.setState({ isError: false })}></Alert>} */}
             </React.Fragment>
         );
     }
