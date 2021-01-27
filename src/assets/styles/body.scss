@@ -8,34 +8,37 @@
 		padding-bottom: 1rem;
 		z-index: 105;
 		height: 100%;
-
-		.bread-crumb { 
-			display: flex;
-
-			.bread-crumb-left {
+		.page {
+			height: 100%;
+			
+			.bread-crumb { 
 				display: flex;
-				flex: 1;
-				align-items: baseline;
-				font-size: 1.125rem;
 
-				span {
-					text-transform: capitalize;
+				.bread-crumb-left {
+					display: flex;
+					flex: 1;
+					align-items: baseline;
+					font-size: 1.125rem;
+
+					span {
+						text-transform: capitalize;
+					}
+				}
+
+				.bread-crumb-right {
+					flex: 1;
+					display: flex;
+					justify-content: flex-end;
+					align-items: baseline;
+
+					.btn {
+						margin: 0rem 0.125rem;
+					}
 				}
 			}
 
-			.bread-crumb-right {
-				flex: 1;
-				display: flex;
-				justify-content: flex-end;
-				align-items: baseline;
-
-				.btn {
-					margin: 0rem 0.125rem;
-				}
-			}
+			.body-content { min-height: 100%; }
 		}
-
-		.body-content { min-height: 100%; }
 	}
 }
 

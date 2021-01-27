@@ -104,6 +104,7 @@ class LoadingSuspense extends Component<LoadingSuspensePropsType> {
         const breadCrumbRight = document.getElementById('bread-crumb-right');
 
         if (breadCrumbLeft) {
+            breadCrumbLeft.innerHTML = '';
             breadCrumbLeft.classList.add('suspense');
             breadCrumbLeft.classList.add('loading');
             const spEl = document.createElement('span');
@@ -116,6 +117,7 @@ class LoadingSuspense extends Component<LoadingSuspensePropsType> {
         if (this.props.SuspenseType) {
             if (this.props.SuspenseType === 'table') {
                 if (breadCrumbRight) {
+                    breadCrumbRight.innerHTML = '';
                     breadCrumbRight.classList.add('suspense');
                     breadCrumbRight.classList.add('loading');
                     const spEl = document.createElement('span');

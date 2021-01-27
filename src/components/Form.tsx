@@ -26,8 +26,8 @@ type FormProps = {
     action?: string;
     encType?: string;
     buttonGroup?: boolean;
-    onSubmitSuccessCallBack?: (res: any) => void;
-    onSubmitErrorCallBack?: () => void;
+    onSubmitSuccessCallBack?: (res: AxiosResponse) => void;
+    onSubmitErrorCallBack?: (err: AxiosError) => void;
     data?: { [key: string]: string | number | Date | string[] | number[] } | { [key: string]: string | number | Date | string[] | number[] }[];
     children?: React.ReactNode;
 };
@@ -66,7 +66,7 @@ class Form extends React.Component<FormProps, FormState> {
 
                 const onErrorPost = (err: AxiosError) => {
                     if (this.props.onSubmitErrorCallBack) {
-                        this.props.onSubmitErrorCallBack();
+                        this.props.onSubmitErrorCallBack(err);
                     }
 
                     if (this.form) {
@@ -186,9 +186,9 @@ class Form extends React.Component<FormProps, FormState> {
                 }
             };
 
-            const onErrorPost = () => {
+            const onErrorPost = (err: AxiosError) => {
                 if (this.props.onSubmitErrorCallBack) {
-                    this.props.onSubmitErrorCallBack();
+                    this.props.onSubmitErrorCallBack(err);
                 } else {
                     // this.setState({ isError: true });
                 }
@@ -203,7 +203,7 @@ class Form extends React.Component<FormProps, FormState> {
                 this.props.action,
                 null,
                 (res: AxiosResponse) => onSuccessPost(res),
-                () => onErrorPost(),
+                (err: AxiosError) => onErrorPost(err),
             );
         }
     }

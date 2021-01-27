@@ -1,0 +1,44 @@
+.modal-content {
+    width: 75% !important;
+    height: 90%;
+    z-index: 205;
+    border: unset !important;
+
+    .modal-header {
+        background-color: var(--primary);
+        align-items: baseline;
+        color: white;
+
+        .modal-left, .modal-right {
+            display: flex;
+            align-items: baseline;
+            flex: 1;
+        }
+
+        .modal-right {
+            justify-content: flex-end;
+        }
+
+        .bread-crumb { padding: 0 !important; }
+    }
+
+    .simplebar-track.simplebar-vertical {
+        top: 55px;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-content {
+        position: absolute !important;
+        width: 100% !important;
+        height: 80%;
+        bottom: 0;
+
+        .modal-header {
+            background-color: var(--white);
+            color: black;
+            border-top-left-radius: .35rem;
+            border-top-right-radius: .35rem;
+        }
+    }
+}

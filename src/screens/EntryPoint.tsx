@@ -12,6 +12,8 @@ import Header from 'components/Header';
 import Navbar from 'components/Navbar';
 import LoadingSuspense from 'components/LoadingSuspense';
 
+import Modal from 'components/Modal';
+
 const HomeScreen = lazy(() => import('screens/HomeScreen'));
 const LoginScreen = lazy(() => import('screens/LoginScreen'));
 
@@ -295,15 +297,23 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
     }
 
     render() {
+        let Screen;
         if (this.state.loggedIn === null) {
             return null;
         } else {
             if (this.state.loggedIn) {
-                return <AuthorizedScreen GetToken={() => this.GetToken()} isMobile={this.state.isMobile} SignOutHandler={() => this.SignOutHandler()} />;
+                Screen = () => <AuthorizedScreen GetToken={() => this.GetToken()} isMobile={this.state.isMobile} SignOutHandler={() => this.SignOutHandler()} />;
             } else {
-                return <NotAuthorizedScreen />;
+                Screen = () => <NotAuthorizedScreen />;
             }
         }
+
+        return (
+            <React.Fragment>
+                <Screen />
+                <Modal />
+            </React.Fragment>
+        );
     }
 }
 

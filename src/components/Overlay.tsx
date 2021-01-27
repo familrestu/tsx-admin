@@ -1,20 +1,29 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
+// import { AppState } from 'redux/store';
 
 type OverlayType = {
-    children?: React.ReactChild[] | React.ReactChild | Element | Element[];
+    children?: React.ReactChild[] | React.ReactChild | Element | Element[] | null;
 };
 
-class Portal extends Component<OverlayType> {
+class Overlay extends Component<OverlayType & typeof MapDispatch> {
     rootElement: HTMLElement = document.body;
     element: HTMLDivElement;
 
-    constructor(props: OverlayType) {
+    constructor(props: OverlayType & typeof MapDispatch) {
         super(props);
 
         this.element = document.createElement('div');
         this.element.classList.add('overlay');
         this.element.id = 'overlay';
+        this.element.addEventListener('click', (e: MouseEvent) => this.closeModal(e));
+    }
+
+    closeModal(e: MouseEvent) {
+        if ((e.target as HTMLElement).id === 'overlay') {
+            this.props.CloseModal();
+        }
     }
 
     componentDidMount() {
@@ -34,4 +43,8 @@ class Portal extends Component<OverlayType> {
     }
 }
 
-export default Portal;
+const MapDispatch = {
+    CloseModal: () => ({ type: 'CLOSEMODAL' }),
+};
+
+export default connect(null, MapDispatch)(Overlay);
