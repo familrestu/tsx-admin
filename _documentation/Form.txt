@@ -1,0 +1,11 @@
+- Developer harus bisa membuat Button pada Form, dengan catatan ketika container yang dibuka adalah MODAL.
+  Maka, button nya harus ada di footer
+
+- Gunakan accessmode untuk authorisasi nya dalam logic penampilan button
+  - 0 -> Read => tidak ada tombol apa - apa
+  - 1 -> Write => hanya bisa add
+  - 2 -> Update => bisa add dan bisa edit
+  - 3 -> Delete => bisa add, edit, dan delete
+
+
+- Saat Form Submit (apapun itu), harus juga mengirim accessmode user saat mengakses form terkait

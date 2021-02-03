@@ -1,7 +1,15 @@
+.simplebar-table {
+	margin-bottom: 1rem;
+	
+	.simplebar-track.simplebar-vertical {
+		top: 55px !important;
+		right: 0;
+	}
+}
 .table {
 	position: relative;
 	border-radius: .25rem;
-	margin-bottom: 1rem;
+	// margin-bottom: 1rem;
 
 	display: flex;
 
@@ -12,6 +20,10 @@
 	/* Rules below not implemented in browsers yet */
 	-o-user-select: none;
 	user-select: none;
+
+	.simplebar-content {
+		display: flex;
+	}
 	
 	.column-group {
 		position: relative;

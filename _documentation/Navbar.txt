@@ -1,0 +1,1 @@
+- Setiap klik link, harus menyimpan accessmode

@@ -9,7 +9,7 @@ class ModalScreen extends Component<AppState & typeof MapDispatch> {
     render() {
         return (
             <Page breadCrumb="Components|Modal">
-                <Button onClick={() => this.props.OpenModal('/components/TableScreen', 'Yes')}>Open Modal</Button>
+                <Button onClick={() => this.props.OpenModal('/profile/ProfileScreen', 'Yes')}>Open Modal</Button>
             </Page>
         );
     }

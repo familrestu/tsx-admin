@@ -1,10 +1,13 @@
 import React from 'react';
-import Page from 'components/Page';
+
 import { Tabs, Tab } from 'react-bootstrap';
 import { NavLinkProps, RouteComponentProps } from 'react-router-dom';
 
+import Page from 'components/Page';
+
 import PersonalInfoTab from './PersonalInfoTab';
 import AccountInfoTab from './AccountInfoTab';
+import OtherInfoTab from './OtherInfoTab';
 
 const customAttributeName = 'my-tab-number';
 
@@ -57,7 +60,7 @@ class ProfileScreen extends React.Component<NavLinkProps & RouteComponentProps, 
     render() {
         return (
             <Page breadCrumb="Profile">
-                <Tabs defaultActiveKey={this.state.defaultActiveTabs} className="tab-nav-container mb-4">
+                <Tabs defaultActiveKey={this.state.defaultActiveTabs} className="tab-nav-container">
                     <Tab eventKey="personalInformation" title="Personal Information" className="tab-page-container">
                         <PersonalInfoTab />
                     </Tab>
@@ -65,7 +68,7 @@ class ProfileScreen extends React.Component<NavLinkProps & RouteComponentProps, 
                         <AccountInfoTab />
                     </Tab>
                     <Tab eventKey="otherInformation" title="Other Information" className="tab-page-container">
-                        <Page>Other Info</Page>
+                        <OtherInfoTab />
                     </Tab>
                 </Tabs>
             </Page>

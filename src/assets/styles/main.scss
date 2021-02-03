@@ -47,8 +47,6 @@ ul {
 	}
 }
 
-// a { color: var(--primary) !important; }
-
 .form-control {
 	background-color: rgb(233, 237, 240);
 	border-color: rgb(233, 237, 240);
@@ -74,7 +72,6 @@ ul {
 	}
 }
 
-
 p { white-space: pre-wrap; }
 :focus { outline: unset !important; }
 
@@ -88,25 +85,6 @@ a:hover { text-decoration: none; }
 /* badge */
 .badge-primary { background-color: var(--primary); }
 
-/* simplebar */
-.simplebar-track.simplebar-vertical { margin-right: .15rem; } 
-
-body[have-table=true] {
-	.body {
-		.simplebar-track.simplebar-vertical {
-			top: 55px;
-		}
-	}
-}
-
-body[have-calendar=true] {
-	.body {
-		.simplebar-track.simplebar-vertical {
-			top: 50px;
-		}
-	}
-}
-
 @function hexToRGB($hex) {
   @return red($hex), green($hex), blue($hex);
 }
@@ -114,6 +92,7 @@ body[have-calendar=true] {
 @import 'header.scss';
 @import 'notification.scss';
 @import 'body.scss';
+@import 'breadcrumb.scss';
 @import 'avatar.scss';
 @import 'navbar.scss';
 @import 'button.scss';

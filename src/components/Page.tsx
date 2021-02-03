@@ -15,6 +15,12 @@ type PageState = {
     showBreadCrumb: boolean;
 };
 
+export type PageCloneChildrenPropsType = {
+    'page-max-height'?: number;
+    'parent-element'?: HTMLDivElement | null;
+    'children-number'?: number;
+};
+
 class Page extends React.Component<PageProps, PageState> {
     _BreadCrumbContainer: HTMLDivElement | null | undefined;
     _Page: HTMLDivElement | null | undefined;
@@ -44,14 +50,19 @@ class Page extends React.Component<PageProps, PageState> {
                     }
                 }
             }
-            return (
-                <div id="bread-crumb" className="bread-crumb font-large pt-3 pb-3" ref={(ref) => (this._BreadCrumbContainer = ref)}>
-                    <div className="bread-crumb-left" id="bread-crumb-left">
-                        {element}
+
+            if (this._Page && this._Page.parentElement && this._Page.parentElement.id === 'modal-body') {
+                return <React.Fragment>{element}</React.Fragment>;
+            } else {
+                return (
+                    <div id="bread-crumb" className="bread-crumb" ref={(ref) => (this._BreadCrumbContainer = ref)}>
+                        <div className="bread-crumb-left" id="bread-crumb-left">
+                            {element}
+                        </div>
+                        <div className="bread-crumb-right" id="bread-crumb-right"></div>
                     </div>
-                    <div className="bread-crumb-right" id="bread-crumb-right"></div>
-                </div>
-            );
+                );
+            }
         } else {
             return <React.Fragment />;
         }
@@ -68,15 +79,13 @@ class Page extends React.Component<PageProps, PageState> {
             if (this._BreadCrumbContainer.parentElement?.id === 'page') {
                 const breadcrumbElement = document.getElementById('bread-crumb');
 
-                if (headerElement || breadcrumbElement) {
-                    breadCrumbHeight = breadcrumbElement ? breadcrumbElement.offsetHeight : 0;
-                    headerHeight = headerElement ? headerElement.offsetHeight : 0;
-                    maxHeight = window.innerHeight - headerHeight - breadCrumbHeight - 16;
-                }
+                breadCrumbHeight = breadcrumbElement ? breadcrumbElement.offsetHeight : 0;
             }
-        } else {
-            maxHeight = window.innerHeight - headerHeight - 16;
         }
+
+        headerHeight = headerElement ? headerElement.offsetHeight : 0;
+
+        maxHeight = window.innerHeight - headerHeight - breadCrumbHeight - 16;
 
         if (maxHeight !== 0) {
             this.setState((prevState) => {
@@ -86,20 +95,18 @@ class Page extends React.Component<PageProps, PageState> {
     }
 
     SetBreadcrumbForModal() {
-        if (this._Page) {
-            if (this._Page.parentElement && this._Page.parentElement.id === 'modal-body') {
-                const BreadcrumbModal = () => <React.Fragment>{this.PrintBreadCrumb()}</React.Fragment>;
-                if (this._Page.parentElement.previousElementSibling && this._Page.parentElement.previousElementSibling.children[0]) {
-                    ReactDOM.render(<BreadcrumbModal />, this._Page.parentElement.previousElementSibling.children[0]);
-                }
-
-                /* hardcode 90% follow css, because it's kinda hard to get this modal height before fully loaded */
-                const maxHeight = window.innerHeight * (90 / 100) - 127 - 32;
-
-                this.setState((prevState) => {
-                    return { ...prevState, showBreadCrumb: false, maxHeight: maxHeight };
-                });
+        if (this._Page && this._Page.parentElement && this._Page.parentElement.id === 'modal-body') {
+            const BreadcrumbModal = () => <React.Fragment>{this.PrintBreadCrumb()}</React.Fragment>;
+            if (this._Page.parentElement.previousElementSibling && this._Page.parentElement.previousElementSibling.children[0]) {
+                ReactDOM.render(<BreadcrumbModal />, this._Page.parentElement.previousElementSibling.children[0]);
             }
+
+            /* hardcode 90% follow css, because it's kinda hard to get this modal height before fully loaded */
+            const maxHeight = window.innerHeight * (90 / 100) - 127 - 32;
+
+            this.setState((prevState) => {
+                return { ...prevState, showBreadCrumb: false, maxHeight: maxHeight };
+            });
         }
     }
 
@@ -113,10 +120,21 @@ class Page extends React.Component<PageProps, PageState> {
 
         return (
             <div id="page" className="page" ref={(ref) => (this._Page = ref)}>
-                {this.state.showBreadCrumb && <Breadcrumb />}
-                <SimpleBar style={{ minHeight: `${this.state.maxHeight}px`, maxHeight: `${this.state.maxHeight}px`, maxWidth: `100%` }} id="simplebar-page">
-                    <div id="body-content" className="body-content" style={{ ...this.props.style, minHeight: `${this.state.maxHeight}px` }}>
-                        {this.props.children}
+                <SimpleBar /* style={{ minHeight: `calc(100vh - 72px)`, maxHeight: `calc(100vh - 72px)`, maxWidth: `100%` }} */ id="simplebar-page" className="simplebar-page">
+                    {this.state.showBreadCrumb && <Breadcrumb />}
+                    <div id="body-content" className="body-content" style={{ ...this.props.style, minHeight: `100%` }}>
+                        {React.Children.map(this.props.children, (child, index) => {
+                            const PageCloneChildrenProps: PageCloneChildrenPropsType = {
+                                'page-max-height': this.state.maxHeight,
+                                'parent-element': this._Page,
+                                'children-number': index,
+                            };
+                            if (React.isValidElement(child)) {
+                                return React.cloneElement(child, PageCloneChildrenProps);
+                            } else {
+                                return <React.Fragment />;
+                            }
+                        })}
                     </div>
                 </SimpleBar>
             </div>

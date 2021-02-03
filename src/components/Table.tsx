@@ -1,8 +1,12 @@
-import React, { Component, createRef } from 'react';
-import { Button, Badge } from 'react-bootstrap';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import { Button, Badge } from 'react-bootstrap';
 import { AxiosError, AxiosResponse } from 'axios';
 import { post } from 'libs/fetch';
+import CSS from 'csstype';
+
+import SimpleBar from 'simplebar-react';
+import { PageCloneChildrenPropsType } from 'components/Page';
 
 type ToolbarPropsType = {
     access?: 1 | 2 | 3 | 4 | 'read' | 'write' | 'update' | 'delete';
@@ -18,6 +22,9 @@ type TablePropsType = {
     datasource?: string;
     className?: string;
     id?: string;
+
+    height?: CSS.Properties['height'];
+    width?: CSS.Properties['width'];
     onSubmitSuccessCallBack?: (res: any) => void;
     onSubmitErrorCallBack?: () => void;
     children?: React.ReactChild[] | React.ReactChild | Element | Element[];
@@ -79,9 +86,9 @@ class Toolbar extends Component<ToolbarPropsType & TablePropsType & TableStateTy
     }
 }
 
-class Table extends Component<TablePropsType, TableStateType> {
+class Table extends Component<TablePropsType & PageCloneChildrenPropsType, TableStateType> {
     _isMounted = false;
-    _Table = createRef<HTMLDivElement>();
+    _Table: HTMLDivElement | null | undefined;
 
     state: TableStateType = {
         arrTableData: {
@@ -97,14 +104,10 @@ class Table extends Component<TablePropsType, TableStateType> {
 
     SetLoadingRow(remove: boolean) {
         if (this._Table) {
-            const element = this._Table;
-
-            if (element.current !== null) {
-                if (remove) {
-                    element.current.classList.remove('loading');
-                } else {
-                    element.current.classList.add('loading');
-                }
+            if (remove) {
+                this._Table.classList.remove('loading');
+            } else {
+                this._Table.classList.add('loading');
             }
         }
     }
@@ -245,7 +248,7 @@ class Table extends Component<TablePropsType, TableStateType> {
                         const { datasets } = res.data;
                         this.CloneChildren(datasets);
                         this.SetLoadingRow(true);
-                        this.AddToolBarDOM();
+                        // this.AddToolBarDOM();
                     }
 
                     if (this.props.onSubmitSuccessCallBack) {
@@ -335,9 +338,19 @@ class Table extends Component<TablePropsType, TableStateType> {
     }
 
     AddToolBarDOM() {
-        const breadCrumbRight = document.getElementById('bread-crumb-right');
-        if (breadCrumbRight) {
-            ReactDOM.render(<Toolbar {...this.state} ClearFilter={() => this.ClearFilter()} />, breadCrumbRight);
+        // console.log(this._Table?.parentElement?.parentElement?.parentElement?.parentElement?.parentElement?.parentElement?.parentElement);
+        // console.log(this.props['parent-element-id']);
+        // if(this.props['parent-element-id'] && this.props['parent-element-id'] === 'body') {
+        // }
+        // console.log(this.props['parent-element']);
+        if (this.props['parent-element']) {
+            const parentElementID = this.props['parent-element'].parentElement?.id;
+            if (parentElementID === 'body') {
+                const breadCrumbRight = document.getElementById('bread-crumb-right');
+                if (breadCrumbRight) {
+                    ReactDOM.render(<Toolbar {...this.state} ClearFilter={() => this.ClearFilter()} />, breadCrumbRight);
+                }
+            }
         }
     }
 
@@ -387,8 +400,12 @@ class Table extends Component<TablePropsType, TableStateType> {
         // console.log('mounted');
         this._isMounted = true;
         this.FetchTableData(true);
+        // this.AddToolBarDOM();
+        // this.setBodyAttribute(true);
+    }
+
+    componentDidUpdate() {
         this.AddToolBarDOM();
-        this.setBodyAttribute(true);
     }
 
     componentWillUnmount() {
@@ -397,25 +414,48 @@ class Table extends Component<TablePropsType, TableStateType> {
     }
 
     render() {
-        return (
-            <React.Fragment>
-                <div
-                    className={`table ${this.props.className ? `table-${this.props.className}` : ''} loading`.trim()}
-                    id={`table ${this.props.id ? `table-${this.props.id}` : ''}`.trim()}
-                    ref={this._Table}
-                >
-                    <div className="column-group">
-                        <div className="row-header number">
-                            <span className="text-center">#</span>
+        /* this will not show if parent is not page, fix this tommorow MANDATORY */
+        if (this.props['page-max-height'] && this.props['page-max-height'] !== 0) {
+            return (
+                <React.Fragment>
+                    {(this.props['children-number'] && this.props['children-number'] !== 0) ||
+                    (this.props['parent-element'] && this.props['parent-element'].parentElement && this.props['parent-element'].parentElement.id === 'modal-body') ? (
+                        <div id="toolbar-container" className="toolbar-container">
+                            <div className="toolbar-left"></div>
+                            <div className="toolbar-right">
+                                <Toolbar {...this.state} ClearFilter={() => this.ClearFilter()} />
+                            </div>
                         </div>
-                        {this.state.arrNumberElement}
-                    </div>
-                    {this.NewChildren()}
-                </div>
-
-                {this.state.arrSearchData && this.state.arrSearchData.length > 0 && <div className="table-search-data">{this.SearchData()}</div>}
-            </React.Fragment>
-        );
+                    ) : (
+                        <React.Fragment />
+                    )}
+                    <SimpleBar
+                        style={{ minHeight: `${this.props['page-max-height']}px`, maxHeight: `${this.props['page-max-height']}px`, minWidth: `100%`, maxWidth: `100%` }}
+                        className="simplebar-table"
+                        id="simplebar-table"
+                    >
+                        <div
+                            className={`table ${this.props.className ? `table-${this.props.className}` : ''} loading`.trim()}
+                            id={`table ${this.props.id ? `table-${this.props.id}` : ''}`.trim()}
+                            ref={(ref) => {
+                                this._Table = ref;
+                            }}
+                        >
+                            <div className="column-group">
+                                <div className="row-header number">
+                                    <span className="text-center">#</span>
+                                </div>
+                                {this.state.arrNumberElement}
+                            </div>
+                            {this.NewChildren()}
+                        </div>
+                        {this.state.arrSearchData && this.state.arrSearchData.length > 0 && <div className="table-search-data">{this.SearchData()}</div>}
+                    </SimpleBar>
+                </React.Fragment>
+            );
+        } else {
+            return <React.Fragment />;
+        }
     }
 }
 

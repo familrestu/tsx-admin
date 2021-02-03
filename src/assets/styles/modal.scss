@@ -13,17 +13,35 @@
             display: flex;
             align-items: baseline;
             flex: 1;
+            flex-wrap: wrap;
         }
 
         .modal-right {
             justify-content: flex-end;
+            // align-items: center;
         }
 
         .bread-crumb { padding: 0 !important; }
     }
 
-    .simplebar-track.simplebar-vertical {
-        top: 55px;
+    .modal-body {
+        padding-right: 0;
+        .page {
+            height: 80%;
+            .simplebar-page {
+                min-height: 67vh;
+                max-height: 67vh;
+                min-width: 100%;
+
+                .simplebar-track.simplebar-vertical {
+                    top: 0;
+                }
+            }
+        }
+    }
+
+    .modal-body, .modal-footer {
+        background-color: white;
     }
 }
 
@@ -31,14 +49,31 @@
     .modal-content {
         position: absolute !important;
         width: 100% !important;
-        height: 80%;
+        height: 95%;
         bottom: 0;
+
+        border-top-left-radius: 1rem !important;
+        border-top-right-radius: 1rem !important;
 
         .modal-header {
             background-color: var(--white);
             color: black;
-            border-top-left-radius: .35rem;
-            border-top-right-radius: .35rem;
+            border-top-left-radius: 1rem !important;
+            border-top-right-radius: 1rem !important;
+        }
+
+        .modal-body {
+            .page {
+                .simplebar-page {
+                    min-height: 66vh;
+                    max-height: 66vh;
+                    min-width: 100%;
+
+                    .simplebar-track.simplebar-vertical {
+                        top: 0;
+                    }
+                }
+            }
         }
     }
 }

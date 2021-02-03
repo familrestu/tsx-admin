@@ -1,0 +1,33 @@
+.bread-crumb, .toolbar-container { 
+	display: flex;
+	padding: 1rem 0;
+
+	.bread-crumb-left, .toolbar-left {
+		display: flex;
+		flex: 1;
+		align-items: baseline;
+		font-size: 1.125rem;
+		flex-wrap: wrap;
+
+		span {
+			text-transform: capitalize;
+		}
+	}
+
+	.bread-crumb-right, .toolbar-right {
+		flex: 1;
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+
+		.btn {
+			margin: 0rem 0.125rem;
+		}
+	}
+}
+
+.modal-content {
+    .toolbar-container {
+        padding-top: 0;
+    }
+}
