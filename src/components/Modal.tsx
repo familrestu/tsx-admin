@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 import Overlay from 'components/Overlay';
 import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
-// import { Modal as BoostrapModal, Button } from 'react-bootstrap';
-
-import 'assets/styles/modal.scss';
 
 class Modal extends Component<AppState & typeof MapDispatch> {
     render() {
@@ -31,9 +28,7 @@ class Modal extends Component<AppState & typeof MapDispatch> {
                             <div className="modal-body" id="modal-body">
                                 <X.default modal="modal" />
                             </div>
-                            <div className="modal-footer" id="modal-footer">
-                                <button className="btn btn-primary">test</button>
-                            </div>
+                            {/* <div className="modal-footer" id="modal-footer"></div> */}
                         </div>
                     </Overlay>
                 );

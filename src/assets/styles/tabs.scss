@@ -62,4 +62,36 @@
 	.bread-crumb {
 		padding-top: 0rem;
 	}
+
+	.page {
+		.simplebar-page {
+			min-height: calc(100vh - 147px - 60px);
+			max-height: calc(100vh - 147px - 60px);
+			min-width: 100%;
+
+			padding-right: 1rem;
+
+			.simplebar-track.simplebar-vertical {
+				right: .15rem;
+			}
+		}
+	}
+}
+
+.nav.nav-tabs {
+	position: sticky;
+    top: 0;
+    background-color: var(--white);
+    z-index: 200;
+    /* padding-bottom: 1rem; */
+    margin-bottom: 1rem;
+	
+	a.active {
+		color: var(--primary);
+		font-weight: 500;
+	}
+
+	a {
+		color: var(--black);
+	}
 }

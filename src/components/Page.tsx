@@ -1,5 +1,4 @@
 import React from 'react';
-import Icon from 'components/Icon';
 import SimpleBar from 'simplebar-react';
 import CSS from 'csstype';
 import ReactDOM from 'react-dom';
@@ -46,7 +45,7 @@ class Page extends React.Component<PageProps, PageState> {
                     );
 
                     if (i !== arrBC.length - 1) {
-                        element.push(<Icon key={`bc-divider-${i}`} name="fas fa-angle-right m-1" fontSize="1rem"></Icon>);
+                        element.push(<i key={`bc-divider-${i}`} className="fas fa-angle-right m-1" />);
                     }
                 }
             }
@@ -120,10 +119,10 @@ class Page extends React.Component<PageProps, PageState> {
 
         return (
             <div id="page" className="page" ref={(ref) => (this._Page = ref)}>
-                <SimpleBar /* style={{ minHeight: `calc(100vh - 72px)`, maxHeight: `calc(100vh - 72px)`, maxWidth: `100%` }} */ id="simplebar-page" className="simplebar-page">
-                    {this.state.showBreadCrumb && <Breadcrumb />}
-                    <div id="body-content" className="body-content" style={{ ...this.props.style, minHeight: `100%` }}>
-                        {React.Children.map(this.props.children, (child, index) => {
+                {this.state.showBreadCrumb && <Breadcrumb />}
+                <SimpleBar id="simplebar-page" className="simplebar-page">
+                    <div id="body-content" className="body-content" style={{ ...this.props.style }}>
+                        {/* {React.Children.map(this.props.children, (child, index) => {
                             const PageCloneChildrenProps: PageCloneChildrenPropsType = {
                                 'page-max-height': this.state.maxHeight,
                                 'parent-element': this._Page,
@@ -134,7 +133,8 @@ class Page extends React.Component<PageProps, PageState> {
                             } else {
                                 return <React.Fragment />;
                             }
-                        })}
+                        })} */}
+                        {this.props.children}
                     </div>
                 </SimpleBar>
             </div>

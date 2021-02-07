@@ -2,7 +2,6 @@ import React from 'react';
 import { InputGroup, FormControl, Button } from 'react-bootstrap';
 
 import Avatar from 'components/Avatar';
-import Icon from 'components/Icon';
 import { DividerVertical } from 'components/Divider';
 
 import { connect } from 'react-redux';
@@ -63,13 +62,13 @@ class Header extends React.Component<HeaderPropsType & AppState> {
             <div id="header-container" className="header-container shadow-sm">
                 <div className="header-left">
                     <Button className="mr-4" onClick={this.props.ToggleNavbarHandler}>
-                        <Icon name="fas fa-bars" />
+                        <i className="fas fa-bars" />
                     </Button>
                     <InputGroup>
                         <FormControl placeholder="Search..." />
                         <InputGroup.Append>
                             <Button>
-                                <Icon name="fas fa-search" />
+                                <i className="fas fa-search" />
                             </Button>
                         </InputGroup.Append>
                     </InputGroup>

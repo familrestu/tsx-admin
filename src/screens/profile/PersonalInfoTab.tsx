@@ -1,10 +1,12 @@
 import React from 'react';
-import { AvatarImage } from 'components/Avatar';
-import Form from 'components/Form';
 import { Row, Col } from 'react-bootstrap';
-import Input from 'components/Input';
 import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
+
+import { AvatarImage } from 'components/Avatar';
+import Form from 'components/Form';
+import Page from 'components/Page';
+import Input from 'components/Input';
 
 class PersonalInfoTab extends React.Component<AppState> {
     render() {

@@ -1,11 +1,15 @@
 .simplebar-table {
 	margin-bottom: 1rem;
+
+	min-height: calc(100vh - 209px);
+	max-height: calc(100vh - 209px);
 	
 	.simplebar-track.simplebar-vertical {
 		top: 55px !important;
 		right: 0;
 	}
 }
+
 .table {
 	position: relative;
 	border-radius: .25rem;

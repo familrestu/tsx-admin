@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import { Button, Badge } from 'react-bootstrap';
+import { FormControl, Button, Badge, Col } from 'react-bootstrap';
 import { AxiosError, AxiosResponse } from 'axios';
 import { post } from 'libs/fetch';
 import CSS from 'csstype';
@@ -337,23 +336,6 @@ class Table extends Component<TablePropsType & PageCloneChildrenPropsType, Table
         }
     }
 
-    AddToolBarDOM() {
-        // console.log(this._Table?.parentElement?.parentElement?.parentElement?.parentElement?.parentElement?.parentElement?.parentElement);
-        // console.log(this.props['parent-element-id']);
-        // if(this.props['parent-element-id'] && this.props['parent-element-id'] === 'body') {
-        // }
-        // console.log(this.props['parent-element']);
-        if (this.props['parent-element']) {
-            const parentElementID = this.props['parent-element'].parentElement?.id;
-            if (parentElementID === 'body') {
-                const breadCrumbRight = document.getElementById('bread-crumb-right');
-                if (breadCrumbRight) {
-                    ReactDOM.render(<Toolbar {...this.state} ClearFilter={() => this.ClearFilter()} />, breadCrumbRight);
-                }
-            }
-        }
-    }
-
     NewChildren() {
         if (this.state.arrCloneChildren && this.state.arrCloneChildren.length > 0) {
             return this.state.arrCloneChildren;
@@ -387,75 +369,52 @@ class Table extends Component<TablePropsType & PageCloneChildrenPropsType, Table
         return arrBadges;
     }
 
-    /* add attribute have-table=true, to tell css that scroll will have css top styling: 55px */
-    setBodyAttribute(isAdd: boolean) {
-        if (isAdd) {
-            document.body.setAttribute('have-table', 'true');
-        } else {
-            document.body.removeAttribute('have-table');
-        }
-    }
-
     componentDidMount() {
-        // console.log('mounted');
         this._isMounted = true;
         this.FetchTableData(true);
-        // this.AddToolBarDOM();
-        // this.setBodyAttribute(true);
-    }
-
-    componentDidUpdate() {
-        this.AddToolBarDOM();
     }
 
     componentWillUnmount() {
         this._isMounted = false;
-        this.setBodyAttribute(false);
     }
 
     render() {
-        /* this will not show if parent is not page, fix this tommorow MANDATORY */
-        if (this.props['page-max-height'] && this.props['page-max-height'] !== 0) {
-            return (
-                <React.Fragment>
-                    {(this.props['children-number'] && this.props['children-number'] !== 0) ||
-                    (this.props['parent-element'] && this.props['parent-element'].parentElement && this.props['parent-element'].parentElement.id === 'modal-body') ? (
-                        <div id="toolbar-container" className="toolbar-container">
-                            <div className="toolbar-left"></div>
-                            <div className="toolbar-right">
-                                <Toolbar {...this.state} ClearFilter={() => this.ClearFilter()} />
-                            </div>
-                        </div>
-                    ) : (
-                        <React.Fragment />
-                    )}
-                    <SimpleBar
-                        style={{ minHeight: `${this.props['page-max-height']}px`, maxHeight: `${this.props['page-max-height']}px`, minWidth: `100%`, maxWidth: `100%` }}
-                        className="simplebar-table"
-                        id="simplebar-table"
+        return (
+            <React.Fragment>
+                <div id="toolbar-container" className="toolbar-container">
+                    <div className="toolbar-left">
+                        <Col sm={6} className="pl-0">
+                            <FormControl placeholder="Search..." />
+                        </Col>
+                    </div>
+                    <div className="toolbar-right">
+                        <Toolbar {...this.state} ClearFilter={() => this.ClearFilter()} />
+                    </div>
+                </div>
+                <SimpleBar
+                    style={{ minHeight: `${this.props['page-max-height']}px`, maxHeight: `${this.props['page-max-height']}px`, minWidth: `100%`, maxWidth: `100%` }}
+                    className="simplebar-table"
+                    id="simplebar-table"
+                >
+                    <div
+                        className={`table ${this.props.className ? `table-${this.props.className}` : ''} loading`.trim()}
+                        id={`table ${this.props.id ? `table-${this.props.id}` : ''}`.trim()}
+                        ref={(ref) => {
+                            this._Table = ref;
+                        }}
                     >
-                        <div
-                            className={`table ${this.props.className ? `table-${this.props.className}` : ''} loading`.trim()}
-                            id={`table ${this.props.id ? `table-${this.props.id}` : ''}`.trim()}
-                            ref={(ref) => {
-                                this._Table = ref;
-                            }}
-                        >
-                            <div className="column-group">
-                                <div className="row-header number">
-                                    <span className="text-center">#</span>
-                                </div>
-                                {this.state.arrNumberElement}
+                        <div className="column-group">
+                            <div className="row-header number">
+                                <span className="text-center">#</span>
                             </div>
-                            {this.NewChildren()}
+                            {this.state.arrNumberElement}
                         </div>
-                        {this.state.arrSearchData && this.state.arrSearchData.length > 0 && <div className="table-search-data">{this.SearchData()}</div>}
-                    </SimpleBar>
-                </React.Fragment>
-            );
-        } else {
-            return <React.Fragment />;
-        }
+                        {this.NewChildren()}
+                    </div>
+                    {this.state.arrSearchData && this.state.arrSearchData.length > 0 && <div className="table-search-data">{this.SearchData()}</div>}
+                </SimpleBar>
+            </React.Fragment>
+        );
     }
 }
 

@@ -7,7 +7,6 @@ import SimpleBar from 'simplebar-react';
 import { DividerHorizontal } from 'components/Divider';
 import { AvatarImage } from 'components/Avatar';
 import { Button } from 'react-bootstrap';
-import Icon from 'components/Icon';
 import Notification from 'components/Notification';
 
 import { MenuAuthStateDetailType } from 'redux/reducers/MenuAuthState';
@@ -60,7 +59,7 @@ class AppLogo extends React.Component<AppLogoPropsType & AppDetailsType> {
                     </NavLink>
                     {this.props.isMobile && (
                         <Button onClick={this.props.ToggleNavbarHandler}>
-                            <Icon name="fas fa-bars" />
+                            <i className="fas fa-bars" />
                         </Button>
                     )}
                 </div>

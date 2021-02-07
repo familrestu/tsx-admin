@@ -1,29 +1,57 @@
-.form-group {
-	margin-right: 1rem;
+.form {
+	.row:nth-last-child(2) {
+		margin-bottom: 0;
+	}
+	
+	.row {
+		.form-group {
+			margin-right: 1rem;
 
-	.form-control-plaintext {
-		cursor: default;
-		pointer-events: none;
+			.form-control-plaintext {
+				cursor: default;
+				pointer-events: none;
+			}
+
+			.form-icon {
+				position: absolute;
+				right: 10px;
+				top: calc(50% + 5px);
+			}
+		}
+
+		.form-check {
+			label[for], input[type=radio], input[type=checkbox] {
+				cursor: pointer;
+			}
+		}
+
+		.input-portal {
+			position: absolute;
+			z-index: 106;
+			margin-top: 2.5rem;
+		}
 	}
 
-	.form-icon {
-		position: absolute;
-		right: 10px;
-		top: calc(50% + 5px);
+}
+
+.form-button-group {
+	display: flex;
+	padding: 1rem 0;
+	width: 100%;
+	// padding-top: 1rem;
+
+	position: sticky;
+	bottom: 0;
+	background-color: var(--white);
+
+	.col {
+		padding: 0;
 	}
 }
 
-.form-check {
-	label[for], input[type=radio], input[type=checkbox] {
-		cursor: pointer;
+.modal-content {
+	.form-button-group {
+		margin-bottom: 0;
+		padding-bottom: 0;
 	}
-}
-
-.input-portal {
-	position: absolute;
-	z-index: 106;
-	// right: 0;
-	margin-top: 2.5rem;
-	// top: 0;
-	// margin-top: 2.5rem;
 }

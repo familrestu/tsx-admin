@@ -7,7 +7,7 @@ import Page from 'components/Page';
 
 import PersonalInfoTab from './PersonalInfoTab';
 import AccountInfoTab from './AccountInfoTab';
-import OtherInfoTab from './OtherInfoTab';
+// import OtherInfoTab from './OtherInfoTab';
 
 const customAttributeName = 'my-tab-number';
 
@@ -60,16 +60,17 @@ class ProfileScreen extends React.Component<NavLinkProps & RouteComponentProps, 
     render() {
         return (
             <Page breadCrumb="Profile">
-                <Tabs defaultActiveKey={this.state.defaultActiveTabs} className="tab-nav-container">
+                <Tabs defaultActiveKey={this.state.defaultActiveTabs} /*  className="tab-nav-container" */>
                     <Tab eventKey="personalInformation" title="Personal Information" className="tab-page-container">
                         <PersonalInfoTab />
                     </Tab>
                     <Tab eventKey="accountInformation" title="Account Information" className="tab-page-container">
                         <AccountInfoTab />
                     </Tab>
+                    {/* 
                     <Tab eventKey="otherInformation" title="Other Information" className="tab-page-container">
                         <OtherInfoTab />
-                    </Tab>
+                    </Tab> */}
                 </Tabs>
             </Page>
         );

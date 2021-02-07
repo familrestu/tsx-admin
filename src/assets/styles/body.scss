@@ -6,7 +6,7 @@
 		background-color: var(--white);
 		
 		// padding: 0 1rem;
-		padding-bottom: 1rem;
+		// padding-bottom: 1rem;
 		padding-left: 1rem;
 		
 		z-index: 105;
@@ -22,27 +22,14 @@
 	}
 
 	.simplebar-page {
-		min-height: calc(100vh - 88px);
-		max-height: calc(100vh - 88px);
+		min-height: calc(100vh - 139px);
+		max-height: calc(100vh - 139px);
 		min-width: 100%;
 
 		padding-right: 1rem;
 
 		.simplebar-track.simplebar-vertical {
-			top: .5rem;
 			right: .15rem;
 		}
 	}
 }
-
-/* @media (max-width: 480px) {
-	.content-container {
-		.body {
-			.bread-crumb {
-				.bread-crumb-right {
-					display: none;
-				}
-			}
-		}
-	}
-} */

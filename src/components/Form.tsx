@@ -1,6 +1,7 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { KTPFormat, NPWPFormat } from 'libs/form';
-import { Row, Col, Button } from 'react-bootstrap';
+import { Col, Button } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
 import moment from 'moment';
@@ -8,13 +9,25 @@ import { AxiosError, AxiosResponse } from 'axios';
 import { post } from 'libs/fetch';
 
 // import Alert from 'components/Alert';
+import { connect } from 'react-redux';
+import { AppState } from 'redux/store';
 
-const CancelButton = () => {
+const CancelButton = (props: { isModal: boolean; onClick: () => void }) => {
     const history = useHistory();
 
     return (
-        <Button variant="secondary" className="btn btn-default mr-2" onClick={() => history.goBack()}>
-            Cancel
+        <Button
+            variant="secondary"
+            className="btn btn-default"
+            onClick={() => {
+                if (props.onClick) {
+                    props.onClick();
+                } else {
+                    history.goBack();
+                }
+            }}
+        >
+            {props.isModal ? 'Close' : 'Cancel'}
         </Button>
     );
 };
@@ -38,7 +51,7 @@ type FormState = {
     isSubmiting: boolean;
 };
 
-class Form extends React.Component<FormProps, FormState> {
+class Form extends React.Component<FormProps & AppState & typeof MapDispatch, FormState> {
     _Form: HTMLFormElement | null | undefined;
 
     state = {
@@ -208,13 +221,9 @@ class Form extends React.Component<FormProps, FormState> {
 
     SetButtonGroup() {
         if (this.props.buttonGroup === undefined || this.props.buttonGroup) {
-            /* if (this._Form) {
-                this._Form.
-            } */
-
             return (
-                <Row>
-                    <Col xs={6}>
+                <div className="form-button-group">
+                    <Col>
                         <Button variant="primary" className="mr-2" type="submit">
                             {this.props.datasource ? 'Save' : 'Submit'}
                         </Button>
@@ -223,13 +232,24 @@ class Form extends React.Component<FormProps, FormState> {
                         </Button>
                     </Col>
 
-                    <Col xs={6} className="d-flex justify-content-end">
-                        <CancelButton />
+                    <Col className="d-flex justify-content-end">
+                        <CancelButton isModal={this.props.ModalState ? true : false} onClick={() => this.props.CloseModal()} />
                     </Col>
-                </Row>
+                </div>
             );
         } else {
             return <React.Fragment />;
+        }
+    }
+
+    SetButtonGroupModal() {
+        if (this.props.ModalState && this.props.ModalState.isOpened) {
+            const modalFooter = document.getElementById('modal-footer');
+
+            if (modalFooter) {
+                const ButtonGroup = () => this.SetButtonGroup();
+                ReactDOM.render(<ButtonGroup />, modalFooter);
+            }
         }
     }
 
@@ -237,8 +257,11 @@ class Form extends React.Component<FormProps, FormState> {
         this.FormDataHandler();
     }
 
+    componentDidUpdate() {
+        // this.SetButtonGroupModal();
+    }
+
     render() {
-        console.log(this.props);
         const ButtonGroup = () => this.SetButtonGroup();
         return (
             <form
@@ -250,10 +273,19 @@ class Form extends React.Component<FormProps, FormState> {
                 onSubmit={(e: React.FormEvent) => this.FormSubmitHandler(e)}
             >
                 {this.props.children}
+                {/* {this.props.ModalState && !this.props.ModalState.isOpened && <ButtonGroup />} */}
                 <ButtonGroup />
             </form>
         );
     }
 }
 
-export default Form;
+const MapStateToProps = (state: AppState) => ({
+    ModalState: state.ModalState,
+});
+
+const MapDispatch = {
+    CloseModal: () => ({ type: 'CLOSEMODAL' }),
+};
+
+export default connect(MapStateToProps, MapDispatch)(Form);

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Badge } from 'react-bootstrap';
 import Simplebar from 'simplebar-react';
-import Icon from 'components/Icon';
 import { ReactComponent as NotificationSVG } from 'assets/svg/notification.svg';
 
 type NotificationDataType = {
@@ -134,7 +133,7 @@ class Notification extends Component<NotificationPropsType, NotificationStateTyp
                         {this.state.data.length > 99 ? '99+' : this.state.data.length}
                     </Badge>
                 )}
-                <Icon name="fas fa-bell" />
+                <i className="fas fa-bell" />
                 {!this.props.isMobile && (
                     <div id="notification-list" className="notification-list dropdown-menu shadow-sm show" style={{ visibility: 'hidden' }}>
                         <div className="dropdown-item notification-header">
@@ -149,7 +148,6 @@ class Notification extends Component<NotificationPropsType, NotificationStateTyp
                                 ) : (
                                     <div className="d-flex justify-content-center align-items-center">
                                         <NotificationSVG />
-                                        {/* <span className="position-absolute bg-white">Nothing new</span> */}
                                     </div>
                                 )}
                             </Simplebar>

@@ -1,8 +1,10 @@
 .modal-content {
-    width: 75% !important;
+    width: 75%;
     height: 90%;
     z-index: 205;
-    border: unset !important;
+    border: unset;
+    overflow: hidden;
+    border-radius: .5rem;
 
     .modal-header {
         background-color: var(--primary);
@@ -18,20 +20,23 @@
 
         .modal-right {
             justify-content: flex-end;
-            // align-items: center;
         }
 
         .bread-crumb { padding: 0 !important; }
     }
 
     .modal-body {
+        height: calc(100vh - 20% - 150px);
         padding-right: 0;
+        
         .page {
-            height: 80%;
+            min-height: 100%;
+            max-height: 100%;
+            position: relative;
+            
             .simplebar-page {
-                min-height: 67vh;
-                max-height: 67vh;
-                min-width: 100%;
+                min-height: 100%;
+                max-height: 100%;
 
                 .simplebar-track.simplebar-vertical {
                     top: 0;
@@ -47,28 +52,24 @@
 
 @media (max-width: 480px) {
     .modal-content {
-        position: absolute !important;
-        width: 100% !important;
+        position: absolute;
+        width: 100%;
         height: 95%;
         bottom: 0;
 
-        border-top-left-radius: 1rem !important;
-        border-top-right-radius: 1rem !important;
+        border-radius: 0rem;
+
+        border-top-left-radius: 1rem;
+        border-top-right-radius: 1rem;
 
         .modal-header {
             background-color: var(--white);
             color: black;
-            border-top-left-radius: 1rem !important;
-            border-top-right-radius: 1rem !important;
         }
 
         .modal-body {
             .page {
                 .simplebar-page {
-                    min-height: 66vh;
-                    max-height: 66vh;
-                    min-width: 100%;
-
                     .simplebar-track.simplebar-vertical {
                         top: 0;
                     }
@@ -76,4 +77,8 @@
             }
         }
     }
+}
+
+.simplebar-content-wrapper {
+    height: 100% !important;
 }
