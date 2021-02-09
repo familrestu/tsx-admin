@@ -5,7 +5,7 @@ import { AppState } from 'redux/store';
 
 import { AvatarImage } from 'components/Avatar';
 import Form from 'components/Form';
-import Page from 'components/Page';
+// import Page from 'components/Page';
 import Input from 'components/Input';
 
 class PersonalInfoTab extends React.Component<AppState> {
@@ -25,7 +25,7 @@ class PersonalInfoTab extends React.Component<AppState> {
                         <div className="d-flex m-4 flex-1">
                             <AvatarImage
                                 {...AvatarProps}
-                                className="shadow"
+                                className="shadow-sm"
                                 style={{
                                     position: 'relative',
                                     width: '150px',

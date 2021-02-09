@@ -129,7 +129,7 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
     };
 
     return (
-        <BrowserRouter basename={`/`}>
+        <BrowserRouter>
             {window.location.pathname !== '/printpreview' && (
                 <Navbar
                     ToggleNavbarHandler={() => ToggleNavbarHandler()}
@@ -153,6 +153,7 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
                     </Suspense>
                 </div>
             </div>
+            <Modal />
         </BrowserRouter>
     );
 };
@@ -311,7 +312,6 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
         return (
             <React.Fragment>
                 <Screen />
-                <Modal />
             </React.Fragment>
         );
     }
