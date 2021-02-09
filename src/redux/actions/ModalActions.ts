@@ -6,15 +6,11 @@ export const CLOSEMODAL = 'CLOSEMODAL';
 type OpenModal = {
     type: typeof OPENMODAL;
     path: ModalStateType['path'];
-    isGlobal: ModalStateType['isGlobal'];
-    // children: ModalStateType['children'];
+    modalParams?: ModalStateType['modalParams'];
 };
 
 type CloseModal = {
     type: typeof CLOSEMODAL;
-    // path: ModalStateType['path'];
-    // isGlobal: ModalStateType['isGlobal'];
-    // children: ModalStateType['children'];
 };
 
 export type ModalActions = OpenModal | CloseModal;

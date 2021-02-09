@@ -1,16 +1,21 @@
 import React, { Component } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+// import { RouteComponentProps } from 'react-router-dom';
 
 import { Row } from 'react-bootstrap';
 import Page from 'components/Page';
 import Form from 'components/Form';
 import Input from 'components/Input';
 
-class EmployeeListDetailScreen extends Component<RouteComponentProps<{ employee_no: string }>> {
+import { connect } from 'react-redux';
+import { AppState } from 'redux/store';
+
+// class EmployeeListDetailScreen extends Component<RouteComponentProps<{ employee_no: string }>> {
+class EmployeeListDetailScreen extends Component<AppState> {
     render() {
         return (
             <Page breadCrumb="Employee|List|Details">
-                <Form datasource="emp/EmpData" data={{ employee_no: this.props.match.params.employee_no }}>
+                {/* <Form datasource="emp/EmpData" data={{ employee_no: this.props.match.params.employee_no }}></Form> */}
+                <Form datasource="emp/EmpData" data={{ employee_no: this.props.ModalState && this.props.ModalState.modalParams ? this.props.ModalState.modalParams.employee_no : '' }}>
                     <Input type="text" label="Name" size="4" placeholder="Full Name" name="full_name" readOnly />
                     <Input type="text" label="Position" size="auto" placeholder="Position" name="position" plaintext readOnly />
 
@@ -37,4 +42,15 @@ class EmployeeListDetailScreen extends Component<RouteComponentProps<{ employee_
     }
 }
 
-export default EmployeeListDetailScreen;
+// export default EmployeeListDetailScreen;
+
+const MapStateToProps = (state: AppState) => ({
+    ModalState: state.ModalState,
+});
+
+/* const MapDispatch = {
+    OpenModal: (path: ModalStateType['path'], modalParams?: ModalStateType['modalParams']) => ({ type: 'OPENMODAL', path, modalParams }),
+    CloseModal: () => ({ type: 'CLOSEMODAL' }),
+}; */
+
+export default connect(MapStateToProps)(EmployeeListDetailScreen);

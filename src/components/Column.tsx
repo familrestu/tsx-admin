@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import moment from 'moment';
 
+import { connect } from 'react-redux';
+import { AppState } from 'redux/store';
+import { ModalStateType } from 'redux/reducers/ModalState';
+
 import { FormControl, InputGroup, Button } from 'react-bootstrap';
 import { DatePicker } from './Input';
 
@@ -78,7 +82,7 @@ type ColumnStateType = {
     isSearch: boolean;
 };
 
-class Column extends Component<ColumnPropsType, ColumnStateType> {
+class Column extends Component<ColumnPropsType & AppState & typeof MapDispatch, ColumnStateType> {
     MouseMoveListener: any;
     _HeaderSearchRef: HTMLButtonElement | null | undefined;
 
@@ -356,25 +360,50 @@ class Column extends Component<ColumnPropsType, ColumnStateType> {
                                     if (replaceThis && this.props.header) {
                                         const id = replaceThis[0].replace('[', '').replace(']', '');
                                         const indexOfId = this.props.header.indexOf(id);
-                                        let idValue = '';
-                                        if (this.props.body && indexOfId !== undefined && indexOfId >= 0) {
-                                            idValue = this.props.body[indexOfId][i];
-                                            link = link.replace(replaceThis[0], idValue);
-                                        } else {
-                                            link = link.replace(replaceThis[0], '');
-                                        }
-                                    }
 
-                                    return (
-                                        <NavLink
-                                            to={{
-                                                pathname: link,
-                                                // linkProps: idValue,
-                                            }}
-                                        >
-                                            {value}
-                                        </NavLink>
-                                    );
+                                        if (this.props.ModalState && this.props.ModalState.isOpened) {
+                                            const params: { [key: string]: any } = {};
+                                            const idValue = this.props.body ? this.props.body[indexOfId][i] : '';
+                                            params[id] = idValue;
+                                            link = link.replace(replaceThis[0], `:${id}`);
+
+                                            return (
+                                                <span
+                                                    style={{
+                                                        color: '#007bff',
+                                                        cursor: 'pointer',
+                                                    }}
+                                                    onClick={() => {
+                                                        this.props.OpenModal(link, params);
+                                                        // console.log(link, params);
+                                                    }}
+                                                >
+                                                    {value}
+                                                </span>
+                                            );
+                                        } else {
+                                            if (replaceThis && this.props.header) {
+                                                let idValue = '';
+                                                if (this.props.body && indexOfId !== undefined && indexOfId >= 0) {
+                                                    idValue = this.props.body[indexOfId][i];
+                                                    link = link.replace(replaceThis[0], idValue);
+                                                } else {
+                                                    link = link.replace(replaceThis[0], '');
+                                                }
+                                            }
+                                            return (
+                                                <NavLink
+                                                    to={{
+                                                        pathname: link,
+                                                    }}
+                                                >
+                                                    {value}
+                                                </NavLink>
+                                            );
+                                        }
+                                    } else {
+                                        return <React.Fragment>{value}</React.Fragment>;
+                                    }
                                 } else {
                                     return <React.Fragment>{value}</React.Fragment>;
                                 }
@@ -444,4 +473,13 @@ class Column extends Component<ColumnPropsType, ColumnStateType> {
     }
 }
 
-export default Column;
+const MapStateToProps = (state: AppState) => ({
+    ModalState: state.ModalState,
+});
+
+const MapDispatch = {
+    OpenModal: (path: ModalStateType['path'], modalParams?: ModalStateType['modalParams']) => ({ type: 'OPENMODAL', path, modalParams }),
+    CloseModal: () => ({ type: 'CLOSEMODAL' }),
+};
+
+export default connect(MapStateToProps, MapDispatch)(Column);

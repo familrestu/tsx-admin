@@ -8,7 +8,7 @@ type OverlayType = {
 };
 
 class Overlay extends Component<OverlayType & typeof MapDispatch> {
-    rootElement: HTMLElement = document.body;
+    rootElement: HTMLElement | null = document.getElementById('root-container');
     element: HTMLDivElement;
 
     constructor(props: OverlayType & typeof MapDispatch) {
