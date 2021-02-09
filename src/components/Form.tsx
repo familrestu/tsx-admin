@@ -20,14 +20,14 @@ const CancelButton = (props: { isModal: boolean; onClick: () => void }) => {
             variant="secondary"
             className="btn btn-default"
             onClick={() => {
-                if (props.onClick) {
+                if (props.isModal !== undefined && props.isModal && props.onClick) {
                     props.onClick();
                 } else {
                     history.goBack();
                 }
             }}
         >
-            {props.isModal ? 'Close' : 'Cancel'}
+            {props.isModal !== undefined && props.isModal ? 'Close' : 'Cancel'}
         </Button>
     );
 };
@@ -233,7 +233,7 @@ class Form extends React.Component<FormProps & AppState & typeof MapDispatch, Fo
                     </Col>
 
                     <Col className="d-flex justify-content-end">
-                        <CancelButton isModal={this.props.ModalState ? true : false} onClick={() => this.props.CloseModal()} />
+                        <CancelButton isModal={this.props.ModalState && this.props.ModalState.isOpened ? true : false} onClick={() => this.props.CloseModal()} />
                     </Col>
                 </div>
             );
