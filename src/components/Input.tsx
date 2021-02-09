@@ -71,7 +71,7 @@ const Input = (props: any) => {
 
     const Columns = (props: any) => {
         return (
-            <Col sm={props.size === undefined ? 'auto' : 12} md={props.size === undefined ? 'auto' : props.size * 1.5} lg={props.size === undefined ? 'auto' : props.size} className="pl-0">
+            <Col sm={props.size === undefined ? 'auto' : 12} md={props.size === undefined ? 'auto' : Math.floor(props.size * 1.5)} lg={props.size === undefined ? 'auto' : props.size} className="pl-0">
                 {props.children}
             </Col>
         );
@@ -188,7 +188,9 @@ const Input = (props: any) => {
                 <Columns {...props}>
                     <FormGroup className="position-relative">
                         {ShowLabel && <Label text={props.label} required={props.formrequired} />}
-                        <DatePicker {...props} />
+                        {/* temporary remarked, will back used html5 date */}
+                        {/* <DatePicker {...props} /> */}
+                        <FormControl {...props} type="date" placeholder="dd/mm/yyyy" format="dd/mm/yyyy" />
                         {props.text && <FormText>{props.text}</FormText>}
                     </FormGroup>
                 </Columns>
