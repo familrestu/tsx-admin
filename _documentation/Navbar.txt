@@ -1,1 +1,1 @@
-- Setiap klik link, harus menyimpan accessmode
+- Setiap klik link, harus menyimpan accessmode di state
