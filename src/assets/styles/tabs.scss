@@ -95,3 +95,17 @@
 		color: var(--black);
 	}
 }
+
+@media (max-width: 480px) {
+	.nav {
+		flex-wrap: nowrap;
+		&.nav-tabs {
+			width: 100%;
+			overflow-y: hidden;
+			overflow-x: scroll;
+			a {
+				white-space: nowrap;
+			}
+		}
+	}
+}
