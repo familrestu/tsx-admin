@@ -190,7 +190,7 @@ const Input = (props: any) => {
                         {ShowLabel && <Label text={props.label} required={props.formrequired} />}
                         {/* temporary remarked, will back used html5 date */}
                         {/* <DatePicker {...props} /> */}
-                        <FormControl {...props} type="date" placeholder="dd/mm/yyyy" format="dd/mm/yyyy" />
+                        <FormControl {...props} type="date" placeholder="dd/mm/yyyy" />
                         {props.text && <FormText>{props.text}</FormText>}
                     </FormGroup>
                 </Columns>

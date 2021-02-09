@@ -7,7 +7,7 @@ import { AppState } from 'redux/store';
 import { ModalStateType } from 'redux/reducers/ModalState';
 
 import { FormControl, InputGroup, Button } from 'react-bootstrap';
-import { DatePicker } from './Input';
+// import { DatePicker } from './Input';
 
 let mouseMove: any;
 let mouseUp: any;
@@ -243,12 +243,25 @@ class Column extends Component<ColumnPropsType & AppState & typeof MapDispatch, 
                 );
             } else {
                 if (type === 'date') {
-                    return (
+                    /* temporary remarked, use normal HTML5 datepicker */
+                    /* return (
                         <DatePicker
                             size="sm"
                             autoFocus={true}
                             ToggleSearch={() => this.ToggleSearch()}
                             OnKeyPressSearchHandler={(e: React.KeyboardEvent<HTMLInputElement>) => this.OnKeyPressSearchHandler(e)}
+                        />
+                    ); */
+
+                    return (
+                        <FormControl
+                            size="sm"
+                            name={this.props.name}
+                            autoFocus={true}
+                            onBlur={() => this.ToggleSearch()}
+                            type="date"
+                            placeholder="dd/mm/yyyy"
+                            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => this.OnKeyPressSearchHandler(e)}
                         />
                     );
                 } else if (type === 'time') {
