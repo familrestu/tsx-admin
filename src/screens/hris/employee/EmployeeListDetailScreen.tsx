@@ -18,7 +18,7 @@ class EmployeeListDetailScreen extends Component<AppState & RouteComponentProps<
             employee_no = this.props.ModalState.modalParams.employee_no;
         }
 
-        if (this.props.match.params) {
+        if (this.props.match && this.props.match.params) {
             employee_no = this.props.match.params.employee_no;
         }
 
