@@ -17,6 +17,37 @@
 	.header-left {
 		justify-content: center;
 		flex: .5 1 auto;
+
+		.dropdown-menu {
+			width: 100%;
+			// overflow: auto;
+			.simplebar-search {
+				max-height: 15rem;
+
+				.dropdown-item {
+					i {
+						margin-right: .5rem;
+					}
+
+					&.active {
+						background-color: unset;
+						color: unset;
+					}
+
+					&:hover {
+						color: unset;
+						text-decoration: none;
+						background-color: unset;
+					}
+
+					&.focus {
+						color: #16181b;
+						text-decoration: none;
+						background-color: #f8f9fa;
+					}
+				}
+			}
+		}
 	}
 
 	.header-right {

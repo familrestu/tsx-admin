@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-// import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 
 import { Row } from 'react-bootstrap';
 import Page from 'components/Page';
@@ -10,12 +10,22 @@ import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
 
 // class EmployeeListDetailScreen extends Component<RouteComponentProps<{ employee_no: string }>> {
-class EmployeeListDetailScreen extends Component<AppState> {
+class EmployeeListDetailScreen extends Component<AppState & RouteComponentProps<{ employee_no: string }>> {
     render() {
+        let employee_no = '';
+
+        if (this.props.ModalState && this.props.ModalState.modalParams) {
+            employee_no = this.props.ModalState.modalParams.employee_no;
+        }
+
+        if (this.props.match.params) {
+            employee_no = this.props.match.params.employee_no;
+        }
+
         return (
             <Page breadCrumb="Employee|List|Details">
                 {/* <Form datasource="emp/EmpData" data={{ employee_no: this.props.match.params.employee_no }}></Form> */}
-                <Form datasource="emp/EmpData" data={{ employee_no: this.props.ModalState && this.props.ModalState.modalParams ? this.props.ModalState.modalParams.employee_no : '' }}>
+                <Form datasource="emp/EmpData" data={{ employee_no: employee_no }}>
                     <Input type="text" label="Name" size="4" placeholder="Full Name" name="full_name" readOnly />
                     <Input type="text" label="Position" size="auto" placeholder="Position" name="position" plaintext readOnly />
 
