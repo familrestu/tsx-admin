@@ -15,7 +15,7 @@
 
 	ul:not(.navitem-children-parent) {
 		background-color: var(--primary);
-		color: var(--white);
+		color: #ffffff;
 		
 		li {
 			position: relative;
@@ -27,7 +27,7 @@
 				font-size: 1.5rem;
 				font-weight: 600;
 
-				color: var(--white);
+				color: #ffffff;
 			}
 
 			.app-small {
@@ -70,7 +70,7 @@
 			}
 
 			.navitem-container.active {
-				color: var(--white);
+				color: #ffffff;
 				font-weight: 600;
 			}
 
@@ -79,7 +79,7 @@
 				opacity: 0;
 
 				position: absolute;
-				// background-color: var(--white);
+				// background-color: #ffffff;
 				background-color: darken($primary, 5%);
 
 				height: auto;
@@ -107,7 +107,7 @@
 						div.navitem-string {
 							align-items: flex-start;
 							color: var(--primary);
-							color: var(--white);
+							color: #ffffff;
 							font-size: small !important;
 						}
 					}
@@ -115,7 +115,7 @@
 
 				.navitem-group {
 					text-align: left;
-					// color: var(--white);
+					// color: #ffffff;
 					color: rgba(255, 255, 255, 0.5);
 					padding: 0.85rem 1.5rem;
 					padding-bottom: 0px;
@@ -301,7 +301,7 @@
 				margin-bottom: .75rem;
 				
 				.avatar {
-					background-color: var(--white);
+					background-color: #ffffff;
 					span {
 						font-size: 1rem;
 						color: var(--primary);
@@ -317,7 +317,7 @@
 					font-size: .85rem;
 					font-weight: normal;
 					text-transform: none;
-					color: var(--white);
+					color: #ffffff;
 					white-space: nowrap;
 				}
 			}

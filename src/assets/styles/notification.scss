@@ -6,6 +6,7 @@
     .icon-groups {
         .badge, i.fas {
 			pointer-events: none;
+			color: var(--black);
 		}
 
 		.badge-counter {
@@ -32,7 +33,7 @@
 
 		.notification-header {
 			background-color: var(--primary);
-			color: var(--white);
+			color: #ffffff;
 			font-weight: 800;
 			font-size: .65rem;
 			text-transform: uppercase;
@@ -40,7 +41,7 @@
 
 		.notification-header:active {
 			background-color: var(--primary) !important;
-			color: var(--white) !important;
+			color: #ffffff !important;
 		}
 
 		.notification-item:active {
@@ -52,7 +53,10 @@
 			border-bottom: unset;
 		}
 
-		.notification-item {
+		.notification-items-container {
+			background-color: var(--white);
+			overflow: hidden;
+			.notification-item {
 				display: flex;
 				color: var(--black);
 				border-bottom: 1px solid #e3e6f0;
@@ -67,7 +71,7 @@
 						display: flex;
 						align-items: center;
 						justify-content: center;
-						color: var(--white);
+						color: #ffffff;
 						background-color: var(--primary);
 						width: 3rem;
 						height: 3rem;
@@ -140,13 +144,9 @@
 					}
 				}
 			}
-	}
-}
+		}
 
-.notification {
-    .notification-header {
-        color: var(--white) !important;
-    }
+	}
 }
 
 @media (max-width: 480px) {

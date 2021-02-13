@@ -85,10 +85,13 @@
     z-index: 200;
     /* padding-bottom: 1rem; */
     margin-bottom: 1rem;
+	border-bottom: 1px solid var(--light-grey);
 	
 	a.active {
 		color: var(--primary);
 		font-weight: 500;
+		background-color: var(--white);
+		border-color: var(--light-grey);
 	}
 
 	a {

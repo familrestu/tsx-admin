@@ -5,9 +5,11 @@
     border: unset;
     overflow: hidden;
     border-radius: .5rem;
+    background-color: var(--white);
 
     .modal-header {
         background-color: var(--primary);
+        border-bottom: var(---white);
         align-items: baseline;
         color: white;
 
@@ -46,7 +48,7 @@
     }
 
     .modal-body, .modal-footer {
-        background-color: white;
+        background-color: var(--white);
     }
 }
 
@@ -64,7 +66,7 @@
 
         .modal-header {
             background-color: var(--white);
-            color: black;
+            color: var(--black);
         }
 
         .modal-body {

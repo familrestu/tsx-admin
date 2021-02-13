@@ -1,6 +1,6 @@
 $primary: #519a66;
-
 html { height: 100%; }
+
 body[themes=light] {
 	--danger: rgb(186, 74, 74);
 	--success: rgb(81, 186, 81);
@@ -18,10 +18,29 @@ body[themes=light] {
 	--black: rgba(0, 0, 0, 0.75);
 }
 
+body[themes=dark] {
+	--danger: rgb(186, 74, 74);
+	--success: rgb(81, 186, 81);
+	--warning: rgb(237, 186, 57);
+	--neutral: rgb(57, 189, 237);
+	
+	--primary: #{$primary};
+	--light-primary: #868a87;
+	--secondary: #71c087;
+	--white: #3f3f3f;
+	
+	--light-grey: #929292;
+	--dark-grey: #545454;
+	--grey: rgba(220, 220, 220, 0.35);
+	--black: rgba(255, 255, 255, 0.75);
+}
+
 body {
 	height: 100%;
 	background-color: var(--white);
 	color: var(--dark-grey);
+
+	h2, label { color: var(--black); }
 
 	#root-container {
 		display: flex;
@@ -33,6 +52,10 @@ body {
 			flex-direction: column;
 			width: 100%;		
 		}
+	}
+
+	* {
+		transition: background-color .2s ease-in, color .2s ease-in;
 	}
 }
 

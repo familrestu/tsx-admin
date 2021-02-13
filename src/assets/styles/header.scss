@@ -18,19 +18,23 @@
 		justify-content: center;
 		flex: .5 1 auto;
 
+
 		.dropdown-menu {
 			width: 100%;
+			background-color: var(--white);
 			// overflow: auto;
+
 			.simplebar-search {
 				max-height: 15rem;
 
 				.dropdown-item {
+					color: var(--black);
 					i {
 						margin-right: .5rem;
 					}
 
 					&.active {
-						background-color: unset;
+						background-color: var(--light-grey);
 						color: unset;
 					}
 
@@ -43,10 +47,13 @@
 					&.focus {
 						color: #16181b;
 						text-decoration: none;
-						background-color: #f8f9fa;
+						background-color: var(--light-grey);
 					}
 				}
 			}
+		}
+		.header-search-container {
+			background-color: var(--white);
 		}
 	}
 
