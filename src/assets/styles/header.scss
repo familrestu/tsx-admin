@@ -34,7 +34,8 @@
 					}
 
 					&.active {
-						background-color: var(--light-grey);
+						// background-color: var(--light-grey);
+						background-color: unset;
 						color: unset;
 					}
 

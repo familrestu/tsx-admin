@@ -120,10 +120,10 @@ class HeaderSearchConnect extends Component<AppState, HandleSearchStateType> {
         let listNum = 0;
 
         if (e.key === 'ArrowUp') {
-            if (this.state.selectedList >= 0 && this.state.selectedList <= this.state.arrSearch.length - 1) {
-                listNum = this.state.selectedList - 1 < 0 ? this.state.arrSearch.length - 1 : this.state.selectedList - 1;
+            if (this.state.selectedList >= 0 && this.state.selectedList <= this.state.showedArrSearch.length - 1) {
+                listNum = this.state.selectedList - 1 < 0 ? this.state.showedArrSearch.length - 1 : this.state.selectedList - 1;
             } else if (this.state.selectedList === -1) {
-                listNum = this.state.arrSearch.length - 1;
+                listNum = this.state.showedArrSearch.length - 1;
             }
 
             if (selectedDropdown && selectedDropdown.previousElementSibling && selectedDropdown.previousElementSibling.scrollHeight /*  && headerContainer */) {
@@ -135,7 +135,7 @@ class HeaderSearchConnect extends Component<AppState, HandleSearchStateType> {
                 return { ...prevState, selectedList: listNum };
             });
         } else if (e.key === 'ArrowDown') {
-            if (this.state.selectedList >= 0 && this.state.selectedList <= this.state.arrSearch.length - 1) {
+            if (this.state.selectedList >= 0 && this.state.selectedList <= this.state.showedArrSearch.length - 1) {
                 listNum = this.state.selectedList + 1 > this.state.showedArrSearch.length - 1 ? 0 : this.state.selectedList + 1;
             } else if (this.state.selectedList === -1) {
                 listNum = 0;
@@ -156,7 +156,7 @@ class HeaderSearchConnect extends Component<AppState, HandleSearchStateType> {
             }
         } else {
             const { value } = e.currentTarget;
-            if (value.length >= 3) {
+            if (value.length >= 1) {
                 if (!this.state.loadSearch) {
                     this.setState((prevState) => {
                         return { ...prevState, loadSearch: true };
@@ -165,7 +165,7 @@ class HeaderSearchConnect extends Component<AppState, HandleSearchStateType> {
                 window.clearTimeout(this.keyupTimeout);
                 this.keyupTimeout = window.setTimeout(() => {
                     const tempArrSearch: HandleSearchStateType['arrSearch'] = this.state.arrSearch;
-                    const regex = new RegExp(`${value.toUpperCase()}.*`);
+                    const regex = new RegExp(`${value.replace(/[^\w\s]/gi, '').toUpperCase()}.*`);
                     const finalArrSearch: HandleSearchStateType['arrSearch'] = tempArrSearch.filter((a) => {
                         return regex.test(a.title.toUpperCase());
                     });
@@ -177,16 +177,22 @@ class HeaderSearchConnect extends Component<AppState, HandleSearchStateType> {
                 }, 400);
             } else if (value === '') {
                 window.clearTimeout(this.keyupTimeout);
+                this.FocusHandler();
+                /* const finalArrSearch = this.state.arrSearch;
+                finalArrSearch.length = 7;
+
+                console.log(this.state);
+
                 this.setState((prevState) => {
-                    return { ...prevState, showSearch: true, loadSearch: false, showedArrSearch: this.state.arrSearch };
-                });
+                    return { ...prevState, showSearch: true, loadSearch: false, showedArrSearch: finalArrSearch };
+                }); */
             }
         }
     }
 
     SetHeaderSearchInput(title?: string) {
         const headerSearchInput = document.getElementById('header-search-input');
-        if (headerSearchInput && title) {
+        if (headerSearchInput && (title || title === '')) {
             (headerSearchInput as HTMLInputElement).value = title;
         }
     }
@@ -202,10 +208,17 @@ class HeaderSearchConnect extends Component<AppState, HandleSearchStateType> {
         });
     }
 
-    DropdownMouseEnterHandler(selectedList: number, title: string) {
-        this.SetHeaderSearchInput(title);
+    DropdownMouseEnterHandler(selectedList: number) {
+        // this.SetHeaderSearchInput(title);
         this.setState((prevState) => {
             return { ...prevState, selectedList: selectedList };
+        });
+    }
+
+    DropdownMouseLeaveHandler() {
+        // this.SetHeaderSearchInput('');
+        this.setState((prevState) => {
+            return { ...prevState, selectedList: -1 };
         });
     }
 
@@ -223,7 +236,14 @@ class HeaderSearchConnect extends Component<AppState, HandleSearchStateType> {
                         onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => this.KeyUpHandler(e)}
                     />
                     <InputGroup.Append>
-                        <Button>
+                        <Button
+                            onClick={() => {
+                                const searchInput = document.getElementById('header-search-input');
+                                if (searchInput) {
+                                    searchInput.focus();
+                                }
+                            }}
+                        >
                             <i className="fas fa-search" />
                         </Button>
                     </InputGroup.Append>
@@ -263,7 +283,8 @@ class HeaderSearchConnect extends Component<AppState, HandleSearchStateType> {
                                                 role="button"
                                                 onClick={() => this.CloseSearch(item.title)}
                                                 title={item.type.substr(0, 1).toUpperCase() + item.type.substr(1, item.type.length - 1)}
-                                                onMouseEnter={() => this.DropdownMouseEnterHandler(index, item.title)}
+                                                onMouseEnter={() => this.DropdownMouseEnterHandler(index)}
+                                                onMouseLeave={() => this.DropdownMouseLeaveHandler()}
                                             >
                                                 {icon !== '' && <i className={icon}></i>}
                                                 <span>{item.title}</span>
