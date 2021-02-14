@@ -23,7 +23,7 @@ class Modal extends Component<AppState & typeof MapDispatch> {
                     return item.link === path;
                 });
 
-                console.log(Component, path);
+                // console.log(Component, path);
 
                 let X;
                 try {

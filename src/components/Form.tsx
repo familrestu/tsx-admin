@@ -1,16 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { KTPFormat, NPWPFormat } from 'libs/form';
 import { Col, Button } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
+//import { withRouter } from 'react-router';
 
 import moment from 'moment';
 import { AxiosError, AxiosResponse } from 'axios';
-import { post } from 'libs/fetch';
 
 // import Alert from 'components/Alert';
 import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
+
+import { post } from 'libs/fetch';
+import { KTPFormat, NPWPFormat } from 'libs/form';
 
 const CancelButton = (props: { isModal: boolean; onClick: () => void }) => {
     const history = useHistory();
@@ -18,7 +20,7 @@ const CancelButton = (props: { isModal: boolean; onClick: () => void }) => {
     return (
         <Button
             variant="secondary"
-            className="btn btn-default"
+            className="btn btn-default mr-2"
             onClick={() => {
                 if (props.isModal !== undefined && props.isModal && props.onClick) {
                     props.onClick();
@@ -239,6 +241,17 @@ class Form extends React.Component<FormProps & AppState & typeof MapDispatch, Fo
 
                     <Col className="d-flex justify-content-end">
                         <CancelButton isModal={this.props.ModalState && this.props.ModalState.isOpened ? true : false} onClick={() => this.props.CloseModal()} />
+                        <Button
+                            variant="danger"
+                            type="button"
+                            onClick={() => {
+                                if (window.confirm('Are you sure want to delete this data?')) {
+                                    console.log('yes');
+                                }
+                            }}
+                        >
+                            Delete
+                        </Button>
                     </Col>
                 </div>
             );
@@ -258,7 +271,12 @@ class Form extends React.Component<FormProps & AppState & typeof MapDispatch, Fo
         }
     }
 
+    GetAccessMode() {
+        // console.log(this.props.MenuAuthState, this.props.location);
+    }
+
     componentDidMount() {
+        this.GetAccessMode();
         this.GetFormData();
     }
 
@@ -288,10 +306,14 @@ class Form extends React.Component<FormProps & AppState & typeof MapDispatch, Fo
 
 const MapStateToProps = (state: AppState) => ({
     ModalState: state.ModalState,
+    MenuAuthState: state.MenuAuthState,
 });
 
 const MapDispatch = {
     CloseModal: () => ({ type: 'CLOSEMODAL' }),
 };
 
+// const WithRouterForm = withRo0uter(Form);
+
 export default connect(MapStateToProps, MapDispatch)(Form);
+// export default withRouter(Form);

@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
+import SimpleBar from 'simplebar-react';
 import { FormControl, Button, Badge, Col } from 'react-bootstrap';
 import { AxiosError, AxiosResponse } from 'axios';
-import { post } from 'libs/fetch';
 import CSS from 'csstype';
 
-import SimpleBar from 'simplebar-react';
+import { connect } from 'react-redux';
+import { AppState } from 'redux/store';
+
+import { post } from 'libs/fetch';
 import { PageCloneChildrenPropsType } from 'components/Page';
 
 type ToolbarPropsType = {
@@ -85,7 +88,7 @@ class Toolbar extends Component<ToolbarPropsType & TablePropsType & TableStateTy
     }
 }
 
-class Table extends Component<TablePropsType & PageCloneChildrenPropsType, TableStateType> {
+class Table extends Component<TablePropsType & PageCloneChildrenPropsType & AppState, TableStateType> {
     _isMounted = false;
     _Table: HTMLDivElement | null | undefined;
 
@@ -289,7 +292,7 @@ class Table extends Component<TablePropsType & PageCloneChildrenPropsType, Table
     }
 
     CloneChildren(datasets: TableDataType) {
-        const tempArr: any[] = [];
+        const tempArr: React.ReactElement[] = [];
 
         const arrarrNumberElement: any[] = [];
         const arrBodyData: string[][] = datasets.body;
@@ -369,6 +372,10 @@ class Table extends Component<TablePropsType & PageCloneChildrenPropsType, Table
         return arrBadges;
     }
 
+    GetAccessMode() {
+        console.log(this.props.MenuAuthState);
+    }
+
     componentDidMount() {
         this._isMounted = true;
         this.FetchTableData(true);
@@ -418,4 +425,8 @@ class Table extends Component<TablePropsType & PageCloneChildrenPropsType, Table
     }
 }
 
-export default Table;
+const MapStateToProps = (state: AppState) => ({
+    MenuAuthState: state.MenuAuthState,
+});
+
+export default connect(MapStateToProps)(Table);

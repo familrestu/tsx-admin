@@ -90,6 +90,11 @@
 
 		span {
 			white-space: nowrap;
+			transition: unset !important;
+		}
+		
+		a {
+			transition: unset !important;
 		}
 	}
 
