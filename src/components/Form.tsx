@@ -41,13 +41,13 @@ type FormProps = {
     buttonGroup?: boolean;
     onSubmitSuccessCallBack?: (res: AxiosResponse) => void;
     onSubmitErrorCallBack?: (err: AxiosError) => void;
-    data?: { [key: string]: string | number | Date | string[] | number[] } | { [key: string]: string | number | Date | string[] | number[] }[];
+    params?: { [key: string]: string | number | Date | string[] | number[] } | { [key: string]: string | number | Date | string[] | number[] }[];
     children?: React.ReactNode;
 };
 
 type FormState = {
     isLoaded: boolean;
-    datasource: string | null;
+    datasource: { [key: string]: any } | null;
     isSubmiting: boolean;
 };
 
@@ -60,7 +60,7 @@ class Form extends React.Component<FormProps & AppState & typeof MapDispatch, Fo
         isSubmiting: false,
     };
 
-    FormDataHandler() {
+    GetFormData() {
         if (this.props.datasource) {
             /* if datasource is an object, set is as local datasource state */
             if (typeof this.props.datasource === 'object') {
@@ -73,7 +73,12 @@ class Form extends React.Component<FormProps & AppState & typeof MapDispatch, Fo
                             this.props.onSubmitSuccessCallBack(res);
                         }
 
-                        this.setState({ isLoaded: true, datasource: res.data }, () => this.SetFormData());
+                        const formData = res.data;
+                        delete formData.status;
+
+                        if (JSON.stringify(this.state.datasource) !== JSON.stringify(formData)) {
+                            this.setState({ isLoaded: true, datasource: formData }, () => this.SetFormData());
+                        }
                     }
                 };
 
@@ -96,7 +101,7 @@ class Form extends React.Component<FormProps & AppState & typeof MapDispatch, Fo
                 }
 
                 post(
-                    this.props.data ? this.props.data : null,
+                    this.props.params ? this.props.params : null,
                     path,
                     null,
                     (res: AxiosResponse) => onSuccessPost(res),
@@ -254,11 +259,11 @@ class Form extends React.Component<FormProps & AppState & typeof MapDispatch, Fo
     }
 
     componentDidMount() {
-        this.FormDataHandler();
+        this.GetFormData();
     }
 
     componentDidUpdate() {
-        // this.SetButtonGroupModal();
+        this.GetFormData();
     }
 
     render() {
@@ -271,6 +276,7 @@ class Form extends React.Component<FormProps & AppState & typeof MapDispatch, Fo
                 encType={this.props.encType}
                 action={this.props.action}
                 onSubmit={(e: React.FormEvent) => this.FormSubmitHandler(e)}
+                key={new Date().toString()}
             >
                 {this.props.children}
                 {/* {this.props.ModalState && !this.props.ModalState.isOpened && <ButtonGroup />} */}

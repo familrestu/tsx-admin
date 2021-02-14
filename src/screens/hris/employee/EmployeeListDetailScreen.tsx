@@ -25,7 +25,7 @@ class EmployeeListDetailScreen extends Component<AppState & RouteComponentProps<
         return (
             <Page breadCrumb="Employee|List|Details">
                 {/* <Form datasource="emp/EmpData" data={{ employee_no: this.props.match.params.employee_no }}></Form> */}
-                <Form datasource="emp/EmpData" data={{ employee_no: employee_no }}>
+                <Form datasource="emp/EmpData" params={{ employee_no: employee_no }}>
                     <Input type="text" label="Name" size="4" placeholder="Full Name" name="full_name" readOnly />
                     <Input type="text" label="Position" size="auto" placeholder="Position" name="position" plaintext readOnly />
 
