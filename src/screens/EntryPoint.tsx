@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useState } from 'react';
-import { BrowserRouter, Switch, Route, Redirect, RouteProps } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Redirect, RouteProps } from 'react-router-dom';
 import { connect, useSelector } from 'react-redux';
 import { AppState } from 'redux/store';
 
@@ -66,7 +66,7 @@ const RouterChildren = (menuAuthDetail: MenuAuthStateType & RouteProps) => {
 };
 
 const DynamicRouter = () => {
-    const currentApp = useSelector((state: any) => state.UserState.current_app);
+    const currentApp = useSelector((state: AppState) => state.UserState.current_app);
     const MenuAuthState: MenuAuthStateType = useSelector((state: AppState) => state.MenuAuthState);
     const ArrRouterElement: JSX.Element[] = [];
     let ArrayRouter: { componentPath: MenuAuthStateDetailType['componentPath']; link: MenuAuthStateDetailType['link']; isGlobal: MenuAuthStateDetailType['isGlobal'] }[] = [];
@@ -129,7 +129,7 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
     };
 
     return (
-        <BrowserRouter>
+        <Router>
             {window.location.pathname !== '/printpreview' && (
                 <Navbar
                     ToggleNavbarHandler={() => ToggleNavbarHandler()}
@@ -154,12 +154,12 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
                 </div>
             </div>
             <Modal />
-        </BrowserRouter>
+        </Router>
     );
 };
 
 const NotAuthorizedScreen = () => (
-    <BrowserRouter basename={`/`}>
+    <Router basename={`/`}>
         <div className="content-container">
             <Suspense fallback={<LoadingSuspense />}>
                 <Switch>
@@ -169,7 +169,7 @@ const NotAuthorizedScreen = () => (
                 </Switch>
             </Suspense>
         </div>
-    </BrowserRouter>
+    </Router>
 );
 
 type LocalState = {

@@ -117,7 +117,6 @@ class Avatar extends React.Component<AvatarProps & AppState & typeof MapDispatch
                             </div>
                         </div>
                         <NavLink
-                            exact
                             to="/profile"
                             onMouseEnter={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 0)}
                             onMouseLeave={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
@@ -128,11 +127,11 @@ class Avatar extends React.Component<AvatarProps & AppState & typeof MapDispatch
                             </div>
                         </NavLink>
                         <NavLink
-                            exact
-                            to={{
+                            /* to={{
                                 pathname: '/profile',
                                 state: 'accountInformation',
-                            }}
+                            }} */
+                            to="/profile/account-information"
                             onMouseEnter={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 0)}
                             onMouseLeave={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
                             onClick={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}

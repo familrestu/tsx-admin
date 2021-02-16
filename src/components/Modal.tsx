@@ -23,8 +23,6 @@ class Modal extends Component<AppState & typeof MapDispatch> {
                     return item.link === path;
                 });
 
-                // console.log(Component, path);
-
                 let X;
                 try {
                     if (Component[0].isGlobal === 'Yes' || Component[0].isGlobal === 1) {
@@ -35,8 +33,8 @@ class Modal extends Component<AppState & typeof MapDispatch> {
                         X = require(`../screens/${this.props.UserState.current_app}${Component[0].componentPath}`);
                     }
                 } catch (error) {
-                    // eslint-disable-next-line @typescript-eslint/no-var-requires
                     console.log(error.message);
+                    // eslint-disable-next-line @typescript-eslint/no-var-requires
                     X = require(`../screens/PageNotFoundScreen`);
                 }
 

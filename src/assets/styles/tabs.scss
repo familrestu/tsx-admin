@@ -87,15 +87,16 @@
     margin-bottom: 1rem;
 	border-bottom: 1px solid var(--light-grey);
 	
-	a.active {
+	div.active {
 		color: var(--primary);
 		font-weight: 500;
 		background-color: var(--white);
 		border-color: var(--light-grey);
 	}
 
-	a {
+	div {
 		color: var(--black);
+		cursor: pointer;
 	}
 }
 
@@ -106,7 +107,7 @@
 			width: 100%;
 			overflow-y: hidden;
 			overflow-x: scroll;
-			a {
+			div {
 				white-space: nowrap;
 			}
 		}

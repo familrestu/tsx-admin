@@ -36,12 +36,40 @@
 
 .form {
 	&.loading {
-		input {
+		input, textarea {
 			@include loadingAnimation;
+		}
 
-			&::placeholder, &::-moz-placeholder, &::-webkit-input-placeholder {
-				color: transparent;
-			}
+		/* WebKit, Blink, Edge */
+		::-webkit-input-placeholder { 
+			color: transparent;
+		}
+
+		/* Mozilla Firefox 4 to 18 */
+		:-moz-placeholder { 
+			color: transparent;
+			opacity:  1;
+		}
+
+		/* Mozilla Firefox 19+ */
+		::-moz-placeholder { 
+			color: transparent;
+			opacity:  1;
+		}
+
+		/* Internet Explorer 10-11 */
+		:-ms-input-placeholder { 
+			color: transparent;
+		}
+
+		/* Microsoft Edge */
+		::-ms-input-placeholder { 
+			color: transparent;
+		}
+
+		/* Most modern browsers support this now. */
+		::placeholder { 
+			color: transparent;
 		}
 	}
 }

@@ -6,6 +6,7 @@ export const CLOSEMODAL = 'CLOSEMODAL';
 type OpenModal = {
     type: typeof OPENMODAL;
     path: ModalStateType['path'];
+    accessmode: ModalStateType['accessmode'];
     modalParams?: ModalStateType['modalParams'];
 };
 

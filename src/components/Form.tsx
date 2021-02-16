@@ -1,14 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Col, Button } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
-//import { withRouter } from 'react-router';
+import { useHistory, withRouter, RouteComponentProps } from 'react-router-dom';
 
 import moment from 'moment';
 import { AxiosError, AxiosResponse } from 'axios';
 
 // import Alert from 'components/Alert';
-import { connect } from 'react-redux';
+import { connect, useSelector, useDispatch } from 'react-redux';
 import { AppState } from 'redux/store';
 
 import { post } from 'libs/fetch';
@@ -34,13 +33,77 @@ const CancelButton = (props: { isModal: boolean; onClick: () => void }) => {
     );
 };
 
+const ButtonDeleteHandler = () => {
+    if (window.confirm('Are you sure want to delete this data?')) {
+        console.log('yes');
+    }
+};
+
+type ButtonGroupPropsType = {
+    datasource?: string;
+    action?: string;
+    workFlow?: boolean;
+};
+
+const ButtonGroupTemp = (props: ButtonGroupPropsType & RouteComponentProps) => {
+    const ModalState = useSelector((state: AppState) => state.ModalState);
+    const MenuAuthState = useSelector((state: AppState) => state.MenuAuthState);
+    const dispatch = useDispatch();
+    const arrAuth = MenuAuthState.filter((a) => {
+        return a.link === (ModalState.isOpened ? ModalState.path : props.match.path);
+    });
+    const AccessMode = arrAuth.length > 0 ? arrAuth[0].accessmode : 0;
+    // console.log(AccessMode);
+
+    // 0 = Read
+    // 1 = Write
+    // 2 = Update
+    // 3 = Delete
+
+    return (
+        <div className="form-button-group">
+            <Col>
+                {!props.datasource && AccessMode >= 1 && (
+                    <Button variant="primary" className="mr-2" type="submit">
+                        Submit
+                    </Button>
+                )}
+                {props.datasource && AccessMode >= 2 && (
+                    <Button variant="primary" className="mr-2" type="submit">
+                        Update
+                    </Button>
+                )}
+                {((!props.datasource && AccessMode >= 1) || (props.datasource && AccessMode >= 2)) && (
+                    <Button variant="secondary" type="reset" className="mr-2">
+                        Reset
+                    </Button>
+                )}
+            </Col>
+
+            <Col className="d-flex justify-content-end">
+                <CancelButton isModal={ModalState && ModalState.isOpened ? true : false} onClick={() => dispatch({ type: 'CLOSEMODAL' })} />
+                {AccessMode >= 3 && (
+                    <Button variant="danger" type="button" onClick={() => ButtonDeleteHandler()}>
+                        Delete
+                    </Button>
+                )}
+            </Col>
+        </div>
+    );
+};
+
+const ButtonGroup = withRouter(ButtonGroupTemp);
+
 type FormProps = {
     id?: string;
     className?: string;
     datasource?: string;
     action?: string;
     encType?: string;
+
+    workFlow?: boolean;
     buttonGroup?: boolean;
+
     onSubmitSuccessCallBack?: (res: AxiosResponse) => void;
     onSubmitErrorCallBack?: (err: AxiosError) => void;
     params?: { [key: string]: string | number | Date | string[] | number[] } | { [key: string]: string | number | Date | string[] | number[] }[];
@@ -49,24 +112,30 @@ type FormProps = {
 
 type FormState = {
     isLoaded: boolean;
-    datasource: { [key: string]: any } | null;
+    formData: { [key: string]: any } | null;
     isSubmiting: boolean;
 };
 
-class Form extends React.Component<FormProps & AppState & typeof MapDispatch, FormState> {
+class Form extends React.Component<FormProps & AppState, FormState> {
     _Form: HTMLFormElement | null | undefined;
+    _CurrentPath: string = window.location.pathname;
+    _PrevPath: string | undefined;
 
     state = {
         isLoaded: false,
-        datasource: null,
+        formData: null,
         isSubmiting: false,
     };
 
     GetFormData() {
         if (this.props.datasource) {
+            if (this._Form) {
+                this._Form.classList.add('loading');
+            }
+
             /* if datasource is an object, set is as local datasource state */
             if (typeof this.props.datasource === 'object') {
-                this.setState({ isLoaded: true, datasource: this.props.datasource }, () => this.SetFormData());
+                this.setState({ isLoaded: true, formData: this.props.datasource }, () => this.SetFormData());
                 /* if datasource is a string, fetch it  */
             } else if (typeof this.props.datasource === 'string') {
                 const onSuccessPost = (res: AxiosResponse) => {
@@ -78,8 +147,10 @@ class Form extends React.Component<FormProps & AppState & typeof MapDispatch, Fo
                         const formData = res.data;
                         delete formData.status;
 
-                        if (JSON.stringify(this.state.datasource) !== JSON.stringify(formData)) {
-                            this.setState({ isLoaded: true, datasource: formData }, () => this.SetFormData());
+                        // console.log(JSON.stringify(this.state.formData) !== JSON.stringify(formData));
+
+                        if (JSON.stringify(this.state.formData) !== JSON.stringify(formData)) {
+                            this.setState({ isLoaded: true, formData: formData }, () => this.SetFormData());
                         }
                     }
                 };
@@ -114,8 +185,8 @@ class Form extends React.Component<FormProps & AppState & typeof MapDispatch, Fo
     }
 
     SetFormData() {
-        if (this.state.datasource !== null) {
-            const formData = this.state.datasource;
+        if (this.state.formData !== null) {
+            const formData = this.state.formData;
             if (this._Form !== null && this._Form !== undefined) {
                 // find all input inside this form
                 const arrInputs = this._Form.querySelectorAll('input, textarea, select');
@@ -167,6 +238,10 @@ class Form extends React.Component<FormProps & AppState & typeof MapDispatch, Fo
                         }
                     }
                 }
+
+                if (this._Form) {
+                    this._Form.classList.remove('loading');
+                }
             }
         }
     }
@@ -174,6 +249,10 @@ class Form extends React.Component<FormProps & AppState & typeof MapDispatch, Fo
     FormSubmitHandler(e: React.FormEvent) {
         if (this.props.action) {
             e.preventDefault();
+
+            if (this._Form) {
+                this._Form.classList.add('loading');
+            }
 
             const form = e.currentTarget as HTMLFormElement;
             const arrInputs = form.querySelectorAll('input, select, textarea');
@@ -192,10 +271,6 @@ class Form extends React.Component<FormProps & AppState & typeof MapDispatch, Fo
                         tempFormData[element.name] = element.value;
                     }
                 }
-            }
-
-            if (this._Form) {
-                this._Form.classList.add('loading');
             }
 
             const onSuccessPost = (res: AxiosResponse) => {
@@ -226,66 +301,29 @@ class Form extends React.Component<FormProps & AppState & typeof MapDispatch, Fo
         }
     }
 
-    SetButtonGroup() {
-        if (this.props.buttonGroup === undefined || this.props.buttonGroup) {
-            return (
-                <div className="form-button-group">
-                    <Col>
-                        <Button variant="primary" className="mr-2" type="submit">
-                            {this.props.datasource ? 'Save' : 'Submit'}
-                        </Button>
-                        <Button variant="secondary" type="reset" className="mr-2">
-                            Reset
-                        </Button>
-                    </Col>
-
-                    <Col className="d-flex justify-content-end">
-                        <CancelButton isModal={this.props.ModalState && this.props.ModalState.isOpened ? true : false} onClick={() => this.props.CloseModal()} />
-                        <Button
-                            variant="danger"
-                            type="button"
-                            onClick={() => {
-                                if (window.confirm('Are you sure want to delete this data?')) {
-                                    console.log('yes');
-                                }
-                            }}
-                        >
-                            Delete
-                        </Button>
-                    </Col>
-                </div>
-            );
-        } else {
-            return <React.Fragment />;
-        }
-    }
-
     SetButtonGroupModal() {
         if (this.props.ModalState && this.props.ModalState.isOpened) {
             const modalFooter = document.getElementById('modal-footer');
 
             if (modalFooter) {
-                const ButtonGroup = () => this.SetButtonGroup();
-                ReactDOM.render(<ButtonGroup />, modalFooter);
+                ReactDOM.render(<ButtonGroup datasource={this.props.datasource} />, modalFooter);
             }
         }
     }
 
-    GetAccessMode() {
-        // console.log(this.props.MenuAuthState, this.props.location);
-    }
-
     componentDidMount() {
-        this.GetAccessMode();
         this.GetFormData();
     }
 
     componentDidUpdate() {
-        this.GetFormData();
+        this._PrevPath = this._CurrentPath;
+        this._CurrentPath = window.location.pathname;
+        if (this._PrevPath !== this._CurrentPath) {
+            this.GetFormData();
+        }
     }
 
     render() {
-        const ButtonGroup = () => this.SetButtonGroup();
         return (
             <form
                 ref={(ref) => (this._Form = ref)}
@@ -294,11 +332,9 @@ class Form extends React.Component<FormProps & AppState & typeof MapDispatch, Fo
                 encType={this.props.encType}
                 action={this.props.action}
                 onSubmit={(e: React.FormEvent) => this.FormSubmitHandler(e)}
-                key={new Date().toString()}
             >
                 {this.props.children}
-                {/* {this.props.ModalState && !this.props.ModalState.isOpened && <ButtonGroup />} */}
-                <ButtonGroup />
+                {(this.props.buttonGroup === undefined || this.props.buttonGroup) && <ButtonGroup datasource={this.props.datasource} action={this.props.action} workFlow={this.props.workFlow} />}
             </form>
         );
     }
@@ -306,14 +342,7 @@ class Form extends React.Component<FormProps & AppState & typeof MapDispatch, Fo
 
 const MapStateToProps = (state: AppState) => ({
     ModalState: state.ModalState,
-    MenuAuthState: state.MenuAuthState,
+    // MenuAuthState: state.MenuAuthState,
 });
 
-const MapDispatch = {
-    CloseModal: () => ({ type: 'CLOSEMODAL' }),
-};
-
-// const WithRouterForm = withRo0uter(Form);
-
-export default connect(MapStateToProps, MapDispatch)(Form);
-// export default withRouter(Form);
+export default connect(MapStateToProps)(Form);

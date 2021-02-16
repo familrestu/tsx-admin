@@ -1,9 +1,10 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { AppState } from 'redux/store';
+
 import Form from 'components/Form';
 import { Row } from 'react-bootstrap';
 import Input from 'components/Input';
-import { connect } from 'react-redux';
-import { AppState } from 'redux/store';
 
 type LocalState = {
     isChangePassword: boolean;
