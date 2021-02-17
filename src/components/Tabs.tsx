@@ -1,8 +1,9 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from 'redux/store';
+import Navlink from 'components/Navlink';
 
-const TabClickHandler = (e: React.MouseEvent<HTMLDivElement>, tabNumber: number | undefined) => {
+const TabClickHandler = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, tabNumber: number | undefined) => {
     const navTabs = document.querySelectorAll('nav.nav.nav-tabs .nav-item');
     const tabContainers = document.querySelectorAll('.tab-pane');
     const tabContainer = document.querySelector(`#tab-pane[tab-container-number='${tabNumber}']`);
@@ -22,10 +23,10 @@ const TabClickHandler = (e: React.MouseEvent<HTMLDivElement>, tabNumber: number 
 
     for (let i = 0; i < navTabs.length; i++) {
         const element = navTabs[i];
-        element.classList.remove('active');
+        element.classList.remove('activelink');
     }
 
-    e.currentTarget.classList.add('active');
+    e.currentTarget.classList.add('activelink');
 };
 
 type TabPropsType = {
@@ -36,13 +37,15 @@ type TabPropsType = {
 
 const Tab = (props: TabPropsType) => {
     return (
-        <div
-            className={`nav-item nav-link ${props.childNumber === 0 ? 'active' : ''}`.trim()}
+        <Navlink
+            to="#"
+            link={props.link}
+            className={`nav-item nav-link noactivenavlink ${props.childNumber === 0 ? 'activelink' : ''}`.trim()}
             tab-number={props.childNumber}
-            onClick={(e: React.MouseEvent<HTMLDivElement>) => TabClickHandler(e, props.childNumber)}
+            onClick={(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => TabClickHandler(e, props.childNumber)}
         >
             {props.title}
-        </div>
+        </Navlink>
     );
 };
 
@@ -54,7 +57,9 @@ type TabsPropsType = {
 const Tabs = (props: TabsPropsType) => {
     const UserState = useSelector((state: AppState) => state.UserState);
     const ModalState = useSelector((state: AppState) => state.ModalState);
+    const PageState = useSelector((state: AppState) => state.PageState);
     const MenuAuthState = useSelector((state: AppState) => state.MenuAuthState);
+    const dispatch = useDispatch();
 
     return (
         <React.Fragment>
@@ -65,7 +70,14 @@ const Tabs = (props: TabsPropsType) => {
             </nav>
             <div className="tab-content">
                 {React.Children.map(props.children, (child: { props: TabPropsType }, index: number) => {
-                    // console.log(child.props);
+                    /* if (index === 0 && PageState.path !==) {
+                        const arrAuth = MenuAuthState.filter((a) => {
+                            return a.link === child.props.link;
+                        });
+                        const AccessMode = arrAuth.length > 0 ? arrAuth[0].accessmode : 0;
+                        dispatch({ type: 'OPENPAGE', path: child.props.link, accessmode: AccessMode });
+                    } */
+
                     const Component = MenuAuthState.filter((a) => {
                         return a.link === (ModalState.isOpened ? ModalState.path : child.props.link);
                     });
@@ -79,11 +91,9 @@ const Tabs = (props: TabsPropsType) => {
                             X = require(`../screens/${UserState.current_app}${Component[0].componentPath}`);
                         }
                     } catch (error) {
-                        // console.log(error.message);
                         // eslint-disable-next-line @typescript-eslint/no-var-requires
                         X = require(`../screens/PageNotFoundScreen`);
                     }
-                    // console.log(Component);
                     return (
                         <div key={index} id="tab-pane" className={`fade tab-page-container tab-pane ${index === 0 ? 'active show' : ''}`.trim()} tab-container-number={index}>
                             <X.default />

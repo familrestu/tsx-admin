@@ -87,16 +87,20 @@
     margin-bottom: 1rem;
 	border-bottom: 1px solid var(--light-grey);
 	
-	div.active {
+	.noactivenavlink.activelink {
 		color: var(--primary);
 		font-weight: 500;
 		background-color: var(--white);
-		border-color: var(--light-grey);
+		border-color: var(--light-grey) !important;
 	}
 
-	div {
+	.noactivenavlink {
 		color: var(--black);
 		cursor: pointer;
+
+		&.active {
+			border-color: transparent;
+		}
 	}
 }
 

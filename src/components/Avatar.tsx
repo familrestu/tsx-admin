@@ -1,8 +1,9 @@
 import React from 'react';
 import CSS from 'csstype';
-import { NavLink } from 'react-router-dom';
+// import { NavLink as Navlink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
+import Navlink from 'components/Navlink';
 
 type AvatarState = {
     isImageLoaded: boolean;
@@ -116,7 +117,7 @@ class Avatar extends React.Component<AvatarProps & AppState & typeof MapDispatch
                                 <div className="nowrap text-center">{this.props.name}</div>
                             </div>
                         </div>
-                        <NavLink
+                        <Navlink
                             to="/profile"
                             onMouseEnter={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 0)}
                             onMouseLeave={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
@@ -125,8 +126,8 @@ class Avatar extends React.Component<AvatarProps & AppState & typeof MapDispatch
                             <div className="d-flex dropdown-item small justify-content-start align-items-center">
                                 <span className="text-black">Your Profile</span>
                             </div>
-                        </NavLink>
-                        <NavLink
+                        </Navlink>
+                        <Navlink
                             /* to={{
                                 pathname: '/profile',
                                 state: 'accountInformation',
@@ -139,7 +140,7 @@ class Avatar extends React.Component<AvatarProps & AppState & typeof MapDispatch
                             <div className="d-flex dropdown-item small justify-content-start align-items-center border-bottom">
                                 <span className="text-black">Change Password</span>
                             </div>
-                        </NavLink>
+                        </Navlink>
                         <div
                             onClick={() => {
                                 if (this.props.SignOutHandler) {

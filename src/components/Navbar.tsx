@@ -1,15 +1,17 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+// import { Navlink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
 import SimpleBar from 'simplebar-react';
 
+import { Button } from 'react-bootstrap';
 import { DividerHorizontal } from 'components/Divider';
 import { AvatarImage } from 'components/Avatar';
-import { Button } from 'react-bootstrap';
 import Notification from 'components/Notification';
+import Navlink from 'components/Navlink';
 
 import { MenuAuthStateDetailType } from 'redux/reducers/MenuAuthState';
+import { PageStateType } from 'redux/reducers/PageState';
 
 type AppLogoPropsType = {
     isMobile: boolean;
@@ -42,7 +44,7 @@ class AppLogo extends React.Component<AppLogoPropsType & AppDetailsType> {
         return (
             <li>
                 <div id="app-nav-container" className="app-nav-container pointer">
-                    <NavLink
+                    <Navlink
                         to="/"
                         onClick={() => {
                             if (this.props.isMobile) {
@@ -56,7 +58,7 @@ class AppLogo extends React.Component<AppLogoPropsType & AppDetailsType> {
                         <div id="app-small" className="app-small">
                             {this.props.app_logo_small !== null ? <img src={`${imgUrl}/${this.props.app_logo_small}`} alt={this.props.name} /> : this.props.name_short}
                         </div>
-                    </NavLink>
+                    </Navlink>
                     {this.props.isMobile && (
                         <Button onClick={this.props.ToggleNavbarHandler}>
                             <i className="fas fa-bars" />
@@ -74,7 +76,7 @@ const AvatarNav = (props: { isMobile: boolean; UserState: any; ToggleNavbarHandl
             <React.Fragment>
                 <DividerHorizontal />
                 <li className="d-flex avatar-group">
-                    <NavLink
+                    <Navlink
                         to="/profile"
                         onClick={() => {
                             if (props.isMobile) {
@@ -86,8 +88,8 @@ const AvatarNav = (props: { isMobile: boolean; UserState: any; ToggleNavbarHandl
                             <AvatarImage name={props.UserState.full_name} image={props.UserState.profile_picture} />
                             <div className="avatar-user-name">{props.UserState.full_name}</div>
                         </div>
-                    </NavLink>
-                    <NavLink
+                    </Navlink>
+                    <Navlink
                         to="/notification"
                         className="notification"
                         onClick={() => {
@@ -97,7 +99,7 @@ const AvatarNav = (props: { isMobile: boolean; UserState: any; ToggleNavbarHandl
                         }}
                     >
                         <Notification isMobile={props.isMobile} />
-                    </NavLink>
+                    </Navlink>
                 </li>
             </React.Fragment>
         );
@@ -219,7 +221,7 @@ const Navitem = (props: MenuAuthStateDetailType & NavitemPropsType) => {
         </div>
     );
 
-    const Container = props.children !== undefined && props.children.length > 0 ? Div : NavLink;
+    const Container = props.children !== undefined && props.children.length > 0 ? Div : Navlink;
 
     return (
         <li>
@@ -253,7 +255,7 @@ type NavbarPropsType = {
     isMobile: boolean;
 };
 
-class TempNavbarLeft extends React.Component<NavbarPropsType & AppState> {
+class NavbarLeft extends React.Component<NavbarPropsType & AppState> {
     render() {
         arrGroup.length = 0;
         return (
@@ -319,6 +321,10 @@ const MapStateToProps = (state: AppState) => ({
     UserState: state.UserState,
 });
 
-const NavbarLeft = connect(MapStateToProps)(TempNavbarLeft);
+const MapDispatch = {
+    OpenPage: (data: PageStateType) => ({ type: 'OPENPAGE', path: data.path, accessmode: data.accessmode }),
+};
 
-export default NavbarLeft;
+// const NavbarLeft = connect(MapStateToProps)(NavbarLeft);
+
+export default connect(MapStateToProps, MapDispatch)(NavbarLeft);
