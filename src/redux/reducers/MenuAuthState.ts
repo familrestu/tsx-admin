@@ -17,21 +17,7 @@ export type MenuAuthStateDetailType = {
 
 export type MenuAuthStateType = MenuAuthStateDetailType[];
 
-const DefaultState: MenuAuthStateType = [
-    {
-        group: null,
-        groupid: null,
-        id: 'dashboard',
-        icon: 'fas fa-tachometer-alt',
-        name: 'Dashboard',
-        link: '/',
-        componentPath: '/',
-        isMenu: 'No',
-        isGlobal: 'No',
-        accessmode: 3,
-        pageType: 'dashboard',
-    },
-];
+const DefaultState: MenuAuthStateType = [];
 
 const MenuAuthState = (state: MenuAuthStateType = DefaultState, action: MenuActions) => {
     switch (action.type) {

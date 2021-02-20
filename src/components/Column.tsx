@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
-import { NavLink } from 'react-router-dom';
+import { FormControl, InputGroup, Button } from 'react-bootstrap';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { StaticContext } from 'react-router';
 import moment from 'moment';
 
 import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
-import { ModalStateType } from 'redux/reducers/ModalState';
 
-import { FormControl, InputGroup, Button } from 'react-bootstrap';
+import { ModalStateType } from 'redux/reducers/ModalState';
+import { TabStateType } from 'redux/reducers/TabState';
+
+import Navlink from 'components/Navlink';
 // import { DatePicker } from './Input';
 
 let mouseMove: any;
@@ -82,7 +86,7 @@ type ColumnStateType = {
     isSearch: boolean;
 };
 
-class Column extends Component<ColumnPropsType & AppState & typeof MapDispatch, ColumnStateType> {
+class Column extends Component<ColumnPropsType & RouteComponentProps & AppState & typeof MapDispatch & RouteComponentProps<null, StaticContext, { tab: string }>, ColumnStateType> {
     MouseMoveListener: any;
     _HeaderSearchRef: HTMLButtonElement | null | undefined;
 
@@ -373,22 +377,18 @@ class Column extends Component<ColumnPropsType & AppState & typeof MapDispatch, 
                                     if (replaceThis && this.props.header) {
                                         const id = replaceThis[0].replace('[', '').replace(']', '');
                                         const indexOfId = this.props.header.indexOf(id);
+                                        const navlink = link.replace(replaceThis[0], `:${id}`);
 
                                         if (this.props.ModalState && this.props.ModalState.isOpened) {
                                             const params: { [key: string]: any } = {};
                                             const idValue = this.props.body ? this.props.body[indexOfId][i] : '';
                                             params[id] = idValue;
-                                            link = link.replace(replaceThis[0], `:${id}`);
 
                                             return (
                                                 <span
-                                                    style={{
-                                                        color: '#007bff',
-                                                        cursor: 'pointer',
-                                                    }}
+                                                    className="link"
                                                     onClick={() => {
-                                                        this.props.OpenModal(link, params);
-                                                        // console.log(link, params);
+                                                        this.props.OpenModal(navlink, params);
                                                     }}
                                                 >
                                                     {value}
@@ -405,13 +405,9 @@ class Column extends Component<ColumnPropsType & AppState & typeof MapDispatch, 
                                                 }
                                             }
                                             return (
-                                                <NavLink
-                                                    to={{
-                                                        pathname: link,
-                                                    }}
-                                                >
+                                                <Navlink to={link} navtype="page" navlink={navlink}>
                                                     {value}
-                                                </NavLink>
+                                                </Navlink>
                                             );
                                         }
                                     } else {
@@ -473,7 +469,7 @@ class Column extends Component<ColumnPropsType & AppState & typeof MapDispatch, 
             }
         }
 
-        return row;
+        return <React.Fragment>{row}</React.Fragment>;
     }
 
     render() {
@@ -492,7 +488,11 @@ const MapStateToProps = (state: AppState) => ({
 
 const MapDispatch = {
     OpenModal: (path: ModalStateType['path'], modalParams?: ModalStateType['modalParams']) => ({ type: 'OPENMODAL', path, modalParams }),
+    OpenTab: (path: TabStateType['path'], accessmode: TabStateType['accessmode']) => ({ type: 'OPENTAB', path, accessmode }),
     CloseModal: () => ({ type: 'CLOSEMODAL' }),
 };
 
-export default connect(MapStateToProps, MapDispatch)(Column);
+const ColumnConnect = connect(MapStateToProps, MapDispatch)(Column);
+const ColumnWithRouter = withRouter(ColumnConnect);
+
+export default connect(MapStateToProps, MapDispatch)(ColumnWithRouter);

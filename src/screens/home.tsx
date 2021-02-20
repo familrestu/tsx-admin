@@ -1,6 +1,6 @@
 import React, { Suspense, lazy, useState } from 'react';
 import { BrowserRouter as Router, Switch, Route, Redirect, RouteProps } from 'react-router-dom';
-import { connect, useSelector } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { AppState } from 'redux/store';
 
 import { MenuAuthStateType, MenuAuthStateDetailType } from 'redux/reducers/MenuAuthState';
@@ -13,14 +13,15 @@ import Navbar from 'components/Navbar';
 import LoadingSuspense from 'components/LoadingSuspense';
 
 import Modal from 'components/Modal';
+// import Page from 'components/Page';
+// import { SetAccess } from 'libs/access';
 
-const HomeScreen = lazy(() => import('screens/HomeScreen'));
-const LoginScreen = lazy(() => import('screens/LoginScreen'));
+const Dashboard = lazy(() => import('screens/dashboard'));
+const Login = lazy(() => import('screens/login'));
 
-const PageNotFoundScreen = lazy(() => import('screens/PageNotFoundScreen'));
-const ForgotPasswordScreen = lazy(() => import('screens/ForgotPasswordScreen'));
-const NotificationScreen = lazy(() => import('screens/NotificationScreen'));
-const PrintPreviewScreen = lazy(() => import('screens/PrintPreviewScreen'));
+const PagenotFound = lazy(() => import('screens/pagenotfound'));
+const ForgotPassword = lazy(() => import('screens/forgotpassword'));
+const Notification = lazy(() => import('screens/notification'));
 
 let interval: number;
 const getTokenInterval = 14000;
@@ -103,11 +104,24 @@ const DynamicRouter = () => {
         ArrRouterElement.push(<Route key={`dynamic-route-${i}`} exact path={element.link} component={component} />);
     }
 
-    return ArrRouterElement;
+    return <React.Fragment>{ArrRouterElement}</React.Fragment>;
 };
 
 const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
     const [SuspenseType, SetSuspense] = useState(localStorage.getItem('pageType') === null ? 'dashboard' : localStorage.getItem('pageType'));
+    const dispatch = useDispatch();
+    const PageState = useSelector((state: AppState) => state.PageState);
+    const MenuAuthState = useSelector((state: AppState) => state.MenuAuthState);
+    const url = window.location.pathname;
+
+    // console.log(performance.getEntriesByType('navigation'));
+    if (PageState && PageState.path === null) {
+        const arrAuth = MenuAuthState.filter((a) => {
+            return a.link === url;
+        });
+        const accessmode = arrAuth.length > 0 ? arrAuth[0].accessmode : 0;
+        dispatch({ type: 'OPENPAGE', path: url, accessmode });
+    }
 
     CheckTokenInterval(props);
 
@@ -130,24 +144,22 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
 
     return (
         <Router>
-            {window.location.pathname !== '/printpreview' && (
-                <Navbar
-                    ToggleNavbarHandler={() => ToggleNavbarHandler()}
-                    SignOutHandler={() => props.SignOutHandler()}
-                    isMobile={props.isMobile}
-                    SetSuspenseType={(type: string) => SetSuspenseType(type)}
-                />
-            )}
+            <Navbar
+                ToggleNavbarHandler={() => ToggleNavbarHandler()}
+                SignOutHandler={() => props.SignOutHandler()}
+                isMobile={props.isMobile}
+                SetSuspenseType={(type: string) => SetSuspenseType(type)}
+            />
             <div className="content-container">
-                {window.location.pathname !== '/printpreview' && <Header ToggleNavbarHandler={() => ToggleNavbarHandler()} isMobile={props.isMobile} SignOutHandler={() => props.SignOutHandler()} />}
+                <Header ToggleNavbarHandler={() => ToggleNavbarHandler()} isMobile={props.isMobile} SignOutHandler={() => props.SignOutHandler()} />
                 <div id="body" className="body">
                     <Suspense fallback={<LoadingSuspense SuspenseType={SuspenseType} />}>
                         <Switch>
-                            <Route exact path="/" component={HomeScreen} />
-                            {DynamicRouter()}
-                            <Route path="/notification" component={NotificationScreen} />
-                            <Route path="/printpreview" component={PrintPreviewScreen} />
-                            <Route path="/pagenotfound" component={PageNotFoundScreen} />
+                            <Route exact path="/" component={Dashboard} />
+                            {/* {DynamicRouter()} */}
+                            <DynamicRouter />
+                            <Route path="/notification" component={Notification} />
+                            <Route path="/pagenotfound" component={PagenotFound} />
                             <Redirect to="/pagenotfound" />
                         </Switch>
                     </Suspense>
@@ -163,8 +175,8 @@ const NotAuthorizedScreen = () => (
         <div className="content-container">
             <Suspense fallback={<LoadingSuspense />}>
                 <Switch>
-                    <Route exact path="/" component={LoginScreen} />
-                    <Route exact path="/forgotpassword" component={ForgotPasswordScreen} />
+                    <Route exact path="/" component={Login} />
+                    <Route exact path="/forgotpassword" component={ForgotPassword} />
                     <Redirect to="/" />
                 </Switch>
             </Suspense>

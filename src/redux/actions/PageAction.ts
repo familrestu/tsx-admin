@@ -1,6 +1,7 @@
 import { PageStateType } from '../reducers/PageState';
 
 export const OPENPAGE = 'OPENPAGE';
+export const OPENTAB = 'OPENTAB';
 export const LOGIN = 'LOGIN';
 
 type OpenPageActionType = {

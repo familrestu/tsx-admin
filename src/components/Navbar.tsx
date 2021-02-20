@@ -46,6 +46,7 @@ class AppLogo extends React.Component<AppLogoPropsType & AppDetailsType> {
                 <div id="app-nav-container" className="app-nav-container pointer">
                     <Navlink
                         to="/"
+                        navtype="page"
                         onClick={() => {
                             if (this.props.isMobile) {
                                 this.props.ToggleNavbarHandler();
@@ -78,6 +79,7 @@ const AvatarNav = (props: { isMobile: boolean; UserState: any; ToggleNavbarHandl
                 <li className="d-flex avatar-group">
                     <Navlink
                         to="/profile"
+                        navtype="page"
                         onClick={() => {
                             if (props.isMobile) {
                                 props.ToggleNavbarHandler();
@@ -91,6 +93,7 @@ const AvatarNav = (props: { isMobile: boolean; UserState: any; ToggleNavbarHandl
                     </Navlink>
                     <Navlink
                         to="/notification"
+                        navtype="page"
                         className="notification"
                         onClick={() => {
                             if (props.isMobile) {
@@ -226,10 +229,11 @@ const Navitem = (props: MenuAuthStateDetailType & NavitemPropsType) => {
     return (
         <li>
             <Container
-                id={props.id}
-                className="navitem-container"
                 exact
                 to={props.link}
+                navtype="page"
+                id={props.id}
+                className="navitem-container"
                 onClick={(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
                     if (props.isMobile) {
                         props.ToggleNavbarHandler();

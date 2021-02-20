@@ -2,6 +2,7 @@ import { ModalStateType } from '../reducers/ModalState';
 
 export const OPENMODAL = 'OPENMODAL';
 export const CLOSEMODAL = 'CLOSEMODAL';
+export const SETMODALACCESS = 'SETMODALACCESS';
 
 type OpenModal = {
     type: typeof OPENMODAL;
@@ -14,4 +15,9 @@ type CloseModal = {
     type: typeof CLOSEMODAL;
 };
 
-export type ModalActions = OpenModal | CloseModal;
+type SetModalAccess = {
+    type: typeof SETMODALACCESS;
+    accessmode: ModalStateType['accessmode'];
+};
+
+export type ModalActions = OpenModal | CloseModal | SetModalAccess;

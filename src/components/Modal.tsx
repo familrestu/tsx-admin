@@ -2,18 +2,27 @@ import React, { Component } from 'react';
 import Overlay from 'components/Overlay';
 import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
+import { ModalStateType } from 'redux/reducers/ModalState';
 
-/**
- * Modal Components
- * Render page based on ModalState
- * @param {string} ModalState.path find path based on MenuAuthState
- * @param {object} ModalState.params if opened page recieve params like React Router, put that here
- *
- * @example
- *
- * <Modal />
- */
 class Modal extends Component<AppState & typeof MapDispatch> {
+    SetModalAccess() {
+        if (this.props.ModalState !== undefined && this.props.UserState !== undefined && this.props.MenuAuthState !== undefined) {
+            if (this.props.ModalState.isOpened && this.props.ModalState.path) {
+                const path = this.props.ModalState.path;
+                const Component = this.props.MenuAuthState.filter((item) => {
+                    return item.link === path;
+                });
+                if (!this.props.ModalState.accessmode) {
+                    this.props.SetAccess(Component[0].accessmode);
+                }
+            }
+        }
+    }
+
+    componentDidUpdate() {
+        this.SetModalAccess();
+    }
+
     render() {
         if (this.props.ModalState !== undefined && this.props.UserState !== undefined && this.props.MenuAuthState !== undefined) {
             if (this.props.ModalState.isOpened && this.props.ModalState.path) {
@@ -35,7 +44,7 @@ class Modal extends Component<AppState & typeof MapDispatch> {
                 } catch (error) {
                     console.log(error.message);
                     // eslint-disable-next-line @typescript-eslint/no-var-requires
-                    X = require(`../screens/PageNotFoundScreen`);
+                    X = require(`../screens/pagenotfound`);
                 }
 
                 return (
@@ -71,6 +80,7 @@ const MapStateToProps = (state: AppState) => ({
 
 const MapDispatch = {
     CloseModal: () => ({ type: 'CLOSEMODAL' }),
+    SetAccess: (accessmode: ModalStateType['accessmode']) => ({ type: 'SETMODALACCESS', accessmode }),
 };
 
 export default connect(MapStateToProps, MapDispatch)(Modal);

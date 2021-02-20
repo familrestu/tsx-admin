@@ -1,7 +1,7 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import SimpleBar from 'simplebar-react';
 import CSS from 'csstype';
-import ReactDOM from 'react-dom';
 
 type PageProps = {
     breadCrumb?: string;

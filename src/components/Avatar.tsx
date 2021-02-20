@@ -118,7 +118,13 @@ class Avatar extends React.Component<AvatarProps & AppState & typeof MapDispatch
                             </div>
                         </div>
                         <Navlink
-                            to="/profile"
+                            to={{
+                                pathname: '/profile',
+                                state: {
+                                    tab: '/profile/personal-information',
+                                },
+                            }}
+                            navtype="page"
                             onMouseEnter={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 0)}
                             onMouseLeave={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
                             onClick={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
@@ -128,11 +134,13 @@ class Avatar extends React.Component<AvatarProps & AppState & typeof MapDispatch
                             </div>
                         </Navlink>
                         <Navlink
-                            /* to={{
+                            to={{
                                 pathname: '/profile',
-                                state: 'accountInformation',
-                            }} */
-                            to="/profile/account-information"
+                                state: {
+                                    tab: '/profile/account-information',
+                                },
+                            }}
+                            navtype="page"
                             onMouseEnter={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 0)}
                             onMouseLeave={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
                             onClick={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}

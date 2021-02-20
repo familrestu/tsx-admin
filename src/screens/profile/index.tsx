@@ -9,6 +9,7 @@ class ProfileScreen extends React.Component {
                 <Tabs>
                     <Tab title="Personal Information" link="/profile/personal-information" />
                     <Tab title="Account Information" link="/profile/account-information" />
+                    <Tab title="Test Tabs" link="/employee" />
                 </Tabs>
             </Page>
         );

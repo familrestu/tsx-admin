@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { InputGroup, Button } from 'react-bootstrap';
-import { NavLink } from 'react-router-dom';
+import Navlink from 'components/Navlink';
 
 import Avatar from 'components/Avatar';
 import { DividerVertical } from 'components/Divider';
@@ -48,6 +48,7 @@ const MapStateToProps = (state: AppState) => ({
 
 type SearchDetails = {
     link: string;
+    navlink?: string;
     title: string;
     type: string;
     params?: { [key: string]: string };
@@ -274,21 +275,23 @@ class HeaderSearchConnect extends Component<AppState, HandleSearchStateType> {
                                         }
 
                                         return (
-                                            <NavLink
+                                            <Navlink
                                                 key={index}
                                                 to={item.link}
+                                                navlink={item.navlink}
                                                 className={`dropdown-item header-search-item ${this.state.selectedList === index ? 'focus' : ''}`.trim()}
                                                 is-selected={`${this.state.selectedList === index ? 'yes' : 'no'}`}
                                                 index-number={index}
                                                 role="button"
                                                 onClick={() => this.CloseSearch(item.title)}
                                                 title={item.type.substr(0, 1).toUpperCase() + item.type.substr(1, item.type.length - 1)}
+                                                navtype="page"
                                                 onMouseEnter={() => this.DropdownMouseEnterHandler(index)}
                                                 onMouseLeave={() => this.DropdownMouseLeaveHandler()}
                                             >
                                                 {icon !== '' && <i className={icon}></i>}
                                                 <span>{item.title}</span>
-                                            </NavLink>
+                                            </Navlink>
                                         );
                                     })
                                 ) : (

@@ -93,8 +93,12 @@
 			transition: unset !important;
 		}
 		
-		a {
+		a, .link {
 			transition: unset !important;
+			color: #007bff;
+			text-decoration: none;
+			background-color: transparent;
+			cursor: pointer;
 		}
 	}
 

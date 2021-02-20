@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
+
 import Page from 'components/Page';
 import Table from 'components/Table';
 import Column from 'components/Column';
 
-class OtherInfoTabs extends Component {
+class EmployeeListScreen extends Component {
     render() {
         return (
-            <Page>
+            <Page breadCrumb="Employee|List">
                 <Table datasource="emp/EmpData">
-                    <Column label="Employee No" name="employee_no" type="link" link="/employee/list/details/[employee_no]" />
+                    <Column label="Employee No" name="employee_no" type="link" link="/employee/[employee_no]" />
                     <Column label="Full Name" name="full_name" />
                     <Column label="Position" name="position" />
                     <Column label="Department" name="department" />
@@ -21,4 +22,4 @@ class OtherInfoTabs extends Component {
     }
 }
 
-export default OtherInfoTabs;
+export default EmployeeListScreen;

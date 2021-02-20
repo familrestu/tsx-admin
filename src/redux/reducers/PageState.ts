@@ -14,10 +14,8 @@ const PageState = (state: PageStateType = DefaultState, action: PageActions) => 
     switch (action.type) {
         case OPENPAGE:
             return { ...state, path: action.path, accessmode: action.accessmode };
-        // case 'LOGIN':
-        // return { ...state, path: '/', accessmode: 3 };
         default:
-            return DefaultState;
+            return state;
     }
 };
 
