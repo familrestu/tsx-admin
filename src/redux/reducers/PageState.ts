@@ -2,7 +2,7 @@ import { OPENPAGE, PageActions } from '../actions/PageAction';
 
 export type PageStateType = {
     path: string | null;
-    accessmode?: 0 | 1 | 2 | 3 | 'read' | 'write' | 'update' | 'delete';
+    accessmode?: 0 | 1 | 2 | 3 | 'read' | 'write' | 'update' | 'delete' | null;
 };
 
 const DefaultState: PageStateType = {

@@ -1,12 +1,18 @@
 .simplebar-table {
-	margin-bottom: 1rem;
-
+	// margin-bottom: 1rem;
 	min-height: calc(100vh - 209px);
 	max-height: calc(100vh - 209px);
 	
 	.simplebar-track.simplebar-vertical {
 		top: 55px !important;
 		right: 0;
+	}
+}
+
+.tab-page-container {
+	.simplebar-table {
+		min-height: calc(100vh - 318px);
+		max-height: calc(100vh - 318px);
 	}
 }
 

@@ -399,7 +399,7 @@ class Table extends Component<TablePropsType & PageCloneChildrenPropsType & AppS
                     </div>
                 </div>
                 <SimpleBar
-                    style={{ minHeight: `${this.props['page-max-height']}px`, maxHeight: `${this.props['page-max-height']}px`, minWidth: `100%`, maxWidth: `100%` }}
+                    // style={{ minHeight: `${this.props['page-max-height']}px`, maxHeight: `${this.props['page-max-height']}px`, minWidth: `100%`, maxWidth: `100%` }}
                     className="simplebar-table"
                     id="simplebar-table"
                 >

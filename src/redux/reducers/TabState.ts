@@ -2,12 +2,12 @@ import { OPENTAB, CLEARTAB, TabActions } from '../actions/TabActions';
 
 export type TabStateType = {
     path: string | null;
-    accessmode?: 0 | 1 | 2 | 3 | 'read' | 'write' | 'update' | 'delete';
+    accessmode?: 0 | 1 | 2 | 3 | 'read' | 'write' | 'update' | 'delete' | null;
 };
 
 const DefaultState: TabStateType = {
     path: null,
-    accessmode: 0,
+    accessmode: null,
 };
 
 const TabState = (state: TabStateType = DefaultState, action: TabActions) => {

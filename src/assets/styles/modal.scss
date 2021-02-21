@@ -1,6 +1,7 @@
 .modal-content {
+    position: relative;
     width: 75%;
-    height: 90%;
+    height: 80%;
     z-index: 205;
     border: unset;
     overflow: hidden;
@@ -28,7 +29,8 @@
     }
 
     .modal-body {
-        height: calc(100vh - 20% - 150px);
+        min-height: calc(100% - 67px);
+        max-height: calc(100% - 67px);
         padding-right: 0;
         
         .page {
@@ -42,6 +44,26 @@
 
                 .simplebar-track.simplebar-vertical {
                     top: 0;
+                }
+            }
+
+            .tab-page-container {
+                .page {
+                    .simplebar-page {
+                        min-height: calc(80vh - 160px);
+                        max-height: calc(80vh - 160px);
+                    }
+
+                    .bread-crumb + .simplebar-page {
+                        min-height: calc(80vh - 210px);
+                        max-height: calc(80vh - 210px);
+                    }
+
+                    .simplebar-table {
+                        min-height: calc(80vh - 265px);
+                        max-height: calc(80vh - 265px);
+                        margin-bottom: 0;
+                    }
                 }
             }
         }
@@ -67,6 +89,10 @@
         .modal-header {
             background-color: var(--white);
             color: var(--black);
+
+            .modal-left {
+                font-weight: bold;
+            }
         }
 
         .modal-body {

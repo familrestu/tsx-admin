@@ -78,7 +78,12 @@ const AvatarNav = (props: { isMobile: boolean; UserState: any; ToggleNavbarHandl
                 <DividerHorizontal />
                 <li className="d-flex avatar-group">
                     <Navlink
-                        to="/profile"
+                        to={{
+                            pathname: '/profile',
+                            state: {
+                                tab: '/profile/personal-information',
+                            },
+                        }}
                         navtype="page"
                         onClick={() => {
                             if (props.isMobile) {

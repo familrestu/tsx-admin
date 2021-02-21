@@ -334,7 +334,7 @@ class Form extends React.Component<FormProps & AppState, FormState> {
                 onSubmit={(e: React.FormEvent) => this.FormSubmitHandler(e)}
             >
                 {this.props.children}
-                {(this.props.buttonGroup === undefined || this.props.buttonGroup) && <ButtonGroup datasource={this.props.datasource} action={this.props.action} workFlow={this.props.workFlow} />}
+                {/* {(this.props.buttonGroup === undefined || this.props.buttonGroup) && <ButtonGroup datasource={this.props.datasource} action={this.props.action} workFlow={this.props.workFlow} />} */}
             </form>
         );
     }
