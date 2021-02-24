@@ -26,7 +26,7 @@ const NavLink = (props: NavLinkProps & NavlinkPropsType) => {
 
                 if (props.navtype === 'page') {
                     type = 'OPENPAGE';
-                    console.log(url);
+                    // console.log(url);
                     dispatch({ type, path: url, accessmode });
                 } else if (props.navtype === 'tab') {
                     type = 'OPENTAB';

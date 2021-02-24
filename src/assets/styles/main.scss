@@ -14,7 +14,7 @@ body[themes=light] {
 	
 	--light-grey: #dee2e6;
 	--dark-grey: #545454;
-	--grey: rgba(0, 0, 0, 0.35);
+	--grey: #a6a6a6;
 	--black: rgba(0, 0, 0, 0.75);
 }
 
@@ -130,4 +130,4 @@ a:hover { text-decoration: none; }
 @import 'suspense.scss';
 @import 'login.scss';
 @import 'modal.scss';
-// @import 'input.scss';
+@import 'fieldset.scss';

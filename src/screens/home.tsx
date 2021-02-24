@@ -19,9 +19,10 @@ import Modal from 'components/Modal';
 const Dashboard = lazy(() => import('screens/dashboard'));
 const Login = lazy(() => import('screens/login'));
 
-const PagenotFound = lazy(() => import('screens/pagenotfound'));
 const ForgotPassword = lazy(() => import('screens/forgotpassword'));
 const Notification = lazy(() => import('screens/notification'));
+const PagenotFound = lazy(() => import('screens/pagenotfound'));
+const Printpreview = lazy(() => import('screens/printpreview'));
 
 let interval: number;
 const getTokenInterval = 14000;
@@ -104,7 +105,7 @@ const DynamicRouter = () => {
         ArrRouterElement.push(<Route key={`dynamic-route-${i}`} exact path={element.link} component={component} />);
     }
 
-    return <React.Fragment>{ArrRouterElement}</React.Fragment>;
+    return ArrRouterElement;
 };
 
 const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
@@ -156,10 +157,10 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
                     <Suspense fallback={<LoadingSuspense SuspenseType={SuspenseType} />}>
                         <Switch>
                             <Route exact path="/" component={Dashboard} />
-                            {/* {DynamicRouter()} */}
-                            <DynamicRouter />
-                            <Route path="/notification" component={Notification} />
-                            <Route path="/pagenotfound" component={PagenotFound} />
+                            {DynamicRouter()}
+                            <Route exact path="/notification" component={Notification} />
+                            <Route exact path="/pagenotfound" component={PagenotFound} />
+                            <Route exact path="/printpreview" component={Printpreview} />
                             <Redirect to="/pagenotfound" />
                         </Switch>
                     </Suspense>
@@ -171,7 +172,7 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
 };
 
 const NotAuthorizedScreen = () => (
-    <Router basename={`/`}>
+    <Router>
         <div className="content-container">
             <Suspense fallback={<LoadingSuspense />}>
                 <Switch>
@@ -302,6 +303,11 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
         window.addEventListener('resize', () => this.ResizeHandler());
     }
 
+    SetThemes() {
+        const localStorageTheme = localStorage.getItem('themes');
+        document.body.setAttribute('themes', localStorageTheme === null ? 'light' : localStorageTheme);
+    }
+
     componentDidMount() {
         this.GetMenuAuth();
         this.CheckLoginState();
@@ -315,6 +321,7 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
             return null;
         } else {
             if (this.state.loggedIn) {
+                this.SetThemes();
                 Screen = () => <AuthorizedScreen GetToken={() => this.GetToken()} isMobile={this.state.isMobile} SignOutHandler={() => this.SignOutHandler()} />;
             } else {
                 Screen = () => <NotAuthorizedScreen />;

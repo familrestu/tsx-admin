@@ -357,6 +357,8 @@ class Header extends Component<HeaderPropsType & AppState> {
             company: UserState !== undefined ? UserState.company_name : '',
         };
 
+        if (window.location.pathname === '/printpreview') return <React.Fragment />;
+
         return (
             <React.Fragment>
                 <div id="header-container" className="header-container shadow-sm">
@@ -369,7 +371,7 @@ class Header extends Component<HeaderPropsType & AppState> {
                     <div className="header-right">
                         <Notification isMobile={this.props.isMobile} />
                         <DividerVertical marginLeft marginRight />
-                        <Avatar {...AvatarProps} DropDownOnBlurHandler={this.DropDownOnBlurHandler} SignOutHandler={() => this.props.SignOutHandler()} />
+                        <Avatar {...AvatarProps} SignOutHandler={() => this.props.SignOutHandler()} />
                     </div>
                 </div>
             </React.Fragment>

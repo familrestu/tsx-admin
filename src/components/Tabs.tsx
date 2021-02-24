@@ -36,6 +36,7 @@ const TabClickHandler = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, tab
 type TabPropsType = {
     title: string;
     link: string;
+    showif?: boolean;
     childNumber?: number;
 };
 
@@ -50,26 +51,33 @@ const Tab = (props: TabPropsType) => {
         tablocation = location.state && !ModalState.isOpened ? location.state.tab : '';
     }
 
-    return (
-        <Navlink
-            to={{
-                state: {
-                    tab: props.link,
-                },
-            }}
-            navtype="tab"
-            link={props.link}
-            className={`nav-item nav-link noactivenavlink ${props.link === tablocation ? 'activelink' : ''}`.trim()}
-            tab-number={props.childNumber}
-            onClick={(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => TabClickHandler(e, props.childNumber)}
-        >
-            {props.title}
-        </Navlink>
-    );
+    let Element = <React.Fragment />;
+
+    if (props.showif !== undefined && !props.showif) {
+        Element = <React.Fragment />;
+    } else {
+        Element = (
+            <Navlink
+                to={{
+                    state: {
+                        tab: props.link,
+                    },
+                }}
+                navtype="tab"
+                link={props.link}
+                className={`nav-item nav-link noactivenavlink ${props.link === tablocation ? 'activelink' : ''}`.trim()}
+                tab-number={props.childNumber}
+                onClick={(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => TabClickHandler(e, props.childNumber)}
+            >
+                {props.title}
+            </Navlink>
+        );
+    }
+
+    return Element;
 };
 
 type TabsPropsType = {
-    // path: string;
     children?: any;
 };
 
@@ -135,7 +143,13 @@ class TabsC extends Component<TabsPropsType & AppState & typeof MapDispatch & Ro
                         }
 
                         return (
-                            <div key={index} id="tab-pane" className={`fade tab-page-container tab-pane ${child.props.link === tablocation ? 'active show' : ''}`.trim()} tab-container-number={index}>
+                            <div
+                                key={index}
+                                id="tab-pane"
+                                className={`fade tab-page-container tab-pane ${child.props.link === tablocation ? 'active show' : ''}`.trim()}
+                                tab-container-number={index}
+                                tab-container-name={child.props.title.toLowerCase().replaceAll(' ', '-')}
+                            >
                                 <X.default />
                             </div>
                         );

@@ -89,9 +89,9 @@ class LoadingSuspense extends Component<LoadingSuspensePropsType> {
                 <Input type="text" label="xxxx" size="4" placeholder=" " name=" " readOnly />
                 <Input type="text" label="xxxx" size="4" placeholder=" " name=" " readOnly />
                 <Row>
-                    <Input type="text" size={3} row="false" label=" " placeholder=" " name=" " formrequired="true" />
-                    <Input type="text" size={3} row="false" label=" " placeholder=" " name=" " />
-                    <Input type="text" size={3} row="false" label=" " placeholder=" " name=" " formrequired="true" />
+                    <Input type="text" size={3} label=" " placeholder=" " name=" " />
+                    <Input type="text" size={3} label=" " placeholder=" " name=" " />
+                    <Input type="text" size={3} label=" " placeholder=" " name=" " />
                 </Row>
                 <Input type="text" label="xxxx" size="8" placeholder=" " name=" " readOnly />
                 <Input type="text" label="xxxx" size="8" placeholder=" " name=" " readOnly />

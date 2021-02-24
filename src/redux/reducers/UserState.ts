@@ -13,6 +13,7 @@ const UserState = (state: UserStatePropsType = DefaultState, action: UserActions
         case LOGIN:
             return { ...state, loggedIn: true, ...action.data };
         case LOGOUT:
+            return DefaultState;
         default:
             return state;
     }
