@@ -1,24 +1,26 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import { AppState } from 'redux/store';
+import { Row, Col } from 'react-bootstrap';
+import { GetAccessMode } from 'libs/access';
+
+const setIdBasedOnParent = (ref: HTMLButtonElement | null) => {
+    if (ref) {
+        const tabPane = ref.closest('#tab-pane');
+        const tabContainerName = tabPane ? tabPane.getAttribute('tab-container-name') : '';
+        ref.id = `${ref.id}-${tabContainerName}`;
+    }
+};
 
 const isShowing = (showif: boolean | undefined, minaccess: number, PageState: AppState['PageState'], ModalState: AppState['ModalState'], TabState: AppState['TabState']) => {
-    let accessmode = null;
-    let show = true;
-
-    if (TabState.accessmode !== null) {
-        accessmode = TabState.accessmode;
-    } else if (ModalState.accessmode !== null && ModalState.isOpened) {
-        accessmode = ModalState.accessmode;
-    } else {
-        accessmode = PageState.accessmode;
-    }
+    let show = false;
+    const accessmode = GetAccessMode(PageState, ModalState, TabState);
 
     if (showif !== undefined && !showif) {
         show = false;
     } else {
-        if (accessmode !== null && accessmode !== undefined && accessmode <= minaccess) {
+        if (accessmode !== null && accessmode !== undefined && accessmode >= minaccess && accessmode <= 3) {
             show = true;
         } else {
             show = false;
@@ -46,7 +48,9 @@ const Submit = (props: ButtonPropsType) => {
         return (
             <button
                 type="submit"
-                id={`btn btn-default ${props.id ? props.id : ''}`.trim()}
+                btn-type="add"
+                ref={(ref) => setIdBasedOnParent(ref)}
+                id={`${props.id ? props.id : 'btn-add'}`}
                 className={`btn btn-default ${props.className ? props.className : ''}`.trim()}
                 onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
                     if (props.onClick) {
@@ -63,7 +67,31 @@ const Submit = (props: ButtonPropsType) => {
 };
 
 const Reset = (props: ButtonPropsType) => {
-    return <button type="button">{props.label ? props.label : 'Reset'}</button>;
+    const PageState = useSelector((state: AppState) => state.PageState);
+    const ModalState = useSelector((state: AppState) => state.ModalState);
+    const TabState = useSelector((state: AppState) => state.TabState);
+    const show = isShowing(props.showif, 1, PageState, ModalState, TabState);
+
+    if (show) {
+        return (
+            <button
+                type="reset"
+                btn-type="reset"
+                ref={(ref) => setIdBasedOnParent(ref)}
+                id={`${props.id ? props.id : 'btn-reset'}`}
+                className={`btn btn-secondary ${props.className ? props.className : ''}`.trim()}
+                onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+                    if (props.onClick) {
+                        props.onClick(e);
+                    }
+                }}
+            >
+                Reset
+            </button>
+        );
+    } else {
+        return <React.Fragment />;
+    }
 };
 
 const Save = (props: ButtonPropsType) => {
@@ -76,8 +104,10 @@ const Save = (props: ButtonPropsType) => {
         return (
             <button
                 type="submit"
-                id={`btn btn-default ${props.id ? props.id : ''}`.trim()}
-                className={`btn btn-default ${props.className ? props.className : ''}`.trim()}
+                btn-type="save"
+                ref={(ref) => setIdBasedOnParent(ref)}
+                id={`${props.id ? props.id : 'btn-save'}`}
+                className={`btn btn-primary ${props.className ? props.className : ''}`.trim()}
                 onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
                     if (props.onClick) {
                         props.onClick(e);
@@ -102,11 +132,15 @@ const Delete = (props: ButtonPropsType) => {
         return (
             <button
                 type="button"
-                id={`btn btn-default ${props.id ? props.id : ''}`.trim()}
-                className={`btn btn-default ${props.className ? props.className : ''}`.trim()}
+                btn-type="delete"
+                ref={(ref) => setIdBasedOnParent(ref)}
+                id={`${props.id ? props.id : 'btn-delete'}`}
+                className={`btn btn-danger ${props.className ? props.className : ''}`.trim()}
                 onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-                    if (props.onClick) {
-                        props.onClick(e);
+                    if (window.confirm('Are you sure want to delete this data?')) {
+                        if (props.onClick) {
+                            props.onClick(e);
+                        }
                     }
                 }}
             >
@@ -121,15 +155,22 @@ const Delete = (props: ButtonPropsType) => {
 const Cancel = (props: ButtonPropsType) => {
     const history = useHistory();
     const ModalState = useSelector((state: AppState) => state.ModalState);
+    const dispatch = useDispatch();
 
     return (
         <button
             type="button"
-            id={`btn btn-default ${props.id ? props.id : ''}`.trim()}
-            className={`btn btn-default ${props.className ? props.className : ''}`.trim()}
+            btn-type="cancel"
+            ref={(ref) => setIdBasedOnParent(ref)}
+            id={`${props.id ? props.id : 'btn-cancel'}`}
+            className={`btn btn-secondary ${props.className ? props.className : ''}`.trim()}
             onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-                if (ModalState !== undefined && ModalState.isOpened && props.onClick) {
+                if (props.onClick) {
                     props.onClick(e);
+                }
+
+                if (ModalState !== undefined && ModalState.isOpened) {
+                    dispatch({ type: 'CLOSEMODAL' });
                 } else {
                     history.goBack();
                 }
@@ -140,4 +181,27 @@ const Cancel = (props: ButtonPropsType) => {
     );
 };
 
-export { Submit, Reset, Save, Delete, Cancel };
+type ButtonGroupsPropsType = {
+    children?: any;
+};
+
+const ButtonGroup = (props: ButtonGroupsPropsType) => {
+    const LeftElement: JSX.Element[] = [];
+    const RightElement: JSX.Element[] = [];
+    React.Children.map(props.children, (child: { type: { name: string } }, index: number) => {
+        if (child.type.name === 'Delete' || child.type.name === 'Cancel') {
+            RightElement.push(<React.Fragment key={`button-form-number-${index}`}>{child}</React.Fragment>);
+        } else {
+            LeftElement.push(<React.Fragment key={`button-form-number-${index}`}>{child}</React.Fragment>);
+        }
+    });
+
+    return (
+        <Row className="form-button-group">
+            <Col className="left-group">{LeftElement}</Col>
+            <Col className="right-group">{RightElement}</Col>
+        </Row>
+    );
+};
+
+export { Submit, Reset, Save, Delete, Cancel, ButtonGroup };

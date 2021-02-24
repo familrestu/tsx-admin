@@ -1,98 +1,29 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { Col, Button } from 'react-bootstrap';
-import { useHistory, withRouter, RouteComponentProps } from 'react-router-dom';
-
 import moment from 'moment';
 import { AxiosError, AxiosResponse } from 'axios';
-
-// import Alert from 'components/Alert';
-import { connect, useSelector, useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
-
+import { useSelector } from 'react-redux';
 import { post } from 'libs/fetch';
 import { KTPFormat, NPWPFormat } from 'libs/form';
 
-const CancelButton = (props: { isModal: boolean; onClick: () => void }) => {
-    const history = useHistory();
+import { GetAccessMode, GetCurrentPath } from 'libs/access';
 
-    return (
-        <Button
-            variant="secondary"
-            className="btn btn-default mr-2"
-            onClick={() => {
-                if (props.isModal !== undefined && props.isModal && props.onClick) {
-                    props.onClick();
-                } else {
-                    history.goBack();
-                }
-            }}
-        >
-            {props.isModal !== undefined && props.isModal ? 'Close' : 'Cancel'}
-        </Button>
-    );
-};
-
-const ButtonDeleteHandler = () => {
-    if (window.confirm('Are you sure want to delete this data?')) {
-        console.log('yes');
-    }
-};
-
-type ButtonGroupPropsType = {
-    datasource?: string;
-    action?: string;
-    workFlow?: boolean;
-};
-
-const ButtonGroupTemp = (props: ButtonGroupPropsType & RouteComponentProps) => {
+const FormInput = () => {
+    const PageState = useSelector((state: AppState) => state.PageState);
     const ModalState = useSelector((state: AppState) => state.ModalState);
-    const MenuAuthState = useSelector((state: AppState) => state.MenuAuthState);
-    const dispatch = useDispatch();
-    const arrAuth = MenuAuthState.filter((a) => {
-        return a.link === (ModalState.isOpened ? ModalState.path : props.match.path);
-    });
-    const AccessMode = arrAuth.length > 0 ? arrAuth[0].accessmode : 0;
-    // console.log(AccessMode);
-
-    // 0 = Read
-    // 1 = Write
-    // 2 = Update
-    // 3 = Delete
+    const TabState = useSelector((state: AppState) => state.TabState);
+    const accessmode = GetAccessMode(PageState, ModalState, TabState);
+    const path = GetCurrentPath(PageState, ModalState, TabState);
 
     return (
-        <div className="form-button-group">
-            <Col>
-                {!props.datasource && AccessMode >= 1 && (
-                    <Button variant="primary" className="mr-2" type="submit">
-                        Submit
-                    </Button>
-                )}
-                {props.datasource && AccessMode >= 2 && (
-                    <Button variant="primary" className="mr-2" type="submit">
-                        Update
-                    </Button>
-                )}
-                {((!props.datasource && AccessMode >= 1) || (props.datasource && AccessMode >= 2)) && (
-                    <Button variant="secondary" type="reset" className="mr-2">
-                        Reset
-                    </Button>
-                )}
-            </Col>
-
-            <Col className="d-flex justify-content-end">
-                <CancelButton isModal={ModalState && ModalState.isOpened ? true : false} onClick={() => dispatch({ type: 'CLOSEMODAL' })} />
-                {AccessMode >= 3 && (
-                    <Button variant="danger" type="button" onClick={() => ButtonDeleteHandler()}>
-                        Delete
-                    </Button>
-                )}
-            </Col>
-        </div>
+        <React.Fragment>
+            <input type="hidden" name="x_accessmode" defaultValue={accessmode ? accessmode : 0} />
+            <input type="hidden" name="x_path" defaultValue={path ? path : ''} />
+            <input type="hidden" name="x_timestamp" defaultValue={moment().format('DD/MM/YYYY HH:mm:ss').toString()} />
+        </React.Fragment>
     );
 };
-
-const ButtonGroup = withRouter(ButtonGroupTemp);
 
 type FormProps = {
     id?: string;
@@ -102,7 +33,6 @@ type FormProps = {
     encType?: string;
 
     workFlow?: boolean;
-    buttonGroup?: boolean;
 
     onSubmitSuccessCallBack?: (res: AxiosResponse) => void;
     onSubmitErrorCallBack?: (err: AxiosError) => void;
@@ -120,6 +50,7 @@ class Form extends React.Component<FormProps & AppState, FormState> {
     _Form: HTMLFormElement | null | undefined;
     _CurrentPath: string = window.location.pathname;
     _PrevPath: string | undefined;
+    _Mounted: boolean | undefined;
 
     state = {
         isLoaded: false,
@@ -135,7 +66,9 @@ class Form extends React.Component<FormProps & AppState, FormState> {
 
             /* if datasource is an object, set is as local datasource state */
             if (typeof this.props.datasource === 'object') {
-                this.setState({ isLoaded: true, formData: this.props.datasource }, () => this.SetFormData());
+                this.setState({ isLoaded: true, formData: this.props.datasource }, () => {
+                    this.SetFormData();
+                });
                 /* if datasource is a string, fetch it  */
             } else if (typeof this.props.datasource === 'string') {
                 const onSuccessPost = (res: AxiosResponse) => {
@@ -150,7 +83,9 @@ class Form extends React.Component<FormProps & AppState, FormState> {
                         // console.log(JSON.stringify(this.state.formData) !== JSON.stringify(formData));
 
                         if (JSON.stringify(this.state.formData) !== JSON.stringify(formData)) {
-                            this.setState({ isLoaded: true, formData: formData }, () => this.SetFormData());
+                            this.setState({ isLoaded: true, formData: formData }, () => {
+                                this.SetFormData();
+                            });
                         }
                     }
                 };
@@ -301,17 +236,26 @@ class Form extends React.Component<FormProps & AppState, FormState> {
         }
     }
 
-    SetButtonGroupModal() {
-        if (this.props.ModalState && this.props.ModalState.isOpened) {
-            const modalFooter = document.getElementById('modal-footer');
+    GetGroupTotal(): { [key: string]: number } {
+        const obj: { [key: string]: number } = {};
 
-            if (modalFooter) {
-                ReactDOM.render(<ButtonGroup datasource={this.props.datasource} />, modalFooter);
+        React.Children.map(this.props.children, (child) => {
+            if (React.isValidElement(child)) {
+                if (child.props.groups !== undefined) {
+                    if (obj[child.props.groups] === undefined) {
+                        obj[child.props.groups] = 0;
+                    }
+
+                    obj[child.props.groups]++;
+                }
             }
-        }
+        });
+
+        return obj;
     }
 
     componentDidMount() {
+        this._Mounted = true;
         this.GetFormData();
     }
 
@@ -323,7 +267,14 @@ class Form extends React.Component<FormProps & AppState, FormState> {
         }
     }
 
+    componentWillUnmount() {
+        this._Mounted = false;
+    }
+
     render() {
+        const GroupElement: { [key: string]: JSX.Element[] } = {};
+        const CurrentGroupNum: { [key: string]: number } = {};
+        const GroupTotal: { [key: string]: number } = this.GetGroupTotal();
         return (
             <form
                 ref={(ref) => (this._Form = ref)}
@@ -333,16 +284,47 @@ class Form extends React.Component<FormProps & AppState, FormState> {
                 action={this.props.action}
                 onSubmit={(e: React.FormEvent) => this.FormSubmitHandler(e)}
             >
-                {this.props.children}
-                {/* {(this.props.buttonGroup === undefined || this.props.buttonGroup) && <ButtonGroup datasource={this.props.datasource} action={this.props.action} workFlow={this.props.workFlow} />} */}
+                {/* {this.props.children} */}
+                {React.Children.map(this.props.children, (child, index) => {
+                    if (React.isValidElement(child)) {
+                        const { PageState, ModalState, TabState } = this.props;
+                        const accessmode = PageState && ModalState && TabState ? GetAccessMode(PageState, ModalState, TabState) : 0;
+
+                        if (child.props.groups !== undefined) {
+                            if (GroupElement[child.props.groups] === undefined) {
+                                GroupElement[child.props.groups] = [];
+                            }
+
+                            if (CurrentGroupNum[child.props.groups] === undefined) {
+                                CurrentGroupNum[child.props.groups] = 0;
+                            }
+
+                            // GroupElement[child.props.groups].push(React.cloneElement(child, { accessmode }));
+                            GroupElement[child.props.groups].push(<React.Fragment key={`form-${index}`}>{React.cloneElement(child, { accessmode })}</React.Fragment>);
+                            CurrentGroupNum[child.props.groups]++;
+
+                            if (CurrentGroupNum[child.props.groups] === GroupTotal[child.props.groups]) {
+                                return <div className="row">{GroupElement[child.props.groups]}</div>;
+                            } else {
+                                return <React.Fragment />;
+                            }
+                        } else {
+                            return React.cloneElement(child, { accessmode });
+                        }
+                    } else {
+                        return <React.Fragment />;
+                    }
+                })}
+                {this._Mounted && <FormInput />}
             </form>
         );
     }
 }
 
 const MapStateToProps = (state: AppState) => ({
+    PageState: state.PageState,
     ModalState: state.ModalState,
-    // MenuAuthState: state.MenuAuthState,
+    TabState: state.TabState,
 });
 
 export default connect(MapStateToProps)(Form);

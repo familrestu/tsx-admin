@@ -9,6 +9,7 @@ import { AppState } from 'redux/store';
 
 import { post } from 'libs/fetch';
 import { PageCloneChildrenPropsType } from 'components/Page';
+import { NavLink } from 'react-router-dom';
 
 type ToolbarPropsType = {
     access?: 1 | 2 | 3 | 4 | 'read' | 'write' | 'update' | 'delete';
@@ -80,9 +81,11 @@ class Toolbar extends Component<ToolbarPropsType & TablePropsType & TableStateTy
                 <Button title="Export to PDF" onClick={() => this.ExportToMsExcelHandler()}>
                     <i className="fas fa-file-pdf"></i>
                 </Button>
-                <Button title="Print Preview" onClick={() => this.PrintPreviewHandler()}>
-                    <i className="fas fa-print"></i>
-                </Button>
+                <NavLink to={{ pathname: '/printpreview', state: { data: this.props.arrTableData } }}>
+                    <Button title="Print Preview" /* onClick={() => this.PrintPreviewHandler()} */>
+                        <i className="fas fa-print"></i>
+                    </Button>
+                </NavLink>
             </div>
         );
     }

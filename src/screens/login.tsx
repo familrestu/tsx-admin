@@ -1,10 +1,9 @@
 import React from 'react';
 import { Row, Col, FormGroup, Button } from 'react-bootstrap';
-import Input from 'components/Input';
 import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
-// import { NavLink } from 'react-router-dom';
 import { ReactComponent as LoginSVG } from 'assets/svg/login.svg';
+import Input from 'components/Input';
 import Form from 'components/Form';
 import packagejson from '../../package.json';
 
@@ -35,8 +34,6 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
 
                 <div className="right-container">
                     <Form
-                        className="p-4 flex-1"
-                        buttonGroup={false}
                         action="system/application/Login"
                         onSubmitSuccessCallBack={(res) => this.Login(res)}
                         onSubmitErrorCallBack={(e) => {
@@ -62,8 +59,6 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
                             type="checkbox"
                             name="is_accountcode"
                             data="Login with account code=Y"
-                            size="auto"
-                            labelSize="small"
                             defaultChecked={this.state.useAccountCode}
                             onClick={() =>
                                 this.setState((prevState) => {
@@ -79,14 +74,6 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
                                     </Button>
                                 </FormGroup>
                             </Col>
-                            {/* Temporary Remarked - Screen not year created */}
-                            {/* <Col sm="auto">
-                                <FormGroup>
-                                    <NavLink className="btn-link small" to="/forgotpassword">
-                                        Forgot Password ?
-                                    </NavLink>
-                                </FormGroup>
-                            </Col> */}
                         </Row>
                         <Row>
                             <Col className="text-center small text-grey">Web app version {packagejson.version}</Col>

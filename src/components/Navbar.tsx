@@ -154,7 +154,7 @@ const CloseChildrenHandler = async (event: React.MouseEvent<HTMLAnchorElement, M
         const haveSibling = nextSibling !== null;
 
         if (haveSibling && nextSibling.classList.value.indexOf('navitem-children-parent') >= 0) return false;
-        const WwaitLoop = () => {
+        const WaitLoop = () => {
             return new Promise((resolve) => {
                 for (let i = 0; i < navbarActive.length; i++) {
                     const element = navbarActive[i];
@@ -177,7 +177,7 @@ const CloseChildrenHandler = async (event: React.MouseEvent<HTMLAnchorElement, M
             });
         };
 
-        await WwaitLoop();
+        await WaitLoop();
 
         if (SetSuspenseType) {
             SetSuspenseType(pageType);
@@ -266,6 +266,8 @@ type NavbarPropsType = {
 
 class NavbarLeft extends React.Component<NavbarPropsType & AppState> {
     render() {
+        if (window.location.pathname === '/printpreview') return <React.Fragment />;
+
         arrGroup.length = 0;
         return (
             <React.Fragment>

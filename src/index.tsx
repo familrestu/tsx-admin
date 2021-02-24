@@ -22,7 +22,7 @@ ReactDOM.render(
 
 /* ReactDOM.render(
     <Provider store={store}>
-        <LandingPage />
+        <Home />
     </Provider>,
     document.getElementById('root-container'),
 ); */

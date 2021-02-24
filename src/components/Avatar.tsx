@@ -19,8 +19,6 @@ export type AvatarProps = {
     children?: React.ReactNode;
     attributes?: { [key: string]: string | number };
     style?: CSS.Properties;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    DropDownOnBlurHandler?: any;
     dropdownParent?: boolean;
 
     SignOutHandler?: () => void;
@@ -89,7 +87,7 @@ export class AvatarImage extends React.Component<AvatarProps, AvatarState> {
     }
 }
 
-class Avatar extends React.Component<AvatarProps & AppState & typeof MapDispatch> {
+class Avatar extends React.Component<AvatarProps & AppState> {
     ToggleKeepFocusHandler(e: React.MouseEvent, type: number) {
         const target = (e.currentTarget.parentElement as HTMLDivElement).parentElement;
 
@@ -145,8 +143,19 @@ class Avatar extends React.Component<AvatarProps & AppState & typeof MapDispatch
                             onMouseLeave={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
                             onClick={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
                         >
-                            <div className="d-flex dropdown-item small justify-content-start align-items-center border-bottom">
+                            <div className="d-flex dropdown-item small justify-content-start align-items-center">
                                 <span className="text-black">Change Password</span>
+                            </div>
+                        </Navlink>
+                        <Navlink
+                            to="/settings/preferences"
+                            navtype="page"
+                            onMouseEnter={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 0)}
+                            onMouseLeave={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
+                            onClick={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
+                        >
+                            <div className="d-flex dropdown-item small justify-content-start align-items-center border-bottom">
+                                <span className="text-black">Preferences</span>
                             </div>
                         </Navlink>
                         <div
@@ -171,8 +180,4 @@ const MapStateToProps = (state: AppState) => ({
     UserState: state.UserState,
 });
 
-const MapDispatch = {
-    Logout: () => ({ type: 'LOGOUT' }),
-};
-
-export default connect(MapStateToProps, MapDispatch)(Avatar);
+export default connect(MapStateToProps)(Avatar);

@@ -1,31 +1,63 @@
 .form {
-	/* .row:nth-last-child(2) {
+	padding: .5rem;
+	flex: 1;
+
+	.form-button-group {
 		margin-bottom: 0;
-	} */
+		
+		.left-group, .right-group {
+			display: flex;
+		}
+
+		.right-group {
+			
+			justify-content: flex-end;
+		}
+
+		.left-group {
+			.btn:not(:first-child) {
+				margin-left: .5rem;
+			}
+		}
+
+		.right-group {
+			.btn:not(:last-child) {
+				margin-right: .5rem;
+			}
+		}
+	}
 	
 	.row {
-		// margin-bottom: 0;
 		.form-group {
+			position: relative;
 			margin-right: 1rem;
 
 			.form-control-plaintext {
 				cursor: default;
 				pointer-events: none;
 				border-radius: .25rem;
-				// padding: .375rem .75rem;
 			}
 
 			.form-icon {
 				position: absolute;
 				right: 10px;
 				top: calc(50% + 5px);
+				cursor: pointer;
+				i {
+					color: var(--grey);
+				}
 			}
 		}
 
-		.form-check {
+		.form-check, .custom-switch {
 			label[for], input[type=radio], input[type=checkbox] {
 				cursor: pointer;
 			}
+		}
+
+		.custom-control-input:checked~.custom-control-label::before {
+			border-color: var(--primary);
+			background-color: var(--primary);
 		}
 
 		.input-portal {
@@ -40,7 +72,6 @@
 	display: flex;
 	padding: 1rem 0;
 	width: 100%;
-	// padding-top: 1rem;
 
 	position: sticky;
 	bottom: 0;
