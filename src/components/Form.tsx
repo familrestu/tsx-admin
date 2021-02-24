@@ -287,8 +287,9 @@ class Form extends React.Component<FormProps & AppState, FormState> {
                 {/* {this.props.children} */}
                 {React.Children.map(this.props.children, (child, index) => {
                     if (React.isValidElement(child)) {
-                        const { PageState, ModalState, TabState } = this.props;
+                        const { PageState, ModalState, TabState, UserState } = this.props;
                         const accessmode = PageState && ModalState && TabState ? GetAccessMode(PageState, ModalState, TabState) : 0;
+                        const { loggedIn } = UserState;
 
                         if (child.props.groups !== undefined) {
                             if (GroupElement[child.props.groups] === undefined) {
@@ -300,7 +301,7 @@ class Form extends React.Component<FormProps & AppState, FormState> {
                             }
 
                             // GroupElement[child.props.groups].push(React.cloneElement(child, { accessmode }));
-                            GroupElement[child.props.groups].push(<React.Fragment key={`form-${index}`}>{React.cloneElement(child, { accessmode })}</React.Fragment>);
+                            GroupElement[child.props.groups].push(<React.Fragment key={`form-${index}`}>{React.cloneElement(child, { accessmode, loggedIn })}</React.Fragment>);
                             CurrentGroupNum[child.props.groups]++;
 
                             if (CurrentGroupNum[child.props.groups] === GroupTotal[child.props.groups]) {
@@ -309,7 +310,7 @@ class Form extends React.Component<FormProps & AppState, FormState> {
                                 return <React.Fragment />;
                             }
                         } else {
-                            return React.cloneElement(child, { accessmode });
+                            return React.cloneElement(child, { accessmode, loggedIn });
                         }
                     } else {
                         return <React.Fragment />;
@@ -322,6 +323,7 @@ class Form extends React.Component<FormProps & AppState, FormState> {
 }
 
 const MapStateToProps = (state: AppState) => ({
+    UserState: state.UserState,
     PageState: state.PageState,
     ModalState: state.ModalState,
     TabState: state.TabState,

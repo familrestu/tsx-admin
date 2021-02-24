@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import CSS from 'csstype';
 import { Row, Col, FormCheck, ColProps } from 'react-bootstrap';
 
-const onMouseDownHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+const ShowPasswordHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     const target = e.currentTarget.parentElement?.previousElementSibling;
     if (target) {
         target.setAttribute('type', 'text');
@@ -12,7 +12,7 @@ const onMouseDownHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     }
 };
 
-const onMouseUpHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+const HidePasswordHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     const target = e.currentTarget.parentElement?.previousElementSibling;
     if (target) {
         target.setAttribute('type', 'password');
@@ -22,7 +22,7 @@ const onMouseUpHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     }
 };
 
-const onDoubleClickHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+const TogglePasswordHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     const target = e.currentTarget.parentElement?.previousElementSibling;
     if (target) {
         // console.log(target?.getAttribute('type'));
@@ -79,8 +79,8 @@ type ColumnPropsType = { size?: InputPropsType['size']; children: React.ReactNod
 
 const Input = (props: InputPropsType) => {
     /* i did this so user wont hardcode accessmode into Input components */
-    const TempProps: InputPropsType & { accessmode?: number } = props;
-    const { accessmode } = TempProps;
+    const TempProps: InputPropsType & { accessmode?: number; loggedIn?: boolean } = props;
+    const { accessmode, loggedIn } = TempProps;
 
     const Wrapper = props.groups === undefined ? Row : Fragment;
     let Element = <Fragment />;
@@ -124,7 +124,7 @@ const Input = (props: InputPropsType) => {
         2 = Update
         3 = Delete
     */
-    if (accessmode !== undefined && accessmode < 1) {
+    if (accessmode !== undefined && accessmode < 1 && loggedIn) {
         Attr.readOnly = true;
         Attr.disabled = true;
 
@@ -313,9 +313,9 @@ const Input = (props: InputPropsType) => {
                                 <div className="form-icon">
                                     <i
                                         className="fas fa-eye text-grey"
-                                        onMouseDown={(e) => onMouseDownHandler(e)}
-                                        onMouseUp={(e) => onMouseUpHandler(e)}
-                                        onDoubleClick={(e) => onDoubleClickHandler(e)}
+                                        onMouseDown={(e) => ShowPasswordHandler(e)}
+                                        onMouseUp={(e) => HidePasswordHandler(e)}
+                                        onDoubleClick={(e) => TogglePasswordHandler(e)}
                                     ></i>
                                 </div>
                             )}
