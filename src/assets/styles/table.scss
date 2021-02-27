@@ -36,6 +36,10 @@
 	-o-user-select: none;
 	user-select: none;
 
+	.btn {
+		display: none;
+	}
+
 	.simplebar-content {
 		display: flex;
 	}
