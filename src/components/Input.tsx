@@ -179,7 +179,7 @@ const Input = (props: InputPropsType) => {
                             label={elementLabel}
                             name={props.name}
                             value={elementValue}
-                            defaultChecked={props.defaultChecked}
+                            defaultChecked={props.defaultValue === elementValue}
                             inline
                             style={props.style}
                             {...Events}

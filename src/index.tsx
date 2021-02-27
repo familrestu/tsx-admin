@@ -4,7 +4,7 @@ import * as serviceWorker from './serviceWorker';
 
 import { Provider } from 'react-redux';
 import { store } from 'redux/store';
-import Home from 'screens/home';
+import Home from 'screens/app/home';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'simplebar/dist/simplebar.min.css';

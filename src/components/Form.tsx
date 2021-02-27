@@ -187,6 +187,7 @@ class Form extends React.Component<FormProps & AppState, FormState> {
 
             if (this._Form) {
                 this._Form.classList.add('loading');
+                this._Form.action = this.props.action;
             }
 
             const form = e.currentTarget as HTMLFormElement;
@@ -281,7 +282,7 @@ class Form extends React.Component<FormProps & AppState, FormState> {
                 id={`${this.props.id ? `${this.props.id}` : ''}`.trim()}
                 className={`form ${this.props.className ? `${this.props.className}` : ''}`.trim()}
                 encType={this.props.encType}
-                action={this.props.action}
+                // action={this.props.action}
                 onSubmit={(e: React.FormEvent) => this.FormSubmitHandler(e)}
             >
                 {/* {this.props.children} */}
@@ -289,7 +290,7 @@ class Form extends React.Component<FormProps & AppState, FormState> {
                     if (React.isValidElement(child)) {
                         const { PageState, ModalState, TabState, UserState } = this.props;
                         const accessmode = PageState && ModalState && TabState ? GetAccessMode(PageState, ModalState, TabState) : 0;
-                        const { loggedIn } = UserState;
+                        const loggedIn = UserState.loggedIn;
 
                         if (child.props.groups !== undefined) {
                             if (GroupElement[child.props.groups] === undefined) {
@@ -300,7 +301,6 @@ class Form extends React.Component<FormProps & AppState, FormState> {
                                 CurrentGroupNum[child.props.groups] = 0;
                             }
 
-                            // GroupElement[child.props.groups].push(React.cloneElement(child, { accessmode }));
                             GroupElement[child.props.groups].push(<React.Fragment key={`form-${index}`}>{React.cloneElement(child, { accessmode, loggedIn })}</React.Fragment>);
                             CurrentGroupNum[child.props.groups]++;
 
@@ -310,7 +310,7 @@ class Form extends React.Component<FormProps & AppState, FormState> {
                                 return <React.Fragment />;
                             }
                         } else {
-                            return React.cloneElement(child, { accessmode, loggedIn });
+                            return React.cloneElement(<React.Fragment>{child}</React.Fragment>, { accessmode, loggedIn });
                         }
                     } else {
                         return <React.Fragment />;

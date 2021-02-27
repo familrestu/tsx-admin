@@ -1,27 +1,18 @@
-import React, { Component } from 'react';
-import SimpleBar from 'simplebar-react';
-import { FormControl, Button, Badge, Col } from 'react-bootstrap';
-import { AxiosError, AxiosResponse } from 'axios';
+import React, { Component, Fragment } from 'react';
 import CSS from 'csstype';
-
-import { connect } from 'react-redux';
-import { AppState } from 'redux/store';
-
+import SimpleBar from 'simplebar-react';
+import { FormControl, Badge, Col } from 'react-bootstrap';
+import { AxiosError, AxiosResponse } from 'axios';
 import { post } from 'libs/fetch';
 import { PageCloneChildrenPropsType } from 'components/Page';
-import { NavLink } from 'react-router-dom';
-
-type ToolbarPropsType = {
-    access?: 1 | 2 | 3 | 4 | 'read' | 'write' | 'update' | 'delete';
-    ClearFilter?: () => void;
-};
+import { Toolbar } from 'components/Toolbar';
 
 type TableDataType = {
     header: string[];
     body: string[][];
 };
 
-type TablePropsType = {
+export type TablePropsType = {
     datasource?: string;
     className?: string;
     id?: string;
@@ -33,7 +24,7 @@ type TablePropsType = {
     children?: React.ReactChild[] | React.ReactChild | Element | Element[];
 };
 
-type TableStateType = {
+export type TableStateType = {
     arrTableData?: TableDataType;
     arrCloneChildren?: React.ReactElement[];
     arrNumberElement?: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>[];
@@ -42,56 +33,7 @@ type TableStateType = {
     arrSearchData?: { [key: string]: string }[];
 };
 
-class Toolbar extends Component<ToolbarPropsType & TablePropsType & TableStateType> {
-    _isMounted = false;
-
-    ExportToMsExcelHandler() {
-        console.log(this.props.arrTableData);
-    }
-
-    ExportToPDFHandler() {
-        console.log(this.props.arrTableData);
-    }
-
-    PrintPreviewHandler() {
-        window.open('/printpreview', 'popUpWindow', 'height=500,width=400,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=no,menubar=no,location=no,directories=no,status=yes');
-        // window.postMessage({ message: this.props.arrTableData }, 'popUpWindow');
-    }
-
-    componentDidMount() {
-        this._isMounted = true;
-    }
-
-    componentWillUnmount() {
-        this._isMounted = false;
-    }
-
-    render() {
-        return (
-            <div className="toolbar-wrapper" id="toolbar-wrapper">
-                {this.props.arrSearchData && this.props.arrSearchData.length > 0 && (
-                    <Button title="Clear Filter" style={{ position: 'relative' }} onClick={() => (this.props.ClearFilter !== undefined ? this.props.ClearFilter() : null)}>
-                        <i className="fas fa-filter"></i>
-                        <i className="fas fa-times-circle position-absolute" style={{ right: '.25rem', bottom: '.25rem', fontSize: '.75rem' }}></i>
-                    </Button>
-                )}
-                <Button title="Export to MS Excel" onClick={() => this.ExportToMsExcelHandler()}>
-                    <i className="fas fa-file-excel"></i>
-                </Button>
-                <Button title="Export to PDF" onClick={() => this.ExportToMsExcelHandler()}>
-                    <i className="fas fa-file-pdf"></i>
-                </Button>
-                <NavLink to={{ pathname: '/printpreview', state: { data: this.props.arrTableData } }}>
-                    <Button title="Print Preview" /* onClick={() => this.PrintPreviewHandler()} */>
-                        <i className="fas fa-print"></i>
-                    </Button>
-                </NavLink>
-            </div>
-        );
-    }
-}
-
-class Table extends Component<TablePropsType & PageCloneChildrenPropsType & AppState, TableStateType> {
+class Table extends Component<TablePropsType & PageCloneChildrenPropsType, TableStateType> {
     _isMounted = false;
     _Table: HTMLDivElement | null | undefined;
 
@@ -311,7 +253,9 @@ class Table extends Component<TablePropsType & PageCloneChildrenPropsType & AppS
         }
 
         React.Children.map(this.props.children, (child, index) => {
-            if (React.isValidElement(child)) {
+            const tempChild: any = child;
+
+            if (React.isValidElement(child) && tempChild.type.displayName !== undefined && tempChild.type.displayName.indexOf('Column') > 0) {
                 tempArr.push(
                     React.cloneElement(child, {
                         header: arrHeaderData,
@@ -375,8 +319,21 @@ class Table extends Component<TablePropsType & PageCloneChildrenPropsType & AppS
         return arrBadges;
     }
 
-    GetAccessMode() {
-        console.log(this.props.MenuAuthState);
+    ToolbarChildren() {
+        const tempArr: React.ReactElement[] = [];
+        React.Children.map(this.props.children, (child, index) => {
+            const tempChild: any = child;
+
+            if (React.isValidElement(child) && tempChild.type.name !== undefined && tempChild.type.name === 'Toolbar') {
+                tempArr.push(React.cloneElement(child, { key: `child-cloned-toolbar-${index}`, tableState: this.state, datasource: this.props.datasource }));
+            }
+        });
+
+        return (
+            <Toolbar {...this.state} datasource={this.props.datasource} ClearFilter={() => this.ClearFilter()}>
+                {tempArr}
+            </Toolbar>
+        );
     }
 
     componentDidMount() {
@@ -398,14 +355,14 @@ class Table extends Component<TablePropsType & PageCloneChildrenPropsType & AppS
                         </Col>
                     </div>
                     <div className="toolbar-right">
-                        <Toolbar {...this.state} ClearFilter={() => this.ClearFilter()} />
+                        {/* <div className="toolbar-wrapper" id="toolbar-wrapper" /> */}
+                        {/* <Toolbar {...this.state} ClearFilter={() => this.ClearFilter()} /> */}
+                        <div className="toolbar-wrapper" id="toolbar-wrapper">
+                            {this.ToolbarChildren()}
+                        </div>
                     </div>
                 </div>
-                <SimpleBar
-                    // style={{ minHeight: `${this.props['page-max-height']}px`, maxHeight: `${this.props['page-max-height']}px`, minWidth: `100%`, maxWidth: `100%` }}
-                    className="simplebar-table"
-                    id="simplebar-table"
-                >
+                <SimpleBar className="simplebar-table" id="simplebar-table">
                     <div
                         className={`table ${this.props.className ? `table-${this.props.className}` : ''} loading`.trim()}
                         id={`table ${this.props.id ? `table-${this.props.id}` : ''}`.trim()}
@@ -428,8 +385,4 @@ class Table extends Component<TablePropsType & PageCloneChildrenPropsType & AppS
     }
 }
 
-const MapStateToProps = (state: AppState) => ({
-    MenuAuthState: state.MenuAuthState,
-});
-
-export default connect(MapStateToProps)(Table);
+export default Table;

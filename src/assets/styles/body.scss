@@ -4,9 +4,6 @@
 
 	.body {
 		background-color: var(--white);
-		
-		// padding: 0 1rem;
-		// padding-bottom: 1rem;
 		padding-left: 1rem;
 		
 		z-index: 105;
@@ -16,10 +13,10 @@
 
 .page {
 	height: 100%;
-	// padding-right: 1rem;
 	.body-content {
 		position: relative;
 		min-height: 100%;
+		color: var(--dark-grey);
 	}
 
 	.simplebar-page {

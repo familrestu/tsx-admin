@@ -13,6 +13,8 @@ import Navlink from 'components/Navlink';
 import { MenuAuthStateDetailType } from 'redux/reducers/MenuAuthState';
 import { PageStateType } from 'redux/reducers/PageState';
 
+import { ThemeMode } from './Header';
+
 type AppLogoPropsType = {
     isMobile: boolean;
     ToggleNavbarHandler: () => void;
@@ -308,10 +310,20 @@ class NavbarLeft extends React.Component<NavbarPropsType & AppState> {
                             {this.props.isMobile && (
                                 <React.Fragment>
                                     <DividerHorizontal />
-                                    <li className="" onClick={() => this.props.SignOutHandler()}>
+                                    <li>
+                                        <div className="navitem-container" style={{ paddingBottom: 0 }}>
+                                            <div className="d-flex navitem-string align-items-center">
+                                                <div className="item-center" style={{ width: 'min-content', flex: 'unset', marginRight: '1rem' }}>
+                                                    Theme
+                                                </div>
+                                                <ThemeMode />
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li onClick={() => this.props.SignOutHandler()}>
                                         <div className="navitem-container">
                                             <div className="d-flex navitem-string">
-                                                <i className={`fas fa-sign-out-alt mr-2 item-left`}></i>
+                                                {/* <i className={`fas fa-sign-out-alt mr-2 item-left`}></i> */}
                                                 <div className="item-center">Sign out</div>
                                             </div>
                                         </div>

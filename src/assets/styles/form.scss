@@ -1,71 +1,79 @@
 .form {
 	padding: .5rem;
 	flex: 1;
+}
 
-	.form-button-group {
-		margin-bottom: 0;
-		
-		.left-group, .right-group {
-			display: flex;
-		}
-
-		.right-group {
-			
-			justify-content: flex-end;
-		}
-
-		.left-group {
-			.btn:not(:first-child) {
-				margin-left: .5rem;
-			}
-		}
-
-		.right-group {
-			.btn:not(:last-child) {
-				margin-right: .5rem;
-			}
-		}
-	}
+.form-button-group {
+	margin-bottom: 0;
 	
-	.row {
-		.form-group {
-			position: relative;
-			margin-right: 1rem;
+	.left-group, .right-group {
+		display: flex;
+	}
 
-			.form-control-plaintext {
-				cursor: default;
-				pointer-events: none;
-				border-radius: .25rem;
-			}
+	.right-group {
+		
+		justify-content: flex-end;
+	}
 
-			.form-icon {
-				position: absolute;
-				right: 10px;
-				top: calc(50% + 5px);
-				cursor: pointer;
-				i {
-					color: var(--grey);
-				}
-			}
-		}
-
-		.form-check, .custom-switch {
-			label[for], input[type=radio], input[type=checkbox] {
-				cursor: pointer;
-			}
-		}
-
-		.custom-control-input:checked~.custom-control-label::before {
-			border-color: var(--primary);
-			background-color: var(--primary);
-		}
-
-		.input-portal {
-			position: absolute;
-			z-index: 106;
-			margin-top: 2.5rem;
+	.left-group {
+		.btn:not(:first-child) {
+			margin-left: .5rem;
 		}
 	}
+
+	.right-group {
+		.btn:not(:last-child) {
+			margin-right: .5rem;
+		}
+	}
+}
+
+.form-group {
+	position: relative;
+	margin-right: 1rem;
+
+	.form-control-plaintext {
+		cursor: default;
+		pointer-events: none;
+		border-radius: .25rem;
+	}
+
+	.form-icon {
+		position: absolute;
+		right: 10px;
+		top: calc(50% + 5px);
+		cursor: pointer;
+		i {
+			color: var(--grey);
+		}
+	}
+}
+
+.form-control {
+	background-color: rgb(233, 237, 240);
+	border-color: rgb(233, 237, 240);
+}
+
+.form-control:focus, .btn-primary:focus {
+	box-shadow: unset !important;
+	border-color: #ced4da !important;
+}
+
+.form-check, .custom-switch {
+	label[for], input[type=radio], input[type=checkbox] {
+		cursor: pointer;
+	}
+}
+
+.custom-control-input:checked~.custom-control-label::before {
+	border-color: var(--primary);
+	background-color: var(--primary);
+}
+
+.input-portal {
+	position: absolute;
+	z-index: 106;
+	margin-top: 2.5rem;
 }
 
 .form-button-group {
@@ -75,7 +83,7 @@
 
 	position: sticky;
 	bottom: 0;
-	background-color: var(--white);
+	background-color: var(--white) !important;
 
 	.col {
 		padding: 0;

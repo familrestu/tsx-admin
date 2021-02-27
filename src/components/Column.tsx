@@ -69,6 +69,7 @@ type ColumnPropsType = {
     width?: number | string;
     type?: 'date' | 'link' | 'text' | 'number' | 'time';
     link?: string;
+    linktype?: 'page' | 'popup';
     format?: string;
     masking?: string;
     align?: 'left' | 'center' | 'right';
@@ -379,7 +380,21 @@ class Column extends Component<ColumnPropsType & RouteComponentProps & AppState 
                                         const indexOfId = this.props.header.indexOf(id);
                                         const navlink = link.replace(replaceThis[0], `:${id}`);
 
-                                        if (this.props.ModalState && this.props.ModalState.isOpened) {
+                                        if (this.props.TabState && this.props.TabState.path !== null) {
+                                            const params: { [key: string]: any } = {};
+                                            const idValue = this.props.body ? this.props.body[indexOfId][i] : '';
+                                            params[id] = idValue;
+                                            return (
+                                                <span
+                                                    className="link"
+                                                    onClick={() => {
+                                                        this.props.OpenTab(navlink, 0);
+                                                    }}
+                                                >
+                                                    {value}
+                                                </span>
+                                            );
+                                        } else if ((this.props.ModalState && this.props.ModalState.isOpened) || (this.props.linktype !== undefined && this.props.linktype === 'popup')) {
                                             const params: { [key: string]: any } = {};
                                             const idValue = this.props.body ? this.props.body[indexOfId][i] : '';
                                             params[id] = idValue;
@@ -484,6 +499,7 @@ class Column extends Component<ColumnPropsType & RouteComponentProps & AppState 
 
 const MapStateToProps = (state: AppState) => ({
     ModalState: state.ModalState,
+    TabState: state.TabState,
 });
 
 const MapDispatch = {

@@ -107,7 +107,7 @@ class Avatar extends React.Component<AvatarProps & AppState> {
     render() {
         return (
             <div className="avatar-container">
-                <div className="avatar-user-name">{this.props.name}</div>
+                {/* <div className="avatar-user-name">{this.props.name}</div> */}
                 <AvatarImage attributes={{ tabIndex: 0 }} dropdownParent {...this.props}>
                     <div className="dropdown-menu p-0 shadow">
                         <div className="d-flex justify-content-center dropdown-item border-bottom nohover">
@@ -145,17 +145,6 @@ class Avatar extends React.Component<AvatarProps & AppState> {
                         >
                             <div className="d-flex dropdown-item small justify-content-start align-items-center">
                                 <span className="text-black">Change Password</span>
-                            </div>
-                        </Navlink>
-                        <Navlink
-                            to="/settings/preferences"
-                            navtype="page"
-                            onMouseEnter={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 0)}
-                            onMouseLeave={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
-                            onClick={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
-                        >
-                            <div className="d-flex dropdown-item small justify-content-start align-items-center border-bottom">
-                                <span className="text-black">Preferences</span>
                             </div>
                         </Navlink>
                         <div

@@ -1,18 +1,49 @@
 import React, { Component } from 'react';
 import { InputGroup, Button } from 'react-bootstrap';
 import Navlink from 'components/Navlink';
-
 import Avatar from 'components/Avatar';
-import { DividerVertical } from 'components/Divider';
-
 import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
-
 import Notification from 'components/Notification';
 import SimpleBar from 'simplebar-react';
 import { MenuAuthStateType } from 'redux/reducers/MenuAuthState';
-
 import { get } from 'libs/fetch';
+
+const GetCurrentTheme = () => {
+    const localStorageTheme = localStorage.getItem('themes');
+    return localStorageTheme === null ? 'light' : localStorageTheme;
+};
+
+const changeTheme = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const target = e.currentTarget;
+    if (target.checked) {
+        document.body.setAttribute('themes', target.value);
+        localStorage.setItem('themes', target.value);
+    } else {
+        document.body.setAttribute('themes', 'light');
+        localStorage.setItem('themes', 'light');
+    }
+};
+
+export const ThemeMode = () => {
+    return (
+        <div className="toggle-theme-container">
+            <input
+                type="checkbox"
+                id="toggle-theme"
+                className="toggle-theme"
+                value="dark"
+                defaultChecked={GetCurrentTheme() === 'dark'}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => changeTheme(e)}
+            />
+            <label htmlFor="toggle-theme" className="toggle-theme">
+                <i className="fas fa-moon"></i>
+                <i className="fas fa-sun"></i>
+                <i className="ball"></i>
+            </label>
+        </div>
+    );
+};
 
 const GetMenu = (menuAuthDetail: MenuAuthStateType) => {
     let arrMenuReturn: HandleSearchStateType['arrSearch'] = [];
@@ -73,7 +104,15 @@ class HeaderSearchConnect extends Component<AppState, HandleSearchStateType> {
 
     keyupTimeout: number | undefined;
 
-    FocusHandler() {
+    FocusHandler(e?: React.FocusEvent<HTMLInputElement>) {
+        if (e !== undefined) {
+            const target = e.currentTarget;
+            const parentElement = target.parentElement;
+            if (parentElement) {
+                parentElement.classList.add('focussearch');
+            }
+        }
+
         this.setState((prevState) => {
             return { ...prevState, showSearch: true };
         });
@@ -108,10 +147,18 @@ class HeaderSearchConnect extends Component<AppState, HandleSearchStateType> {
         }
     }
 
-    BlurHandler() {
+    BlurHandler(e?: React.FocusEvent<HTMLInputElement>) {
         const dropdownMenuSearchContainer = document.getElementById('header-search-container');
         if (dropdownMenuSearchContainer && !dropdownMenuSearchContainer.getAttribute('keep-focus')) {
             this.CloseSearch();
+        }
+
+        if (e !== undefined) {
+            const target = e.currentTarget;
+            const parentElement = target.parentElement;
+            if (parentElement) {
+                parentElement.classList.remove('focussearch');
+            }
         }
     }
 
@@ -179,14 +226,6 @@ class HeaderSearchConnect extends Component<AppState, HandleSearchStateType> {
             } else if (value === '') {
                 window.clearTimeout(this.keyupTimeout);
                 this.FocusHandler();
-                /* const finalArrSearch = this.state.arrSearch;
-                finalArrSearch.length = 7;
-
-                console.log(this.state);
-
-                this.setState((prevState) => {
-                    return { ...prevState, showSearch: true, loadSearch: false, showedArrSearch: finalArrSearch };
-                }); */
             }
         }
     }
@@ -232,22 +271,21 @@ class HeaderSearchConnect extends Component<AppState, HandleSearchStateType> {
                         id="header-search-input"
                         className="form-control"
                         placeholder="Search..."
-                        onFocus={() => this.FocusHandler()}
-                        onBlur={() => this.BlurHandler()}
+                        onFocus={(e: React.FocusEvent<HTMLInputElement>) => this.FocusHandler(e)}
+                        onBlur={(e: React.FocusEvent<HTMLInputElement>) => this.BlurHandler(e)}
                         onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => this.KeyUpHandler(e)}
                     />
-                    <InputGroup.Append>
-                        <Button
-                            onClick={() => {
-                                const searchInput = document.getElementById('header-search-input');
-                                if (searchInput) {
-                                    searchInput.focus();
-                                }
-                            }}
-                        >
-                            <i className="fas fa-search" />
-                        </Button>
-                    </InputGroup.Append>
+                    <div
+                        className="form-icon"
+                        onClick={() => {
+                            const searchInput = document.getElementById('header-search-input');
+                            if (searchInput) {
+                                searchInput.focus();
+                            }
+                        }}
+                    >
+                        <i className="fas fa-search" />
+                    </div>
                     {this.state.showSearch && (
                         <div
                             id="header-search-container"
@@ -369,8 +407,9 @@ class Header extends Component<HeaderPropsType & AppState> {
                         <HeaderSearch />
                     </div>
                     <div className="header-right">
+                        <ThemeMode />
                         <Notification isMobile={this.props.isMobile} />
-                        <DividerVertical marginLeft marginRight />
+                        {/* <DividerVertical marginLeft marginRight /> */}
                         <Avatar {...AvatarProps} SignOutHandler={() => this.props.SignOutHandler()} />
                     </div>
                 </div>

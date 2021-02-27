@@ -15,9 +15,29 @@
 	}
 
 	.header-left {
-		justify-content: center;
+		justify-content: flex-start;
 		flex: .5 1 auto;
 
+		.input-group {
+			position: relative;
+			width: 60%;
+			transition: width .25s ease-in;
+			
+			.form-control {
+				border-radius: .25rem;
+			}
+
+			.form-icon {
+				position: absolute;
+				right: 16px;
+				top: calc(50% - 13px);
+				cursor: pointer;
+			}
+
+			&.focussearch {
+				width: 90%;
+			}
+		}
 
 		.dropdown-menu {
 			width: 100%;
@@ -37,6 +57,7 @@
 						// background-color: var(--light-grey);
 						background-color: unset;
 						color: unset;
+						color: var(--black);
 					}
 
 					&:hover {
@@ -46,13 +67,14 @@
 					}
 
 					&.focus {
-						color: #16181b;
+						color: var(--black);
 						text-decoration: none;
 						background-color: var(--light-grey);
 					}
 				}
 			}
 		}
+
 		.header-search-container {
 			background-color: var(--white);
 		}
@@ -75,6 +97,60 @@
 		z-index: 100;
 
 		
+	}
+}
+
+.toggle-theme-container {
+	width: 60px;
+	height: 27.9px;
+
+	input.toggle-theme {
+		opacity: 0;
+		position: absolute;
+
+		&:checked + label.toggle-theme .ball {
+			transform: translateX(28px);
+		}
+	}
+
+	label.toggle-theme {
+		position: relative;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		margin: 0;
+		padding: .35rem;
+		cursor: pointer;
+		background-color: var(--dark-grey);
+		border-radius: 5rem;
+	}
+
+	.fas {
+		font-size: .9rem;
+		flex: 1;
+	}
+
+	.fa-moon {
+		color: #f1c40f;
+		text-align: left;
+		padding-left: .1rem;
+	}
+
+	.fa-sun {
+		color: #f39c12;
+		text-align: right;
+		padding-right: .1rem;
+	}
+
+	.ball {
+		position: absolute;
+		align-items: center;
+		border-radius: 50%;
+		background-color: var(--white);
+		height: 18px;
+		width: 18px;
+
+		transition: transform .25s ease-in;
 	}
 }
 

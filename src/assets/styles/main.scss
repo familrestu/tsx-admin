@@ -1,24 +1,28 @@
 $primary: #519a66;
 html { height: 100%; }
-
 body[themes=light] {
-	--danger: rgb(186, 74, 74);
-	--success: rgb(81, 186, 81);
-	--warning: rgb(237, 186, 57);
-	--neutral: rgb(57, 189, 237);
-	
-	--primary: #{$primary};
-	--light-primary: #f3fdf6;
-	--secondary: #71c087;
 	--white: #ffffff;
+	--secondary-white: #f3f3f3;
+	--secondary: #8ac099;
 	
 	--light-grey: #dee2e6;
 	--dark-grey: #545454;
 	--grey: #a6a6a6;
-	--black: rgba(0, 0, 0, 0.75);
+	--black: #404040;
 }
 
-body[themes=dark] {
+body[themes=dark] {	
+	--white: #3f3f3f;
+	--secondary-white: #f7f7f7;
+	--secondary: #82b08f;
+	
+	--light-grey: #929292;
+	--dark-grey: #e9e9e9;
+	--grey: #767676;
+	--black: #fbfbfb;
+}
+
+body {
 	--danger: rgb(186, 74, 74);
 	--success: rgb(81, 186, 81);
 	--warning: rgb(237, 186, 57);
@@ -26,19 +30,9 @@ body[themes=dark] {
 	
 	--primary: #{$primary};
 	--light-primary: #868a87;
-	--secondary: #71c087;
-	--white: #3f3f3f;
-	
-	--light-grey: #929292;
-	--dark-grey: #545454;
-	--grey: rgba(220, 220, 220, 0.35);
-	--black: rgba(255, 255, 255, 0.75);
-}
 
-body {
 	height: 100%;
 	background-color: var(--white);
-	color: var(--dark-grey);
 
 	h2, label { color: var(--black); }
 
@@ -70,16 +64,6 @@ ul {
 	}
 }
 
-.form-control {
-	background-color: rgb(233, 237, 240);
-	border-color: rgb(233, 237, 240);
-}
-
-.form-control:focus, .btn-primary:focus {
-	box-shadow: unset !important;
-	border-color: #ced4da !important;
-}
-
 .nowrap { white-space: nowrap; }
 .bold { font-weight: 600; }
 .flex-1 { flex: 1; }
@@ -100,6 +84,7 @@ p { white-space: pre-wrap; }
 
 /* text color */
 .text-primary { color: var(--primary) !important; }
+.text-secondary { color: var(--secondary) !important; }
 .text-grey { color: var(--grey) !important; }
 .text-black { color: var(--black) !important; }
 
@@ -108,10 +93,17 @@ a:hover { text-decoration: none; }
 /* badge */
 .badge-primary { background-color: var(--primary); }
 
+.bg-primary { background-color: var(--primary) !important; }
+.bg-secondary { background-color: var(--secondary) !important; }
+
+/* border */
+.border-bottom { border-bottom: 1px solid var(--grey) !important; }
+
 @function hexToRGB($hex) {
   @return red($hex), green($hex), blue($hex);
 }
 
+@import 'dashboard.scss';
 @import 'header.scss';
 @import 'notification.scss';
 @import 'body.scss';

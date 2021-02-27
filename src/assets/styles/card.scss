@@ -1,43 +1,21 @@
 .card {
-	margin-left: 1rem;
-	margin-right: 1rem;
+	background-color: var(--secondary-white);
+	color: var(--black);
+	border: 0;
+	height: 100%;
 
-	.card-header {
-		// background-color: rgba(34,163,107,0.05);
-		color: var(--primary);
-		font-size: large;
-		font-weight: 600;
-	}
+	margin: .5rem;
 
-	&.companyinfo-container {
-		.companyinfo-row {
-			border-bottom: 1px solid #e3e6f0;
-			padding: 1rem;
+	.card-body {
+		justify-content: center;
+		.card-header {
+			font-size: 1.15rem;
+		}
 
-			.preview {
-				.fas.fa-chevron-left {
-					transition: all 0.2s linear;
-				}
-			}
-
-			&.show {
-				.preview {
-					.fas.fa-chevron-left {
-						transform: rotate(-90deg);
-					}
-				}
-
-				.details {
-					opacity: 1;
-				}
-			}
-
-			.details {
-				opacity: 0;
-				overflow: hidden;
-
-				transition: all 0.2s linear;
-			}
+		.card-header, .card-content, .card-footer {
+			background-color: unset;
+			margin-bottom: .5rem;
+			border: 0;
 		}
 	}
 }

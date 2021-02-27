@@ -6,4 +6,13 @@
 
 .btn-link { color: var(--primary) !important }
 
+.btn-form-control, .btn-form-control:hover, .btn-form-control:active {
+	background-color: #e9edf0 !important;
+	border-color: #e9edf0 !important;
+
+	i {
+		color: #3f3f3f;
+	}
+}
+
 button:focus, button:active { outline: unset !important;  box-shadow: unset !important; }

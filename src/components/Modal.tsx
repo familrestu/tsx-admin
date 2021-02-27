@@ -36,15 +36,15 @@ class Modal extends Component<AppState & typeof MapDispatch> {
                 try {
                     if (Component[0].isGlobal === 'Yes' || Component[0].isGlobal === 1) {
                         // eslint-disable-next-line @typescript-eslint/no-var-requires
-                        X = require(`../screens${Component[0].componentPath}`);
+                        X = require(`screens/app${Component[0].componentPath}`);
                     } else {
                         // eslint-disable-next-line @typescript-eslint/no-var-requires
-                        X = require(`../screens/${this.props.UserState.current_app}${Component[0].componentPath}`);
+                        X = require(`screens/${this.props.UserState.current_app}${Component[0].componentPath}`);
                     }
                 } catch (error) {
                     console.log(error.message);
                     // eslint-disable-next-line @typescript-eslint/no-var-requires
-                    X = require(`../screens/pagenotfound`);
+                    X = require(`screens/app/pagenotfound`);
                 }
 
                 return (

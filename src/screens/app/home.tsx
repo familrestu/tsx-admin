@@ -2,27 +2,21 @@ import React, { Suspense, lazy, useState } from 'react';
 import { BrowserRouter as Router, Switch, Route, Redirect, RouteProps } from 'react-router-dom';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { AppState } from 'redux/store';
-
 import { MenuAuthStateType, MenuAuthStateDetailType } from 'redux/reducers/MenuAuthState';
-
 import { AxiosError, AxiosResponse } from 'axios';
 import { get } from 'libs/fetch';
-
 import Header from 'components/Header';
 import Navbar from 'components/Navbar';
 import LoadingSuspense from 'components/LoadingSuspense';
-
 import Modal from 'components/Modal';
-// import Page from 'components/Page';
-// import { SetAccess } from 'libs/access';
 
-const Dashboard = lazy(() => import('screens/dashboard'));
-const Login = lazy(() => import('screens/login'));
+const Dashboard = lazy(() => import('screens/app/dashboard'));
+const Login = lazy(() => import('screens/app/login'));
 
-const ForgotPassword = lazy(() => import('screens/forgotpassword'));
-const Notification = lazy(() => import('screens/notification'));
-const PagenotFound = lazy(() => import('screens/pagenotfound'));
-const Printpreview = lazy(() => import('screens/printpreview'));
+const ForgotPassword = lazy(() => import('screens/app/forgotpassword'));
+const Notification = lazy(() => import('screens/app/notification'));
+const PagenotFound = lazy(() => import('screens/app/pagenotfound'));
+const Printpreview = lazy(() => import('screens/app/printpreview'));
 
 let interval: number;
 const getTokenInterval = 14000;
@@ -69,7 +63,7 @@ const RouterChildren = (menuAuthDetail: MenuAuthStateType & RouteProps) => {
 
 const DynamicRouter = () => {
     const currentApp = useSelector((state: AppState) => state.UserState.current_app);
-    const MenuAuthState: MenuAuthStateType = useSelector((state: AppState) => state.MenuAuthState);
+    const MenuAuthState = useSelector((state: AppState) => state.MenuAuthState);
     const ArrRouterElement: JSX.Element[] = [];
     let ArrayRouter: { componentPath: MenuAuthStateDetailType['componentPath']; link: MenuAuthStateDetailType['link']; isGlobal: MenuAuthStateDetailType['isGlobal'] }[] = [];
 
@@ -97,9 +91,9 @@ const DynamicRouter = () => {
         let component;
 
         if (element.isGlobal === 'Yes' || element.isGlobal === 1) {
-            component = lazy(() => import(`../screens${element.componentPath}`));
+            component = lazy(() => import(`screens/app${element.componentPath}`));
         } else {
-            component = lazy(() => import(`../screens/${currentApp}${element.componentPath}`));
+            component = lazy(() => import(`screens/${currentApp}${element.componentPath}`));
         }
 
         ArrRouterElement.push(<Route key={`dynamic-route-${i}`} exact path={element.link} component={component} />);
@@ -115,7 +109,6 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
     const MenuAuthState = useSelector((state: AppState) => state.MenuAuthState);
     const url = window.location.pathname;
 
-    // console.log(performance.getEntriesByType('navigation'));
     if (PageState && PageState.path === null) {
         const arrAuth = MenuAuthState.filter((a) => {
             return a.link === url;

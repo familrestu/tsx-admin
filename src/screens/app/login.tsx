@@ -1,11 +1,12 @@
 import React from 'react';
-import { Row, Col, FormGroup, Button } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
 import { ReactComponent as LoginSVG } from 'assets/svg/login.svg';
 import Input from 'components/Input';
 import Form from 'components/Form';
-import packagejson from '../../package.json';
+import { ButtonGroup } from 'components/Button';
+import packagejson from '../../../package.json';
 
 type LoginScreenState = {
     useAccountCode: boolean;
@@ -21,6 +22,8 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
             this.props.Login(res.data);
             if (res.data.loginStatus) {
                 window.location.reload();
+            } else {
+                alert(res.data);
             }
         }
     }
@@ -66,18 +69,14 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
                                 })
                             }
                         />
-                        <Row>
-                            <Col>
-                                <FormGroup>
-                                    <Button variant="primary" className="mr-2" type="submit">
-                                        Sign in
-                                    </Button>
-                                </FormGroup>
-                            </Col>
-                        </Row>
-                        <Row>
+                        <ButtonGroup>
+                            <button type="submit" className="btn btn-primary">
+                                Sign In
+                            </button>
+                        </ButtonGroup>
+                        <div className="row">
                             <Col className="text-center small text-grey">Web app version {packagejson.version}</Col>
-                        </Row>
+                        </div>
                     </Form>
                 </div>
             </div>
