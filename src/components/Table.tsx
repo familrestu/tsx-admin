@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import CSS from 'csstype';
 import SimpleBar from 'simplebar-react';
 import { FormControl, Badge, Col } from 'react-bootstrap';
@@ -254,8 +254,8 @@ class Table extends Component<TablePropsType & PageCloneChildrenPropsType, Table
 
         React.Children.map(this.props.children, (child, index) => {
             const tempChild: any = child;
-
-            if (React.isValidElement(child) && tempChild.type.displayName !== undefined && tempChild.type.displayName.indexOf('Column') > 0) {
+            // console.log(tempChild);
+            if (React.isValidElement(child) && tempChild.type.displayName !== undefined && tempChild.type.displayName === 'Column') {
                 tempArr.push(
                     React.cloneElement(child, {
                         header: arrHeaderData,
@@ -324,7 +324,7 @@ class Table extends Component<TablePropsType & PageCloneChildrenPropsType, Table
         React.Children.map(this.props.children, (child, index) => {
             const tempChild: any = child;
 
-            if (React.isValidElement(child) && tempChild.type.name !== undefined && tempChild.type.name === 'Toolbar') {
+            if (React.isValidElement(child) && tempChild.type.displayName !== undefined && tempChild.type.displayName === 'Toolbar') {
                 tempArr.push(React.cloneElement(child, { key: `child-cloned-toolbar-${index}`, tableState: this.state, datasource: this.props.datasource }));
             }
         });

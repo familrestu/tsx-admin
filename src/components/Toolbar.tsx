@@ -107,4 +107,7 @@ const Button = (props: ToolbarButtonPropsType) => {
     }
 };
 
+Toolbar.displayName = 'Toolbar';
+Button.displayName = 'Button';
+
 export { Toolbar, Button };

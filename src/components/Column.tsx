@@ -511,4 +511,7 @@ const MapDispatch = {
 const ColumnConnect = connect(MapStateToProps, MapDispatch)(Column);
 const ColumnWithRouter = withRouter(ColumnConnect);
 
-export default connect(MapStateToProps, MapDispatch)(ColumnWithRouter);
+ColumnWithRouter.displayName = 'Column';
+
+// export default connect(MapStateToProps, MapDispatch)(ColumnWithRouter);
+export default ColumnWithRouter;
