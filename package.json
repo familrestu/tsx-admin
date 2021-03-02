@@ -1,6 +1,6 @@
 {
   "name": "familrestu-admin-template",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.1",
@@ -20,7 +20,6 @@
     "react-scripts": "3.4.3",
     "redux": "^4.0.5",
     "serve": "^11.3.2",
-    "simplebar-react": "^2.3.0",
     "typescript": "^3.9.7"
   },
   "scripts": {
