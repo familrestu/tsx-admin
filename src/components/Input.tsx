@@ -111,7 +111,7 @@ const Input = (props: InputPropsType) => {
     const Attr: { [key: string]: string | boolean | undefined } = {
         readOnly: props.readOnly,
         disabled: props.disabled,
-        'form-name': `inp-${props.name}`,
+        'form-name': `inp_${props.name}`,
         'form-required': props.required === undefined ? 'false' : `${props.required}`,
         ...props.attributes,
     };
@@ -174,7 +174,7 @@ const Input = (props: InputPropsType) => {
                         <FormCheck
                             key={`${id}-${i}`}
                             id={id}
-                            className={`inp-${props.name} ${props.className ? props.className : ''}`.trim()}
+                            className={`inp_${props.name} ${props.className ? props.className : ''}`.trim()}
                             type={type}
                             label={elementLabel}
                             name={props.name}
@@ -235,8 +235,8 @@ const Input = (props: InputPropsType) => {
                                 </React.Fragment>
                             )}
                             <select
-                                id={`inp-${props.name}`}
-                                className={`form-control inp-${props.name} ${props.className ? props.className : ''}`.trim()}
+                                id={`inp_${props.name}`}
+                                className={`form-control inp_${props.name} ${props.className ? props.className : ''}`.trim()}
                                 name={props.name}
                                 style={props.style}
                                 // defaultChecked={props.defaultChecked}
@@ -256,12 +256,12 @@ const Input = (props: InputPropsType) => {
             if (props.type.toUpperCase() === 'TEXTAREA') {
                 InpElement = (
                     <textarea
-                        id={`inp-${props.name}`}
+                        id={`inp_${props.name}`}
                         name={props.name}
-                        className={`form-control inp-${props.name} ${props.className ? props.className : ''}`.trim()}
+                        className={`form-control inp_${props.name} ${props.className ? props.className : ''}`.trim()}
                         rows={props.rows}
                         maxLength={props.maxLength}
-                        style={props.style}
+                        style={{ ...props.style, resize: 'none' }}
                         {...Events}
                         {...Attr}
                     >
@@ -279,8 +279,8 @@ const Input = (props: InputPropsType) => {
 
                 InpElement = (
                     <input
-                        id={`inp-${props.name}`}
-                        className={`${className} inp-${props.name} ${props.className ? props.className : ''}`.trim()}
+                        id={`inp_${props.name}`}
+                        className={`${className} inp_${props.name} ${props.className ? props.className : ''}`.trim()}
                         type={type}
                         name={props.name}
                         defaultValue={props.defaultValue}
