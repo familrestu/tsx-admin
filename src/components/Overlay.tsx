@@ -21,8 +21,14 @@ class Overlay extends Component<OverlayType & typeof MapDispatch> {
     }
 
     closeModal(e: MouseEvent) {
-        if ((e.target as HTMLElement).id === 'overlay') {
-            this.props.CloseModal();
+        const target = e.target as HTMLDivElement;
+        if (target.id === 'overlay') {
+            if (target.children[0]) {
+                target.children[0].classList.add('hidden');
+            }
+            window.setTimeout(() => {
+                this.props.CloseModal();
+            }, 250);
         }
     }
 

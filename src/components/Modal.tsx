@@ -5,6 +5,8 @@ import { AppState } from 'redux/store';
 import { ModalStateType } from 'redux/reducers/ModalState';
 
 class Modal extends Component<AppState & typeof MapDispatch> {
+    _ModalTimeout: number | undefined;
+
     SetModalAccess() {
         if (this.props.ModalState !== undefined && this.props.UserState !== undefined && this.props.MenuAuthState !== undefined) {
             if (this.props.ModalState.isOpened && this.props.ModalState.path) {
@@ -19,14 +21,28 @@ class Modal extends Component<AppState & typeof MapDispatch> {
         }
     }
 
+    ShowModal() {
+        const modalContent = document.getElementById('modal-content');
+
+        if (modalContent) {
+            this._ModalTimeout = window.setTimeout(() => {
+                modalContent.classList.remove('hidden');
+            }, 0);
+        }
+    }
+
     componentDidUpdate() {
         this.SetModalAccess();
+    }
+
+    componentWillUnmount() {
+        window.clearTimeout(this._ModalTimeout);
     }
 
     render() {
         if (this.props.ModalState !== undefined && this.props.UserState !== undefined && this.props.MenuAuthState !== undefined) {
             if (this.props.ModalState.isOpened && this.props.ModalState.path) {
-                // console.log(this)
+                this.ShowModal();
                 const path = this.props.ModalState.path;
                 const Component = this.props.MenuAuthState.filter((item) => {
                     return item.link === path;
@@ -41,25 +57,35 @@ class Modal extends Component<AppState & typeof MapDispatch> {
                         // eslint-disable-next-line @typescript-eslint/no-var-requires
                         X = require(`screens/${this.props.UserState.current_app}${Component[0].componentPath}`);
                     }
-                } catch (error) {
-                    console.log(error.message);
+                } catch {
+                    // console.log(error.message);
                     // eslint-disable-next-line @typescript-eslint/no-var-requires
                     X = require(`screens/app/pagenotfound`);
                 }
 
                 return (
                     <Overlay>
-                        <div className="modal-content shadow" id="modal-content">
+                        <div className="modal-content shadow hidden" id="modal-content">
                             <div className="modal-header" id="modal-header">
                                 <div className="modal-left" id="modal-left"></div>
                                 <div className="modal-right" id="modal-right">
-                                    <i className="fas fa-times pointer" onClick={() => this.props.CloseModal()}></i>
+                                    <i
+                                        className="fas fa-times pointer"
+                                        onClick={() => {
+                                            const modalContent = document.getElementById('modal-content');
+                                            if (modalContent) {
+                                                modalContent.classList.add('hidden');
+                                                window.setTimeout(() => {
+                                                    this.props.CloseModal();
+                                                }, 250);
+                                            }
+                                        }}
+                                    ></i>
                                 </div>
                             </div>
                             <div className="modal-body" id="modal-body">
                                 <X.default modal="modal" />
                             </div>
-                            {/* <div className="modal-footer" id="modal-footer"></div> */}
                         </div>
                     </Overlay>
                 );
