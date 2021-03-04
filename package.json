@@ -1,6 +1,6 @@
 {
   "name": "familrestu-admin-template",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.1",
