@@ -3,7 +3,7 @@ import { OPENMODAL, SETMODALACCESS, CLOSEMODAL, ModalActions } from '../actions/
 export type ModalStateType = {
     isOpened: boolean;
     path: string | null;
-    accessmode?: 0 | 1 | 2 | 3 | 'read' | 'write' | 'update' | 'delete' | null;
+    accessmode: 0 | 1 | 2 | 3 | 'read' | 'write' | 'update' | 'delete' | null;
     modalParams?: { [key: string]: string } | null;
 };
 

@@ -1,4 +1,3 @@
-// import { UserStateType } from '../reducers/UserState';
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 

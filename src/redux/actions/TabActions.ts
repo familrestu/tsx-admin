@@ -1,16 +1,28 @@
-import { PageStateType } from '../reducers/PageState';
+import { TabStateType } from '../reducers/TabState';
 
 export const OPENTAB = 'OPENTAB';
+export const OPENMODALTAB = 'OPENMODALTAB';
 export const CLEARTAB = 'CLEARTAB';
+export const CLEARMODALTAB = 'CLEARMODALTAB';
 
 type OpenTabsActionsType = {
     type: typeof OPENTAB;
-    path: PageStateType['path'];
-    accessmode: PageStateType['accessmode'];
+    path: TabStateType['path'];
+    accessmode: TabStateType['accessmode'];
+};
+
+type OpenModalTabsActionsType = {
+    type: typeof OPENMODALTAB;
+    modaltabpath: TabStateType['modaltabpath'];
+    modaltabaccessmode: TabStateType['modaltabaccessmode'];
 };
 
 type ClearTab = {
     type: typeof CLEARTAB;
 };
 
-export type TabActions = OpenTabsActionsType | ClearTab;
+type ClearModalTab = {
+    type: typeof CLEARMODALTAB;
+};
+
+export type TabActions = OpenTabsActionsType | OpenModalTabsActionsType | ClearTab | ClearModalTab;
