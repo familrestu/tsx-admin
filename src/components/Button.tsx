@@ -51,7 +51,7 @@ const Submit = (props: ButtonPropsType) => {
                 btn-type="add"
                 ref={(ref) => setIdBasedOnParent(ref)}
                 id={`${props.id ? props.id : 'btn-add'}`}
-                className={`btn btn-default ${props.className ? props.className : ''}`.trim()}
+                className={`btn btn-primary ${props.className ? props.className : ''}`.trim()}
                 onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
                     if (props.onClick) {
                         props.onClick(e);
