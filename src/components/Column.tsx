@@ -3,19 +3,14 @@ import { FormControl, InputGroup, Button } from 'react-bootstrap';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { StaticContext } from 'react-router';
 import moment from 'moment';
-
 import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
-
 import { ModalStateType } from 'redux/reducers/ModalState';
 import { TabStateType } from 'redux/reducers/TabState';
-
 import Navlink from 'components/Navlink';
-// import { DatePicker } from './Input';
 
 let mouseMove: any;
 let mouseUp: any;
-
 let isMoving: boolean;
 let mover: HTMLDivElement | null | undefined;
 let rowGroup: HTMLDivElement | null | undefined;
@@ -420,7 +415,7 @@ class Column extends Component<ColumnPropsType & RouteComponentProps & AppState 
                                                 }
                                             }
                                             return (
-                                                <Navlink to={link} navtype="page" navlink={navlink}>
+                                                <Navlink to={link} navlink={navlink}>
                                                     {value}
                                                 </Navlink>
                                             );

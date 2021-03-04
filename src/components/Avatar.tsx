@@ -1,6 +1,5 @@
 import React from 'react';
 import CSS from 'csstype';
-// import { NavLink as Navlink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
 import Navlink from 'components/Navlink';
@@ -107,7 +106,6 @@ class Avatar extends React.Component<AvatarProps & AppState> {
     render() {
         return (
             <div className="avatar-container">
-                {/* <div className="avatar-user-name">{this.props.name}</div> */}
                 <AvatarImage attributes={{ tabIndex: 0 }} dropdownParent {...this.props}>
                     <div className="dropdown-menu p-0 shadow">
                         <div className="d-flex justify-content-center dropdown-item border-bottom nohover">
@@ -122,7 +120,6 @@ class Avatar extends React.Component<AvatarProps & AppState> {
                                     tab: '/profile/personal-information',
                                 },
                             }}
-                            navtype="page"
                             onMouseEnter={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 0)}
                             onMouseLeave={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
                             onClick={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
@@ -138,7 +135,6 @@ class Avatar extends React.Component<AvatarProps & AppState> {
                                     tab: '/profile/account-information',
                                 },
                             }}
-                            navtype="page"
                             onMouseEnter={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 0)}
                             onMouseLeave={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
                             onClick={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
