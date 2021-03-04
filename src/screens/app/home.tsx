@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useState } from 'react';
+import React, { Suspense, lazy, Component } from 'react';
 import { BrowserRouter as Router, Switch, Route, Redirect, RouteProps } from 'react-router-dom';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { AppState } from 'redux/store';
@@ -9,6 +9,7 @@ import Header from 'components/Header';
 import Navbar from 'components/Navbar';
 import LoadingSuspense from 'components/LoadingSuspense';
 import Modal from 'components/Modal';
+import Page from 'components/Page';
 
 const Dashboard = lazy(() => import('screens/app/dashboard'));
 const Login = lazy(() => import('screens/app/login'));
@@ -91,9 +92,33 @@ const DynamicRouter = () => {
         let component;
 
         if (element.isGlobal === 'Yes' || element.isGlobal === 1) {
-            component = lazy(() => import(`screens/app${element.componentPath}`));
+            component = lazy(() =>
+                import(`screens/app${element.componentPath}`).catch((err) => {
+                    console.log(err);
+                    return {
+                        // eslint-disable-next-line react/display-name
+                        default: () => (
+                            <Page>
+                                <div className="pt-4">{`Cannot found screen ${element.componentPath}`}</div>
+                            </Page>
+                        ),
+                    };
+                }),
+            );
         } else {
-            component = lazy(() => import(`screens/${currentApp}${element.componentPath}`));
+            component = lazy(() =>
+                import(`screens/${currentApp}${element.componentPath}`).catch((err) => {
+                    console.log(err);
+                    return {
+                        // eslint-disable-next-line react/display-name
+                        default: () => (
+                            <Page>
+                                <div className="pt-4">{`Cannot found screen ${element.componentPath}`}</div>
+                            </Page>
+                        ),
+                    };
+                }),
+            );
         }
 
         ArrRouterElement.push(<Route key={`dynamic-route-${i}`} exact path={element.link} component={component} />);
@@ -103,7 +128,6 @@ const DynamicRouter = () => {
 };
 
 const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
-    const [SuspenseType, SetSuspense] = useState(localStorage.getItem('pageType') === null ? 'dashboard' : localStorage.getItem('pageType'));
     const dispatch = useDispatch();
     const PageState = useSelector((state: AppState) => state.PageState);
     const MenuAuthState = useSelector((state: AppState) => state.MenuAuthState);
@@ -119,11 +143,6 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
 
     CheckTokenInterval(props);
 
-    const SetSuspenseType = (type: string) => {
-        SetSuspense(type);
-        localStorage.setItem('pageType', type);
-    };
-
     const ToggleNavbarHandler = () => {
         const navbar = document.getElementById('navbar-left');
 
@@ -138,21 +157,18 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
 
     return (
         <Router>
-            <Navbar
-                ToggleNavbarHandler={() => ToggleNavbarHandler()}
-                SignOutHandler={() => props.SignOutHandler()}
-                isMobile={props.isMobile}
-                SetSuspenseType={(type: string) => SetSuspenseType(type)}
-            />
-            <div className="content-container">
+            <Navbar ToggleNavbarHandler={() => ToggleNavbarHandler()} SignOutHandler={() => props.SignOutHandler()} isMobile={props.isMobile} />
+            <div className="content-container" authorized-screen="true">
                 <Header ToggleNavbarHandler={() => ToggleNavbarHandler()} isMobile={props.isMobile} SignOutHandler={() => props.SignOutHandler()} />
                 <div id="body" className="body">
-                    <Suspense fallback={<LoadingSuspense SuspenseType={SuspenseType} />}>
+                    <Suspense fallback={<LoadingSuspense />}>
                         <Switch>
                             <Route exact path="/" component={Dashboard} />
                             {DynamicRouter()}
                             <Route exact path="/notification" component={Notification} />
-                            <Route exact path="/pagenotfound" component={PagenotFound} />
+                            <Route exact path="/pagenotfound">
+                                <PagenotFound />
+                            </Route>
                             <Route exact path="/printpreview" component={Printpreview} />
                             <Redirect to="/pagenotfound" />
                         </Switch>
@@ -166,7 +182,7 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
 
 const NotAuthorizedScreen = () => (
     <Router>
-        <div className="content-container">
+        <div className="content-container" authorized-screen="false">
             <Suspense fallback={<LoadingSuspense />}>
                 <Switch>
                     <Route exact path="/" component={Login} />
@@ -180,14 +196,12 @@ const NotAuthorizedScreen = () => (
 
 type LocalState = {
     loggedIn: boolean | null;
-    error: boolean;
     isMobile: boolean;
 };
 
-class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalState> {
+class Home extends Component<AppState & typeof MapDispatch, LocalState> {
     state = {
         loggedIn: null,
-        error: false,
         isMobile: window.innerWidth <= 480 ? true : false,
     };
 
@@ -237,7 +251,7 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
         };
 
         const onErrorPost = (err: AxiosError) => {
-            console.log(err);
+            console.error(err);
         };
 
         get(
@@ -277,7 +291,6 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
     }
 
     ResizeHandler() {
-        // console.log('test');
         let isMobile = false;
         if (window.innerWidth <= 480) {
             isMobile = true;
@@ -321,11 +334,7 @@ class EntryPoint extends React.Component<AppState & typeof MapDispatch, LocalSta
             }
         }
 
-        return (
-            <React.Fragment>
-                <Screen />
-            </React.Fragment>
-        );
+        return <Screen />;
     }
 }
 
@@ -339,4 +348,4 @@ const MapDispatch = {
     SetUserMenu: (data: any) => ({ type: 'SETUSERMENU', data }),
 };
 
-export default connect(MapStateToProps, MapDispatch)(EntryPoint);
+export default connect(MapStateToProps, MapDispatch)(Home);
