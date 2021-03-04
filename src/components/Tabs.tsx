@@ -4,15 +4,35 @@ import { StaticContext } from 'react-router';
 import { connect, useSelector, useDispatch } from 'react-redux';
 import { AppState } from 'redux/store';
 import { TabStateType } from 'redux/reducers/TabState';
+// import ModalScreen from 'screens/app/components/modal';
 
-const TabClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    const navTabs = document.querySelectorAll('nav.nav.nav-tabs .nav-item');
-    for (let i = 0; i < navTabs.length; i++) {
-        const element = navTabs[i];
-        element.classList.remove('activelink');
+const TabClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, childNumber: number) => {
+    const navTabParents = e.currentTarget.parentElement;
+    if (navTabParents) {
+        const navTabs = navTabParents.children;
+        for (let i = 0; i < navTabs.length; i++) {
+            const element = navTabs[i];
+            element.classList.remove('activelink');
+        }
+
+        e.currentTarget.classList.add('activelink');
+
+        const tabPane = navTabParents.nextElementSibling;
+
+        if (tabPane) {
+            const tabChild = tabPane.children;
+            for (let i = 0; i < tabChild.length; i++) {
+                const element = tabChild[i];
+                if (element.getAttribute('tab-container-number') === childNumber.toString()) {
+                    element.classList.add('show');
+                    element.classList.add('active');
+                } else {
+                    element.classList.remove('show');
+                    element.classList.remove('active');
+                }
+            }
+        }
     }
-
-    e.currentTarget.classList.add('activelink');
 };
 
 type TabPropsType = {
@@ -44,7 +64,6 @@ const Tab = (props: TabPropsType) => {
         if (Menu.link === props.link) {
             show = true;
             accessmode = Menu.accessmode;
-            console.log(accessmode);
             break;
         } else {
             accessmode = 0;
@@ -62,7 +81,7 @@ const Tab = (props: TabPropsType) => {
                 tab-number={props.childNumber}
                 onClick={(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
                     dispatch({ type: 'OPENTAB', path: props.link, accessmode });
-                    TabClick(e);
+                    TabClick(e, Number(props.childNumber));
                 }}
             >
                 {props.title}
@@ -77,9 +96,21 @@ type TabsPropsType = {
     children?: any;
 };
 
-class TabsC extends Component<TabsPropsType & AppState & typeof MapDispatch & RouteComponentProps<null, StaticContext, { tab: string }>> {
-    _CurrentPath: string = window.location.pathname;
-    _PrevPath: string | undefined;
+type TabsLocalState = {
+    path: string | null;
+    accessmode: AppState['TabState']['accessmode'];
+    activeIndex: number | 0;
+};
+
+class TabsC extends Component<TabsPropsType & AppState & typeof MapDispatch & RouteComponentProps<null, StaticContext, { tab: string }>, TabsLocalState> {
+    _TabComponent: any;
+    _TabModalComponent: any;
+
+    state = {
+        path: null,
+        accessmode: null,
+        activeIndex: 0,
+    };
 
     SetTabContent() {
         let path;
@@ -95,7 +126,8 @@ class TabsC extends Component<TabsPropsType & AppState & typeof MapDispatch & Ro
             for (let index = 0; index < this.props.MenuAuthState.length; index++) {
                 const Component = this.props.MenuAuthState[index];
                 if (Component.link === path) {
-                    this.props.OpenTab(path, Component.accessmode);
+                    const { accessmode } = Component;
+                    this.props.OpenTab(path, accessmode);
                     break;
                 }
             }
@@ -103,7 +135,7 @@ class TabsC extends Component<TabsPropsType & AppState & typeof MapDispatch & Ro
     }
 
     GetTabsContent() {
-        if (this.props.TabState && this.props.TabState.path !== null && this.props.MenuAuthState) {
+        if (this.props.TabState && this.props.TabState.path !== null && this.props.MenuAuthState && this.props.ModalState && !this.props.ModalState.isOpened) {
             let X;
             for (let index = 0; index < this.props.MenuAuthState.length; index++) {
                 const Component = this.props.MenuAuthState[index];
@@ -127,7 +159,7 @@ class TabsC extends Component<TabsPropsType & AppState & typeof MapDispatch & Ro
     }
 
     componentDidMount() {
-        this.SetTabContent();
+        // console.log('test');
     }
 
     componentWillUnmount() {
@@ -135,8 +167,6 @@ class TabsC extends Component<TabsPropsType & AppState & typeof MapDispatch & Ro
     }
 
     render() {
-        const TabsContent = () => this.GetTabsContent();
-
         return (
             <React.Fragment>
                 <nav className="nav nav-tabs">
@@ -144,7 +174,43 @@ class TabsC extends Component<TabsPropsType & AppState & typeof MapDispatch & Ro
                         return React.cloneElement(child, { childNumber: index });
                     })}
                 </nav>
-                <div className="tab-content">{this.props.TabState && this.props.TabState.path && <TabsContent />}</div>
+                {/* <div className="tab-content">{this.props.TabState && this.props.TabState.path && this.GetTabsContent()}</div> */}
+                <div className="tab-content">
+                    {React.Children.map(this.props.children, (child: { props: TabPropsType }, index: number) => {
+                        let X;
+                        const Component =
+                            this.props.MenuAuthState &&
+                            this.props.MenuAuthState.filter((a) => {
+                                return a.link === child.props.link;
+                            });
+                        try {
+                            if (Component) {
+                                if (Component[0].isGlobal === 'Yes' || Component[0].isGlobal === 1) {
+                                    // eslint-disable-next-line @typescript-eslint/no-var-requires
+                                    X = require(`screens/app${Component[0].componentPath}`);
+                                } else {
+                                    // eslint-disable-next-line @typescript-eslint/no-var-requires
+                                    X = require(`screens/${this.props.UserState.current_app}${Component[0].componentPath}`);
+                                }
+                            } else {
+                                // eslint-disable-next-line @typescript-eslint/no-var-requires
+                                X = require(`screens/app/pagenotfound`);
+                            }
+                        } catch (error) {}
+
+                        return (
+                            <div
+                                key={index}
+                                id="tab-pane"
+                                className={`fade tab-page-container tab-pane ${index === 0 ? 'active show' : ''}`.trim()}
+                                tab-container-number={index}
+                                tab-container-name={child.props.title.toLowerCase().replaceAll(' ', '-')}
+                            >
+                                <X.default />
+                            </div>
+                        );
+                    })}
+                </div>
             </React.Fragment>
         );
     }
