@@ -1,7 +1,4 @@
-.form {
-	padding: .5rem;
-	flex: 1;
-}
+.form { flex: 1; }
 
 .form-button-group {
 	margin-bottom: 0;
@@ -79,6 +76,7 @@
 .form-button-group {
 	display: flex;
 	padding: 1rem 0;
+	padding-bottom: 0rem;
 	width: 100%;
 
 	position: sticky;
@@ -87,12 +85,5 @@
 
 	.col {
 		padding: 0;
-	}
-}
-
-.modal-content {
-	.form-button-group {
-		margin-bottom: 0;
-		padding-bottom: 0;
 	}
 }

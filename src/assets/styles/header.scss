@@ -29,8 +29,11 @@
 
 			.form-icon {
 				position: absolute;
-				right: 16px;
-				top: calc(50% - 13px);
+				right: 0px;
+				border-radius: .25rem;
+				background-color: #e9edf0;
+				height: calc(1.5em + .75rem + 2px);
+    			padding: .375rem .75rem;
 				cursor: pointer;
 			}
 
@@ -42,36 +45,32 @@
 		.dropdown-menu {
 			width: 100%;
 			background-color: var(--white);
-			// overflow: auto;
+
+			.dropdown-item {
+				color: var(--black);
+				i { margin-right: .5rem; }
+
+				&.active {
+					background-color: unset;
+					color: unset;
+					color: var(--black);
+				}
+
+				&:hover {
+					color: unset;
+					text-decoration: none;
+					background-color: unset;
+				}
+
+				&.focus {
+					color: var(--black);
+					text-decoration: none;
+					background-color: var(--light-grey);
+				}
+			}
 
 			.simplebar-search {
 				max-height: 15rem;
-
-				.dropdown-item {
-					color: var(--black);
-					i {
-						margin-right: .5rem;
-					}
-
-					&.active {
-						// background-color: var(--light-grey);
-						background-color: unset;
-						color: unset;
-						color: var(--black);
-					}
-
-					&:hover {
-						color: unset;
-						text-decoration: none;
-						background-color: unset;
-					}
-
-					&.focus {
-						color: var(--black);
-						text-decoration: none;
-						background-color: var(--light-grey);
-					}
-				}
 			}
 		}
 
@@ -158,6 +157,14 @@
 	.header-container {
 		.header-left {
 			flex: 1;
+
+			.mr-4 {
+				margin-right: 1rem !important;
+			}
+
+			.input-group {
+				width: 100%;
+			}
 		}
 
 		.header-right {

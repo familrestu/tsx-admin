@@ -35,38 +35,11 @@ body {
 	background-color: var(--white);
 
 	h2, label { color: var(--black); }
-
-	#root-container {
-		display: flex;
-		height: 100%;
-		overflow: hidden;
-
-		.content-container {
-			display: flex;
-			flex-direction: column;
-			width: 100%;		
-		}
-	}
-
-	* {
-		transition: background-color .2s ease-in, color .2s ease-in;
-	}
-}
-
-ul {
-	position: relative;
-	margin-block-start: unset;
-	margin-block-end: unset;
-	padding-inline-start: unset;
-
-	li {
-		list-style-type: none;
-	}
+	* { transition: background-color .2s ease-in, color .2s ease-in; }
 }
 
 .nowrap { white-space: nowrap; }
 .bold { font-weight: 600; }
-.flex-1 { flex: 1; }
 .pointer { cursor: pointer; }
 
 .row {
@@ -93,20 +66,18 @@ a:hover { text-decoration: none; }
 /* badge */
 .badge-primary { background-color: var(--primary); }
 
+/* background */
 .bg-primary { background-color: var(--primary) !important; }
 .bg-secondary { background-color: var(--secondary) !important; }
 
 /* border */
 .border-bottom { border-bottom: 1px solid var(--grey) !important; }
 
-@function hexToRGB($hex) {
-  @return red($hex), green($hex), blue($hex);
-}
-
-@import 'dashboard.scss';
 @import 'header.scss';
-@import 'notification.scss';
 @import 'body.scss';
+@import 'page.scss';
+@import 'dashboard.scss';
+@import 'notification.scss';
 @import 'breadcrumb.scss';
 @import 'avatar.scss';
 @import 'navbar.scss';

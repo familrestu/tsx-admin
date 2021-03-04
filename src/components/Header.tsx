@@ -5,7 +5,6 @@ import Avatar from 'components/Avatar';
 import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
 import Notification from 'components/Notification';
-import SimpleBar from 'simplebar-react';
 import { MenuAuthStateType } from 'redux/reducers/MenuAuthState';
 import { get } from 'libs/fetch';
 
@@ -163,7 +162,6 @@ class HeaderSearchConnect extends Component<AppState, HandleSearchStateType> {
     }
 
     KeyUpHandler(e: React.KeyboardEvent<HTMLInputElement>) {
-        // const headerContainer = document.querySelector('#header-search-container .simplebar-content-wrapper');
         const selectedDropdown = document.querySelector('.header-search-item.focus[is-selected=yes]');
         let listNum = 0;
 
@@ -174,8 +172,7 @@ class HeaderSearchConnect extends Component<AppState, HandleSearchStateType> {
                 listNum = this.state.showedArrSearch.length - 1;
             }
 
-            if (selectedDropdown && selectedDropdown.previousElementSibling && selectedDropdown.previousElementSibling.scrollHeight /*  && headerContainer */) {
-                // headerContainer.scrollTo(0, selectedDropdown.previousElementSibling.scrollHeight * listNum);
+            if (selectedDropdown && selectedDropdown.previousElementSibling && selectedDropdown.previousElementSibling.scrollHeight) {
                 this.SetHeaderSearchInput(selectedDropdown.previousElementSibling.children[1].innerHTML);
             }
 
@@ -298,44 +295,41 @@ class HeaderSearchConnect extends Component<AppState, HandleSearchStateType> {
                                 e.currentTarget.removeAttribute('keep-focus');
                             }}
                         >
-                            <SimpleBar className="simplebar-search">
-                                {this.state.loadSearch && this.state.arrSearch ? (
-                                    <div className="dropdown-item">
-                                        <span>Loading...</span>
-                                    </div>
-                                ) : this.state.showedArrSearch.length > 0 ? (
-                                    this.state.showedArrSearch.map((item: SearchDetails, index) => {
-                                        let icon = '';
-                                        if (item.type === 'menu') {
-                                            icon = 'far fa-file-alt';
-                                        } else if (item.type === 'employee') {
-                                            icon = 'far fa-user';
-                                        }
+                            {this.state.loadSearch && this.state.arrSearch ? (
+                                <div className="dropdown-item">
+                                    <span>Loading...</span>
+                                </div>
+                            ) : this.state.showedArrSearch.length > 0 ? (
+                                this.state.showedArrSearch.map((item: SearchDetails, index) => {
+                                    let icon = '';
+                                    if (item.type === 'menu') {
+                                        icon = 'far fa-file-alt';
+                                    } else if (item.type === 'employee') {
+                                        icon = 'far fa-user';
+                                    }
 
-                                        return (
-                                            <Navlink
-                                                key={index}
-                                                to={item.link}
-                                                navlink={item.navlink}
-                                                className={`dropdown-item header-search-item ${this.state.selectedList === index ? 'focus' : ''}`.trim()}
-                                                is-selected={`${this.state.selectedList === index ? 'yes' : 'no'}`}
-                                                index-number={index}
-                                                role="button"
-                                                onClick={() => this.CloseSearch(item.title)}
-                                                title={item.type.substr(0, 1).toUpperCase() + item.type.substr(1, item.type.length - 1)}
-                                                navtype="page"
-                                                onMouseEnter={() => this.DropdownMouseEnterHandler(index)}
-                                                onMouseLeave={() => this.DropdownMouseLeaveHandler()}
-                                            >
-                                                {icon !== '' && <i className={icon}></i>}
-                                                <span>{item.title}</span>
-                                            </Navlink>
-                                        );
-                                    })
-                                ) : (
-                                    <div className="dropdown-item header-search-item">No record</div>
-                                )}
-                            </SimpleBar>
+                                    return (
+                                        <Navlink
+                                            key={index}
+                                            to={item.link}
+                                            navlink={item.navlink}
+                                            className={`dropdown-item header-search-item ${this.state.selectedList === index ? 'focus' : ''}`.trim()}
+                                            is-selected={`${this.state.selectedList === index ? 'yes' : 'no'}`}
+                                            index-number={index}
+                                            role="button"
+                                            onClick={() => this.CloseSearch(item.title)}
+                                            title={item.type.substr(0, 1).toUpperCase() + item.type.substr(1, item.type.length - 1)}
+                                            onMouseEnter={() => this.DropdownMouseEnterHandler(index)}
+                                            onMouseLeave={() => this.DropdownMouseLeaveHandler()}
+                                        >
+                                            {icon !== '' && <i className={icon}></i>}
+                                            <span>{item.title}</span>
+                                        </Navlink>
+                                    );
+                                })
+                            ) : (
+                                <div className="dropdown-item header-search-item">No record</div>
+                            )}
                         </div>
                     )}
                 </InputGroup>

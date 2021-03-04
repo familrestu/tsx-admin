@@ -1,0 +1,44 @@
+.page {
+	flex: 1;
+	padding: 0 1rem;
+	overflow: hidden;
+	
+	.bread-crumb + .body-content { height: calc(100vh - 154px); }
+
+	.body-content {
+		position: relative;
+		border-radius: .25rem;
+		height: calc(100vh - 54px);
+
+		color: var(--dark-grey);
+		overflow: auto;
+
+		.tab-content {
+			.page {
+				padding: 0;
+				padding-right: .25rem;
+				.body-content {
+					height: calc(100vh - 212px);
+				}
+			}
+		}
+		
+		&::-webkit-scrollbar {
+			width: .5rem;
+			height: .5rem;
+		}
+
+		&::-webkit-scrollbar-track {
+			background-color: transparent;
+		}
+
+		&::-webkit-scrollbar-thumb {
+			background-color: rgba(181, 189, 184, 0.8);
+			border-radius: .25rem;
+		}
+
+		&::-webkit-scrollbar-corner  {
+			display: none;
+		}
+	}
+}

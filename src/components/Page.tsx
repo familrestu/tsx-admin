@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import SimpleBar from 'simplebar-react';
 import CSS from 'csstype';
 
 type PageProps = {
@@ -58,38 +57,11 @@ class Page extends React.Component<PageProps, PageState> {
                         <div className="bread-crumb-left" id="bread-crumb-left">
                             {element}
                         </div>
-                        <div className="bread-crumb-right" id="bread-crumb-right"></div>
                     </div>
                 );
             }
         } else {
             return <React.Fragment />;
-        }
-    }
-
-    SetSimpleBarMaxDimensions() {
-        const headerElement = document.getElementById('header-container');
-
-        let maxHeight = 0;
-        let breadCrumbHeight = 0;
-        let headerHeight = 0;
-
-        if (this._BreadCrumbContainer) {
-            if (this._BreadCrumbContainer.parentElement?.id === 'page') {
-                const breadcrumbElement = document.getElementById('bread-crumb');
-
-                breadCrumbHeight = breadcrumbElement ? breadcrumbElement.offsetHeight : 0;
-            }
-        }
-
-        headerHeight = headerElement ? headerElement.offsetHeight : 0;
-
-        maxHeight = window.innerHeight - headerHeight - breadCrumbHeight - 16;
-
-        if (maxHeight !== 0) {
-            this.setState((prevState) => {
-                return { ...prevState, maxHeight: maxHeight };
-            });
         }
     }
 
@@ -110,33 +82,16 @@ class Page extends React.Component<PageProps, PageState> {
     }
 
     componentDidMount() {
-        this.SetSimpleBarMaxDimensions();
         this.SetBreadcrumbForModal();
     }
 
     render() {
-        const Breadcrumb = () => this.PrintBreadCrumb();
-
         return (
             <div id="page" className="page" ref={(ref) => (this._Page = ref)}>
-                {this.state.showBreadCrumb && <Breadcrumb />}
-                <SimpleBar id="simplebar-page" className="simplebar-page">
-                    <div id="body-content" className="body-content" style={{ ...this.props.style }}>
-                        {/* {React.Children.map(this.props.children, (child, index) => {
-                            const PageCloneChildrenProps: PageCloneChildrenPropsType = {
-                                'page-max-height': this.state.maxHeight,
-                                'parent-element': this._Page,
-                                'children-number': index,
-                            };
-                            if (React.isValidElement(child)) {
-                                return React.cloneElement(child, PageCloneChildrenProps);
-                            } else {
-                                return <React.Fragment />;
-                            }
-                        })} */}
-                        {this.props.children}
-                    </div>
-                </SimpleBar>
+                {this.state.showBreadCrumb && this.PrintBreadCrumb()}
+                <div id="body-content" className="body-content" style={{ ...this.props.style }}>
+                    {this.props.children}
+                </div>
             </div>
         );
     }

@@ -7,7 +7,6 @@ import { store } from 'redux/store';
 import Home from 'screens/app/home';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import 'simplebar/dist/simplebar.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'assets/styles/main.scss';
 

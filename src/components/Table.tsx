@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import CSS from 'csstype';
-import SimpleBar from 'simplebar-react';
-import { FormControl, Badge, Col } from 'react-bootstrap';
+import { Badge } from 'react-bootstrap';
 import { AxiosError, AxiosResponse } from 'axios';
 import { post } from 'libs/fetch';
 import { PageCloneChildrenPropsType } from 'components/Page';
-import { Toolbar } from 'components/Toolbar';
+import { Toolbar, ExportToExcel, ExportToPDF, BtnPrintPreview } from 'components/Toolbar';
 
 type TableDataType = {
     header: string[];
@@ -350,36 +349,35 @@ class Table extends Component<TablePropsType & PageCloneChildrenPropsType, Table
             <React.Fragment>
                 <div id="toolbar-container" className="toolbar-container">
                     <div className="toolbar-left">
-                        <Col sm={6} className="pl-0">
-                            <FormControl placeholder="Search..." />
-                        </Col>
-                    </div>
-                    <div className="toolbar-right">
-                        {/* <div className="toolbar-wrapper" id="toolbar-wrapper" /> */}
-                        {/* <Toolbar {...this.state} ClearFilter={() => this.ClearFilter()} /> */}
                         <div className="toolbar-wrapper" id="toolbar-wrapper">
                             {this.ToolbarChildren()}
                         </div>
                     </div>
-                </div>
-                <SimpleBar className="simplebar-table" id="simplebar-table">
-                    <div
-                        className={`table ${this.props.className ? `table-${this.props.className}` : ''} loading`.trim()}
-                        id={`table ${this.props.id ? `table-${this.props.id}` : ''}`.trim()}
-                        ref={(ref) => {
-                            this._Table = ref;
-                        }}
-                    >
-                        <div className="column-group">
-                            <div className="row-header number">
-                                <span className="text-center">#</span>
-                            </div>
-                            {this.state.arrNumberElement}
+                    <div className="toolbar-right">
+                        <div className="toolbar-wrapper" id="toolbar-wrapper">
+                            {/* {this.ToolbarChildren()} */}
+                            <ExportToExcel {...this.state} />
+                            <ExportToPDF {...this.state} />
+                            <BtnPrintPreview {...this.state} />
                         </div>
-                        {this.NewChildren()}
                     </div>
-                    {this.state.arrSearchData && this.state.arrSearchData.length > 0 && <div className="table-search-data">{this.SearchData()}</div>}
-                </SimpleBar>
+                </div>
+                <div
+                    className={`table ${this.props.className ? `table-${this.props.className}` : ''} loading`.trim()}
+                    id={`table ${this.props.id ? `table-${this.props.id}` : ''}`.trim()}
+                    ref={(ref) => {
+                        this._Table = ref;
+                    }}
+                >
+                    <div className="column-group">
+                        <div className="row-header number">
+                            <span className="text-center">#</span>
+                        </div>
+                        {this.state.arrNumberElement}
+                    </div>
+                    {this.NewChildren()}
+                </div>
+                {this.state.arrSearchData && this.state.arrSearchData.length > 0 && <div className="table-search-data">{this.SearchData()}</div>}
             </React.Fragment>
         );
     }
