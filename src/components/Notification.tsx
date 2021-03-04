@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Badge } from 'react-bootstrap';
-import Simplebar from 'simplebar-react';
 import { ReactComponent as NotificationSVG } from 'assets/svg/notification.svg';
 
 type NotificationDataType = {
@@ -22,16 +21,7 @@ type NotificationStateType = {
 
 class Notification extends Component<NotificationPropsType, NotificationStateType> {
     state = {
-        // counter: 0,
-        data: [
-            /*  {
-                type: 'request',
-                icon: 'fas fa-day',
-                date: '12-Dec-2020',
-                title: 'Leave Request',
-                details: {},
-            }, */
-        ],
+        data: [],
     };
 
     ShowDetailHandler(element: React.MouseEvent) {
@@ -140,17 +130,15 @@ class Notification extends Component<NotificationPropsType, NotificationStateTyp
                             <span>Notification</span>
                         </div>
                         <div className="notification-items-container">
-                            <Simplebar style={{ maxHeight: '350px' }}>
-                                {this.state.data.length > 0 ? (
-                                    this.state.data.map((item, index) => {
-                                        return <NotificationItem key={`notifkey-${index}`} {...item} />;
-                                    })
-                                ) : (
-                                    <div className="d-flex justify-content-center align-items-center">
-                                        <NotificationSVG />
-                                    </div>
-                                )}
-                            </Simplebar>
+                            {this.state.data.length > 0 ? (
+                                this.state.data.map((item, index) => {
+                                    return <NotificationItem key={`notifkey-${index}`} {...item} />;
+                                })
+                            ) : (
+                                <div className="d-flex justify-content-center align-items-center">
+                                    <NotificationSVG />
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}
