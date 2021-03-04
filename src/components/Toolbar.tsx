@@ -1,7 +1,8 @@
 import React, { Fragment } from 'react';
-import CSS from 'csstype';
 import { TablePropsType, TableStateType } from 'components/Table';
-import Navlink from 'components/Navlink';
+import { AppState } from 'redux/store';
+import { useSelector, useDispatch } from 'react-redux';
+import { NavLink } from 'react-router-dom';
 
 type ToolbarPropsType = {
     access?: 1 | 2 | 3 | 4 | 'read' | 'write' | 'update' | 'delete';
@@ -14,8 +15,7 @@ const Toolbar = (props: ToolbarPropsType & TableStateType) => {
     return (
         <Fragment>
             {props.arrSearchData && props.arrSearchData.length > 0 && (
-                <Button
-                    type="custom"
+                <button
                     title="Clear Filter"
                     onClick={() => {
                         if (props.ClearFilter) {
@@ -25,7 +25,7 @@ const Toolbar = (props: ToolbarPropsType & TableStateType) => {
                 >
                     <i className="fas fa-filter"></i>
                     <i className="fas fa-times-circle position-absolute" style={{ right: '.25rem', bottom: '.25rem', fontSize: '.75rem' }}></i>
-                </Button>
+                </button>
             )}
             {React.Children.map(props.children, (child, index) => {
                 if (React.isValidElement(child)) {
@@ -36,78 +36,112 @@ const Toolbar = (props: ToolbarPropsType & TableStateType) => {
     );
 };
 
-type ToolbarButtonPropsType = {
-    type: 'excel' | 'pdf' | 'preview' | 'custom' | 'add';
-    title?: string;
-    link?: string;
-    icon?: string;
-    style?: CSS.Properties;
-    onClick?: () => void;
-    children?: React.ReactNode;
+const ExportToExcel = (props: TableStateType) => {
+    return (
+        <button
+            className="btn btn-primary"
+            id="btn-export-to-excel"
+            onClick={() => {
+                console.log(props.arrTableData);
+            }}
+        >
+            <i className="fas fa-file-excel"></i>
+        </button>
+    );
 };
 
-const Button = (props: ToolbarButtonPropsType) => {
-    let icon = '';
-    let title = '';
-
-    if (props.type.toUpperCase() === 'EXCEL') {
-        title = 'Export to Ms Excel';
-        icon = 'fas fa-file-excel';
-    } else if (props.type.toUpperCase() === 'PDF') {
-        title = 'Export to PDF';
-        icon = 'fas fa-file-pdf';
-    } else if (props.type.toUpperCase() === 'PREVIEW') {
-        title = 'Print Preview';
-        icon = 'fas fa-print';
-    } else if (props.type.toUpperCase() === 'ADD') {
-        title = 'Add';
-        icon = 'fas fa-plus';
-    }
-
-    if (props.title !== undefined) {
-        title = props.title;
-    }
-
-    if (props.icon !== undefined) {
-        icon = props.icon;
-    }
-
-    const ChildrenElement = (
-        <Fragment>
-            <i className={icon}></i>
-            {props.children}
-        </Fragment>
+const ExportToPDF = (props: TableStateType) => {
+    return (
+        <button
+            className="btn btn-primary"
+            id="btn-export-to-pdf"
+            onClick={() => {
+                console.log(props.arrTableData);
+            }}
+        >
+            <i className="fas fa-file-pdf"></i>
+        </button>
     );
+};
 
-    const ClickEventHandler = () => {
-        if (props.onClick) {
-            props.onClick();
+const BtnPrintPreview = (props: TableStateType) => {
+    return (
+        <button
+            className="btn btn-primary"
+            id="btn-export-to-pdf"
+            onClick={() => {
+                console.log(props.arrTableData);
+            }}
+        >
+            <i className="fas fa-print"></i>
+        </button>
+    );
+};
+
+type BtnLinkPropsType = {
+    icon?: string;
+    link: string;
+    linktype?: string;
+    label?: string;
+    showif?: boolean;
+};
+
+const BtnLink = (props: TableStateType & BtnLinkPropsType) => {
+    const MenuAuthState = useSelector((state: AppState) => state.MenuAuthState);
+    const ModalState = useSelector((state: AppState) => state.ModalState);
+    const TabState = useSelector((state: AppState) => state.TabState);
+    const dispatch = useDispatch();
+    let show = false;
+    let accessmode: AppState['TabState']['accessmode'] = 0;
+
+    /* automatic not showing btn link if didn't get access */
+    for (let x = 0; x < MenuAuthState.length; x++) {
+        const Menu = MenuAuthState[x];
+
+        if (Menu.link === props.link) {
+            show = true;
+            accessmode = Menu.accessmode;
+            break;
         } else {
-            if (props.type.toUpperCase() === 'EXCEL') {
-                console.log(props);
-            } else if (props.type.toUpperCase() === 'PDF') {
-                console.log(props);
-            } else if (props.type.toUpperCase() === 'PREVIEW') {
-                console.log(props);
-            }
+            accessmode = 0;
         }
-    };
-    if (props.link === undefined) {
-        return (
-            <button className="btn btn-primary" title={title} onClick={() => ClickEventHandler()} style={{ position: 'relative', ...props.style }}>
-                {ChildrenElement}
-            </button>
-        );
+    }
+
+    const Label = props.label === undefined ? <Fragment /> : <span>{props.label}</span>;
+    const Icon = props.icon === undefined ? <Fragment /> : <i className={props.icon}></i>;
+
+    if ((props.showif !== undefined && !props.showif) || !show) {
+        return <Fragment />;
     } else {
-        return (
-            <Navlink className="btn btn-primary" title={title} to={props.link} navtype="">
-                {ChildrenElement}
-            </Navlink>
-        );
+        if (TabState !== undefined && TabState.path !== null) {
+            return (
+                <button className="btn btn-primary" onClick={() => dispatch({ type: 'OPENTAB', path: props.link, accessmode })}>
+                    {Icon}
+                    {Label}
+                </button>
+            );
+        } else if ((ModalState !== undefined && ModalState.isOpened && ModalState.path !== null) || (props.linktype && props.linktype === 'popup')) {
+            return (
+                <button className="btn btn-primary" onClick={() => dispatch({ type: 'OPENMODAL', path: props.link, accessmode })}>
+                    {Icon}
+                    {Label}
+                </button>
+            );
+        } else {
+            return (
+                <NavLink className="btn btn-primary" to={props.link}>
+                    {Icon}
+                    {Label}
+                </NavLink>
+            );
+        }
     }
 };
 
 Toolbar.displayName = 'Toolbar';
-Button.displayName = 'Button';
+ExportToExcel.displayName = 'ExportToExcel';
+ExportToPDF.displayName = 'ExportToPDF';
+BtnPrintPreview.displayName = 'BtnPrintPreview';
+BtnLink.displayName = 'BtnLink';
 
-export { Toolbar, Button };
+export { Toolbar, ExportToExcel, ExportToPDF, BtnPrintPreview, BtnLink };
