@@ -41,6 +41,7 @@ type FormProps = {
 };
 
 type FormState = {
+    formID: string;
     isLoaded: boolean;
     formData: { [key: string]: any } | null;
     isSubmiting: boolean;
@@ -53,6 +54,7 @@ class Form extends React.Component<FormProps & AppState, FormState> {
     _Mounted: boolean | undefined;
 
     state = {
+        formID: '',
         isLoaded: false,
         formData: null,
         isSubmiting: false,
@@ -255,9 +257,19 @@ class Form extends React.Component<FormProps & AppState, FormState> {
         return obj;
     }
 
+    SetFormID() {
+        if (this.state.formID === '') {
+            let formID = this._Form?.closest('#tab-pane')?.getAttribute('tab-container-name');
+            formID = formID ? `form-${formID}` : '';
+            formID = this.props.ModalState && this.props.ModalState.isOpened ? `${formID}-modal` : formID;
+            this.setState({ formID });
+        }
+    }
+
     componentDidMount() {
         this._Mounted = true;
         this.GetFormData();
+        this.SetFormID();
     }
 
     componentDidUpdate() {
@@ -273,19 +285,20 @@ class Form extends React.Component<FormProps & AppState, FormState> {
     }
 
     render() {
+        // console.log(this._Form?.parentElement?.parentElement?.parentElement);
+
         const GroupElement: { [key: string]: JSX.Element[] } = {};
         const CurrentGroupNum: { [key: string]: number } = {};
         const GroupTotal: { [key: string]: number } = this.GetGroupTotal();
         return (
             <form
                 ref={(ref) => (this._Form = ref)}
-                id={`${this.props.id ? `${this.props.id}` : ''}`.trim()}
-                className={`form ${this.props.className ? `${this.props.className}` : ''}`.trim()}
+                id={`${this.state.formID} ${this.props.id ? `${this.props.id}` : ''}`.trim()}
+                className={`form ${this.state.formID} ${this.props.className ? `${this.props.className}` : ''}`.trim()}
                 encType={this.props.encType}
                 // action={this.props.action}
                 onSubmit={(e: React.FormEvent) => this.FormSubmitHandler(e)}
             >
-                {/* {this.props.children} */}
                 {React.Children.map(this.props.children, (child, index) => {
                     if (React.isValidElement(child)) {
                         const { PageState, ModalState, TabState, UserState } = this.props;
