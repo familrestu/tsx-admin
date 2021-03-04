@@ -7,7 +7,7 @@ import { ButtonGroup, Save, Reset, Cancel } from 'components/Button';
 const PersonalInfoTab = () => {
     return (
         <Page>
-            <Form datasource="/" action="system/application/TestDB">
+            <Form datasource="/emp/EmpData/FormData" action="system/application/TestDB">
                 <Input type="text" label="Name" size="4" placeholder="Full Name" name="full_name" />
                 <Input type="label" label="Position" size="auto" placeholder="Position" name="position_name" readOnly />
 
