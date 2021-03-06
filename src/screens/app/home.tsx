@@ -196,13 +196,13 @@ const NotAuthorizedScreen = () => (
 );
 
 type LocalState = {
-    loggedIn: boolean | null;
+    isLoggedIn: boolean | null;
     isMobile: boolean;
 };
 
 class Home extends Component<MapStateToPropsType & typeof MapDispatch, LocalState> {
     state = {
-        loggedIn: null,
+        isLoggedIn: null,
         isMobile: window.innerWidth <= 480 ? true : false,
     };
 
@@ -213,11 +213,11 @@ class Home extends Component<MapStateToPropsType & typeof MapDispatch, LocalStat
                     if (res.data.loginStatus) {
                         this.props.Login(res.data);
                         this.setState((prevState) => {
-                            return { ...prevState, loggedIn: true };
+                            return { ...prevState, isLoggedIn: true };
                         });
                     } else {
                         this.setState((prevState) => {
-                            return { ...prevState, loggedIn: false };
+                            return { ...prevState, isLoggedIn: false };
                         });
                     }
                 }
@@ -226,7 +226,7 @@ class Home extends Component<MapStateToPropsType & typeof MapDispatch, LocalStat
 
         const onErrorPost = (err: AxiosError) => {
             this.setState((prevState) => {
-                return { ...prevState, loggedIn: false };
+                return { ...prevState, isLoggedIn: false };
             });
             console.log(err);
         };
@@ -272,7 +272,7 @@ class Home extends Component<MapStateToPropsType & typeof MapDispatch, LocalStat
             if (res) {
                 if (res.data) {
                     if (!res.data.loginStatus) {
-                        this.props.Logout();
+                        // this.props.Logout();
                         window.location.reload();
                     }
                 }
@@ -324,10 +324,10 @@ class Home extends Component<MapStateToPropsType & typeof MapDispatch, LocalStat
 
     render() {
         let Screen;
-        if (this.state.loggedIn === null) {
+        if (this.state.isLoggedIn === null) {
             return null;
         } else {
-            if (this.state.loggedIn) {
+            if (this.state.isLoggedIn) {
                 this.SetThemes();
                 Screen = () => <AuthorizedScreen GetToken={() => this.GetToken()} isMobile={this.state.isMobile} SignOutHandler={() => this.SignOutHandler()} />;
             } else {

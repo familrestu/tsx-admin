@@ -17,19 +17,20 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
         useAccountCode: false,
     };
 
-    Login(res: any) {
+    Login(res: { [key: string]: any }) {
         if (res.data) {
-            this.props.Login(res.data);
+            // this.props.Login(res.data);
             if (res.data.loginStatus) {
                 /* for debug purpose */
                 if (res.data.debug) {
                     console.log(res);
+                    window.setTimeout(() => {
+                        window.location.href = window.location.href;
+                    }, 3000);
                 } else {
                     /* always hard reload - depreacted */
-                    window.location.reload(true);
+                    window.location.href = window.location.href;
                 }
-            } else {
-                alert(res.data);
             }
         }
     }
@@ -56,11 +57,11 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
                         </Row>
                         {this.state.useAccountCode ? (
                             <React.Fragment>
-                                <Input type="text" label="Account Code" size="12" placeholder="accountcode" name="accountcode" defaultValue="ersys" />
+                                <Input type="text" label="Account Code" size="12" placeholder="accountcode" name="accountcode" defaultValue="partout" />
                                 <Input type="text" label="Username" size="12" placeholder="username" name="username" defaultValue="dev" />
                             </React.Fragment>
                         ) : (
-                            <Input type="email" label="Email" size="12" placeholder="example@companyemail.com" name="email" defaultValue="dev@ersys.com" />
+                            <Input type="email" label="Email" size="12" placeholder="example@companyemail.com" name="email" defaultValue="dev@partout.com" />
                         )}
                         <Input type="password" label="Password" size="12" placeholder="Password" name="password" defaultValue="password" />
 
@@ -68,7 +69,8 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
                             type="checkbox"
                             name="is_accountcode"
                             data="Login with account code=Y"
-                            defaultChecked={this.state.useAccountCode}
+                            // defaultChecked={this.state.useAccountCode}
+                            defaultValue={this.state.useAccountCode ? 'Y' : ''}
                             onClick={() =>
                                 this.setState((prevState) => {
                                     return { ...prevState, useAccountCode: !prevState.useAccountCode };

@@ -11,6 +11,8 @@
 	-webkit-animation-timing-function: linear;
 	// background: #e6e6e6 !important;
     background-color: #e6e6e6 !important;
+	border-color: #e6e6e6 !important;
+	border-radius: .25rem;
 	background-image: linear-gradient(to right, #e6e6e6 0%, #d6d6d6 20%, #e6e6e6 40%, #e6e6e6 100%);
 	background-repeat: no-repeat;
 	background-size: 800px 800px;
@@ -36,8 +38,19 @@
 
 .form {
 	&.loading {
-		input, textarea {
+		input, textarea, .btn, .btn:focus, .btn:active, .form-check-inline {
+			transition: unset !important;
 			@include loadingAnimation;
+			pointer-events: none;
+
+			label {
+				transition: unset !important;
+				color: transparent;
+			}
+			
+			&[type='checkbox'], &[type='radio'] {
+				visibility: hidden;
+			}
 		}
 
 		/* WebKit, Blink, Edge */
