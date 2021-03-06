@@ -40,6 +40,15 @@ ul {
 				font-weight: 600;
 
 				color: #ffffff;
+
+				background-position: center;
+				background-size: cover;
+				background-repeat: no-repeat;
+				background-origin: content-box;
+				// background-position: var(--padding) var(--padding);
+				// border: .5rem solid transparent !important;
+
+				min-height: 68px;
 			}
 
 			.app-small {
@@ -79,6 +88,7 @@ ul {
 
 			.navitem-container:hover {
 				color: rgba(240, 240, 240, 0.8);
+				// border-color: transparent;
 			}
 
 			.navitem-container.active {
