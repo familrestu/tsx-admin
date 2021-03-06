@@ -225,6 +225,12 @@ class Form extends React.Component<Props, FormState> {
                     if (this.props.onSubmitSuccessCallBack) {
                         this.props.onSubmitSuccessCallBack(res);
                     }
+                    // console.log(res);
+
+                    if (this._Form && !res.data.status) {
+                        alert(res.data.message);
+                        this._Form.classList.remove('loading');
+                    }
                 }
             };
 
@@ -312,7 +318,7 @@ class Form extends React.Component<Props, FormState> {
                     if (React.isValidElement(child)) {
                         const { PageState, ModalState, TabState, UserState } = this.props;
                         const accessmode = PageState && ModalState && TabState ? GetAccessMode(PageState, ModalState, TabState) : 0;
-                        const loggedIn = UserState.loggedIn;
+                        const isLoggedIn = UserState.isLoggedIn;
 
                         if (child.props.groups !== undefined) {
                             if (GroupElement[child.props.groups] === undefined) {
@@ -323,7 +329,7 @@ class Form extends React.Component<Props, FormState> {
                                 CurrentGroupNum[child.props.groups] = 0;
                             }
 
-                            GroupElement[child.props.groups].push(<React.Fragment key={`form-${index}`}>{React.cloneElement(child, { accessmode, loggedIn })}</React.Fragment>);
+                            GroupElement[child.props.groups].push(<React.Fragment key={`form-${index}`}>{React.cloneElement(child, { accessmode, isLoggedIn })}</React.Fragment>);
                             CurrentGroupNum[child.props.groups]++;
 
                             if (CurrentGroupNum[child.props.groups] === GroupTotal[child.props.groups]) {
@@ -332,7 +338,7 @@ class Form extends React.Component<Props, FormState> {
                                 return <React.Fragment />;
                             }
                         } else {
-                            return React.cloneElement(<React.Fragment>{child}</React.Fragment>, { accessmode, loggedIn });
+                            return React.cloneElement(<React.Fragment>{child}</React.Fragment>, { accessmode, isLoggedIn });
                         }
                     } else {
                         return <React.Fragment />;
