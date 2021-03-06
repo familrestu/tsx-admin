@@ -1,39 +1,69 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { AppState } from 'redux/store';
 import { Button } from 'react-bootstrap';
-import { AvatarImage } from 'components/Avatar';
+import Avatar from 'components/Avatar';
 import Notification from 'components/Notification';
 import Navlink from 'components/Navlink';
 import { MenuAuthStateDetailType } from 'redux/reducers/MenuAuthState';
 import { ThemeMode } from './Header';
+import { GetInitial } from 'libs/utils';
 
 type AppLogoPropsType = {
     isMobile: boolean;
     ToggleNavbarHandler: () => void;
 };
 
-type AppDetailsType = {
-    name: string;
-    name_short: string;
-    app_id: number;
-    app_code: string;
-    app_logo: string | null;
-    app_logo_small: string | null;
-};
-
-const AppLogoDetails: AppDetailsType = {
-    name: 'Ersys Admin',
-    name_short: 'EA',
-    app_id: 1,
-    app_code: 'EA',
-    app_logo: null,
-    app_logo_small: null,
-};
-
 /* logo should have fetch to server */
-const AppLogo = (props: AppLogoPropsType & AppDetailsType) => {
-    const imgUrl = '';
+const AppLogo = (props: AppLogoPropsType) => {
+    const [imageLoaded, setImageLoaded] = useState(false);
+    const [imageLoadedSmall, setImageLoadedSmall] = useState(false);
+
+    const UserState = useSelector((state: { UserState: AppState['UserState'] }) => state.UserState);
+    const { app_logo, app_logo_small } = UserState;
+    let path = `${process.env.REACT_APP_FILES_PATH}`;
+
+    useEffect(() => {
+        if (app_logo !== null && UserState.app_code !== null) {
+            if (app_logo.indexOf('http') >= 0 || app_logo.indexOf('https') >= 0) {
+                path = app_logo;
+            } else {
+                path += `${UserState.app_code}/logo/${app_logo}`;
+            }
+        }
+
+        if (app_logo !== null) {
+            fetch(path)
+                .then((res) => {
+                    return res.blob();
+                })
+                .then((image) => {
+                    if (image.type.indexOf('image') >= 0) {
+                        setImageLoaded(true);
+                    }
+                });
+        }
+
+        if (app_logo_small !== null && UserState.app_code !== null) {
+            if (app_logo_small.indexOf('http') >= 0 || app_logo_small.indexOf('https') >= 0) {
+                path = app_logo_small;
+            } else {
+                path += `${UserState.app_code}/logo/${app_logo_small}`;
+            }
+        }
+
+        if (app_logo_small !== null) {
+            fetch(path)
+                .then((res) => {
+                    return res.blob();
+                })
+                .then((image) => {
+                    if (image.type.indexOf('image') >= 0) {
+                        setImageLoadedSmall(true);
+                    }
+                });
+        }
+    }, []);
 
     return (
         <li>
@@ -46,11 +76,23 @@ const AppLogo = (props: AppLogoPropsType & AppDetailsType) => {
                         }
                     }}
                 >
-                    <div id="app" className="app">
-                        {props.app_logo !== null ? <img src={`${imgUrl}/${props.app_logo}`} alt={props.name} /> : props.name}
+                    <div
+                        id="app"
+                        className="app"
+                        style={{
+                            backgroundImage: UserState.app_logo !== null ? `url(${UserState.app_logo})` : undefined,
+                        }}
+                    >
+                        {!imageLoaded && UserState.app_name}
                     </div>
-                    <div id="app-small" className="app-small">
-                        {props.app_logo_small !== null ? <img src={`${imgUrl}/${props.app_logo_small}`} alt={props.name} /> : props.name_short}
+                    <div
+                        id="app-small"
+                        className="app-small"
+                        style={{
+                            backgroundImage: UserState.app_logo_small !== null ? `url(${path})` : undefined,
+                        }}
+                    >
+                        {!imageLoadedSmall && UserState.app_name !== null && GetInitial(UserState.app_name)}
                     </div>
                 </Navlink>
                 {props.isMobile && (
@@ -84,7 +126,7 @@ const AvatarNav = (props: { isMobile: boolean; UserState: any; ToggleNavbarHandl
                         }}
                     >
                         <div className="navitem-group navitem-avatar-container">
-                            <AvatarImage />
+                            <Avatar />
                             <div className="avatar-user-name">{UserState.full_name}</div>
                         </div>
                     </Navlink>
@@ -236,10 +278,6 @@ type NavbarPropsType = {
     isMobile: boolean;
 };
 
-/* type MapStateToPropsType = {
-
-} */
-
 const Navbar = (props: NavbarPropsType) => {
     const UserState = useSelector((state: { UserState: AppState['UserState'] }) => state.UserState);
     const MenuAuthState = useSelector((state: { MenuAuthState: AppState['MenuAuthState'] }) => state.MenuAuthState);
@@ -251,7 +289,7 @@ const Navbar = (props: NavbarPropsType) => {
         <React.Fragment>
             <div id="navbar-left" className={`navbar-left shadow-sm ${props.isMobile ? 'mobile' : ''}`.trim()}>
                 <ul>
-                    <AppLogo {...AppLogoDetails} isMobile={props.isMobile} ToggleNavbarHandler={props.ToggleNavbarHandler} />
+                    <AppLogo isMobile={props.isMobile} ToggleNavbarHandler={props.ToggleNavbarHandler} />
                     <AvatarNav UserState={UserState} isMobile={props.isMobile} ToggleNavbarHandler={props.ToggleNavbarHandler} />
                     <hr className="navbar-divider-horizontal my-0" />
                     {MenuAuthState.map((item, index) => {
@@ -299,16 +337,5 @@ const Navbar = (props: NavbarPropsType) => {
         </React.Fragment>
     );
 };
-
-/* const MapStateToProps = (state: AppState) => ({
-    MenuAuthState: state.MenuAuthState,
-    UserState: state.UserState,
-});
-
-const MapDispatch = {
-    OpenPage: (data: PageStateType) => ({ type: 'OPENPAGE', path: data.path, accessmode: data.accessmode }),
-}; */
-
-// export default connect(MapStateToProps, MapDispatch)(Navbar);
 
 export default Navbar;

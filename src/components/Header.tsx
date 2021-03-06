@@ -358,7 +358,7 @@ type PropsHeader = HeaderPropsType & MapStateToPropsType;
 class Header extends Component<PropsHeader> {
     OpenDropDownHandler(e: Event, element: Element) {
         const target = e.currentTarget as HTMLDivElement;
-        console.log(target);
+        // console.log(target);
         if (target.classList.value.indexOf('btn-open-dropdown') > 0) {
             (element.lastChild as HTMLDivElement).classList.toggle('show');
             (element as HTMLDivElement).focus();
@@ -376,12 +376,27 @@ class Header extends Component<PropsHeader> {
     /* adding btn dropdown listener for header, so any existing btn-open-dropdown will show it's hidden last chidlren */
     AddOpenDrowndownListener() {
         const arrBtnDropDown = document.querySelectorAll('.header-container .btn-open-dropdown');
-        console.log(arrBtnDropDown);
         if (arrBtnDropDown !== null) {
             for (let i = 0; i < arrBtnDropDown.length; i++) {
                 const element = arrBtnDropDown[i];
                 element.addEventListener('click', (e: Event) => this.OpenDropDownHandler(e, element));
                 element.addEventListener('blur', () => this.DropDownOnBlurHandler(element));
+            }
+        }
+    }
+
+    ToggleKeepFocusHandler(e: React.MouseEvent, type: number) {
+        const target = (e.currentTarget.parentElement as HTMLDivElement).parentElement;
+
+        if (target !== null) {
+            if (type === 0) {
+                target.setAttribute('keep-focus', '1');
+            } else if (type === 1) {
+                target.removeAttribute('keep-focus');
+
+                if (e.type === 'click') {
+                    (e.currentTarget.parentElement as HTMLDivElement).classList.remove('show');
+                }
             }
         }
     }
@@ -405,7 +420,58 @@ class Header extends Component<PropsHeader> {
                     <div className="header-right">
                         <ThemeMode />
                         <Notification isMobile={this.props.isMobile} />
-                        <Avatar SignOutHandler={() => this.props.SignOutHandler()} />
+                        <div className="avatar-container btn-open-dropdown" tabIndex={0}>
+                            <Avatar />
+                            <div className="dropdown-menu p-0 shadow">
+                                <div className="d-flex justify-content-center dropdown-item border-bottom nohover">
+                                    <div className="d-flex flex-column">
+                                        <div className="nowrap text-center">{this.props.UserState.full_name}</div>
+                                    </div>
+                                </div>
+                                <Navlink
+                                    to={{
+                                        pathname: '/profile',
+                                        state: {
+                                            tab: '/profile/personal-information',
+                                        },
+                                    }}
+                                    onMouseEnter={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 0)}
+                                    onMouseLeave={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
+                                    onClick={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
+                                >
+                                    <div className="d-flex dropdown-item small justify-content-start align-items-center">
+                                        <span className="text-black">Your Profile</span>
+                                    </div>
+                                </Navlink>
+                                <Navlink
+                                    to={{
+                                        pathname: '/profile',
+                                        state: {
+                                            tab: '/profile/account-information',
+                                        },
+                                    }}
+                                    onMouseEnter={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 0)}
+                                    onMouseLeave={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
+                                    onClick={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
+                                >
+                                    <div className="d-flex dropdown-item small justify-content-start align-items-center">
+                                        <span className="text-black">Change Password</span>
+                                    </div>
+                                </Navlink>
+                                <div
+                                    className="pointer"
+                                    onClick={() => {
+                                        if (this.props.SignOutHandler) {
+                                            this.props.SignOutHandler();
+                                        }
+                                    }}
+                                >
+                                    <div className="d-flex dropdown-item small justify-content-start align-items-center">
+                                        <span className="text-black">Sign out</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </React.Fragment>
