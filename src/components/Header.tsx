@@ -357,7 +357,8 @@ type PropsHeader = HeaderPropsType & MapStateToPropsType;
 
 class Header extends Component<PropsHeader> {
     OpenDropDownHandler(e: Event, element: Element) {
-        const target = e.target as HTMLDivElement;
+        const target = e.currentTarget as HTMLDivElement;
+        console.log(target);
         if (target.classList.value.indexOf('btn-open-dropdown') > 0) {
             (element.lastChild as HTMLDivElement).classList.toggle('show');
             (element as HTMLDivElement).focus();
@@ -375,7 +376,7 @@ class Header extends Component<PropsHeader> {
     /* adding btn dropdown listener for header, so any existing btn-open-dropdown will show it's hidden last chidlren */
     AddOpenDrowndownListener() {
         const arrBtnDropDown = document.querySelectorAll('.header-container .btn-open-dropdown');
-
+        console.log(arrBtnDropDown);
         if (arrBtnDropDown !== null) {
             for (let i = 0; i < arrBtnDropDown.length; i++) {
                 const element = arrBtnDropDown[i];
