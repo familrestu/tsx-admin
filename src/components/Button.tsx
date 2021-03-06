@@ -39,9 +39,9 @@ type ButtonPropsType = {
 };
 
 const Submit = (props: ButtonPropsType) => {
-    const PageState = useSelector((state: AppState) => state.PageState);
-    const ModalState = useSelector((state: AppState) => state.ModalState);
-    const TabState = useSelector((state: AppState) => state.TabState);
+    const PageState = useSelector((state: { PageState: AppState['PageState'] }) => state.PageState);
+    const ModalState = useSelector((state: { ModalState: AppState['ModalState'] }) => state.ModalState);
+    const TabState = useSelector((state: { TabState: AppState['TabState'] }) => state.TabState);
     const show = isShowing(props.showif, 1, PageState, ModalState, TabState);
 
     if (show) {
