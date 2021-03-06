@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { InputGroup, Button } from 'react-bootstrap';
 import Navlink from 'components/Navlink';
 import Avatar from 'components/Avatar';
-import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
 import Notification from 'components/Notification';
 import { MenuAuthStateType } from 'redux/reducers/MenuAuthState';
@@ -71,11 +71,6 @@ const GetMenu = (menuAuthDetail: MenuAuthStateType) => {
     return arrMenuReturn;
 };
 
-const MapStateToProps = (state: AppState) => ({
-    UserState: state.UserState,
-    MenuAuthState: state.MenuAuthState,
-});
-
 type SearchDetails = {
     link: string;
     navlink?: string;
@@ -92,7 +87,9 @@ type HandleSearchStateType = {
     selectedList: number;
 };
 
-class HeaderSearchConnect extends Component<AppState, HandleSearchStateType> {
+type PropsHeaderSearch = MapStateToPropsType;
+
+class HeaderSearchConnect extends Component<PropsHeaderSearch, HandleSearchStateType> {
     state = {
         showSearch: false,
         loadSearch: true,
@@ -338,6 +335,16 @@ class HeaderSearchConnect extends Component<AppState, HandleSearchStateType> {
     }
 }
 
+type MapStateToPropsType = {
+    UserState: AppState['UserState'];
+    MenuAuthState: AppState['MenuAuthState'];
+};
+
+const MapStateToProps = (state: MapStateToPropsType) => ({
+    UserState: state.UserState,
+    MenuAuthState: state.MenuAuthState,
+});
+
 const HeaderSearch = connect(MapStateToProps)(HeaderSearchConnect);
 
 type HeaderPropsType = {
@@ -346,7 +353,9 @@ type HeaderPropsType = {
     isMobile: boolean;
 };
 
-class Header extends Component<HeaderPropsType & AppState> {
+type PropsHeader = HeaderPropsType & MapStateToPropsType;
+
+class Header extends Component<PropsHeader> {
     OpenDropDownHandler(e: Event, element: Element) {
         const target = e.target as HTMLDivElement;
         if (target.classList.value.indexOf('btn-open-dropdown') > 0) {
@@ -381,14 +390,6 @@ class Header extends Component<HeaderPropsType & AppState> {
     }
 
     render() {
-        const { UserState } = this.props;
-        const AvatarProps = {
-            name: UserState !== undefined ? UserState.full_name : '',
-            position: UserState !== undefined ? UserState.position_name : '',
-            image: UserState !== undefined ? UserState.profile_picture : '',
-            company: UserState !== undefined ? UserState.company_name : '',
-        };
-
         if (window.location.pathname === '/printpreview') return <React.Fragment />;
 
         return (
@@ -403,8 +404,7 @@ class Header extends Component<HeaderPropsType & AppState> {
                     <div className="header-right">
                         <ThemeMode />
                         <Notification isMobile={this.props.isMobile} />
-                        {/* <DividerVertical marginLeft marginRight /> */}
-                        <Avatar {...AvatarProps} SignOutHandler={() => this.props.SignOutHandler()} />
+                        <Avatar SignOutHandler={() => this.props.SignOutHandler()} />
                     </div>
                 </div>
             </React.Fragment>

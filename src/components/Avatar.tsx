@@ -8,8 +8,8 @@ type AvatarState = {
     isImageLoaded: boolean;
 };
 
-export type AvatarProps = {
-    name?: string;
+type AvatarProps = {
+    name?: string | null;
     position?: string;
     company?: string;
     className?: string;
@@ -86,7 +86,7 @@ export class AvatarImage extends React.Component<AvatarProps, AvatarState> {
     }
 }
 
-class Avatar extends React.Component<AvatarProps & AppState> {
+class Avatar extends React.Component<AvatarProps & MapStateToPropsType> {
     ToggleKeepFocusHandler(e: React.MouseEvent, type: number) {
         const target = (e.currentTarget.parentElement as HTMLDivElement).parentElement;
 
@@ -106,7 +106,7 @@ class Avatar extends React.Component<AvatarProps & AppState> {
     render() {
         return (
             <div className="avatar-container">
-                <AvatarImage attributes={{ tabIndex: 0 }} dropdownParent {...this.props}>
+                <AvatarImage attributes={{ tabIndex: 0 }} dropdownParent>
                     <div className="dropdown-menu p-0 shadow">
                         <div className="d-flex justify-content-center dropdown-item border-bottom nohover">
                             <div className="d-flex flex-column">
@@ -161,7 +161,11 @@ class Avatar extends React.Component<AvatarProps & AppState> {
     }
 }
 
-const MapStateToProps = (state: AppState) => ({
+type MapStateToPropsType = {
+    UserState: AppState['UserState'];
+};
+
+const MapStateToProps = (state: MapStateToPropsType) => ({
     UserState: state.UserState,
 });
 

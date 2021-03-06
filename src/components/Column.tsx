@@ -82,7 +82,7 @@ type ColumnStateType = {
     isSearch: boolean;
 };
 
-class Column extends Component<ColumnPropsType & RouteComponentProps & AppState & typeof MapDispatch & RouteComponentProps<null, StaticContext, { tab: string }>, ColumnStateType> {
+class Column extends Component<ColumnPropsType & RouteComponentProps & MapStateToPropsType & typeof MapDispatch & RouteComponentProps<null, StaticContext, { tab: string }>, ColumnStateType> {
     MouseMoveListener: any;
     _HeaderSearchRef: HTMLButtonElement | null | undefined;
 
@@ -491,8 +491,12 @@ class Column extends Component<ColumnPropsType & RouteComponentProps & AppState 
         );
     }
 }
+type MapStateToPropsType = {
+    ModalState: AppState['ModalState'];
+    TabState: AppState['TabState'];
+};
 
-const MapStateToProps = (state: AppState) => ({
+const MapStateToProps = (state: MapStateToPropsType) => ({
     ModalState: state.ModalState,
     TabState: state.TabState,
 });

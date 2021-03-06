@@ -102,7 +102,7 @@ type TabsLocalState = {
     activeIndex: number | 0;
 };
 
-class TabsC extends Component<TabsPropsType & AppState & typeof MapDispatch & RouteComponentProps<null, StaticContext, { tab: string }>, TabsLocalState> {
+class TabsC extends Component<TabsPropsType & MapStateToPropsType & typeof MapDispatch & RouteComponentProps<null, StaticContext, { tab: string }>, TabsLocalState> {
     _TabComponent: any;
     _TabModalComponent: any;
 
@@ -216,7 +216,14 @@ class TabsC extends Component<TabsPropsType & AppState & typeof MapDispatch & Ro
     }
 }
 
-const MapStateToProps = (state: AppState) => ({
+type MapStateToPropsType = {
+    UserState: AppState['UserState'];
+    MenuAuthState: AppState['MenuAuthState'];
+    ModalState: AppState['ModalState'];
+    TabState: AppState['TabState'];
+};
+
+const MapStateToProps = (state: MapStateToPropsType) => ({
     UserState: state.UserState,
     MenuAuthState: state.MenuAuthState,
     ModalState: state.ModalState,

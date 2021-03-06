@@ -3,7 +3,7 @@ export const LOGOUT = 'LOGOUT';
 
 type LoginActionType = {
     type: typeof LOGIN;
-    data: any;
+    data: { [key: string]: string | boolean };
 };
 
 type LogoutActionType = {

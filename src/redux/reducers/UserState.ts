@@ -2,10 +2,16 @@ import { LOGIN, LOGOUT, UserActions } from '../actions/UserAction';
 
 type UserStatePropsType = {
     loggedIn: boolean;
+    full_name: string | null;
+    profile_picture: string | null;
+    current_app: string | null;
 };
 
 const DefaultState: UserStatePropsType = {
     loggedIn: false,
+    full_name: null,
+    profile_picture: null,
+    current_app: null,
 };
 
 const UserState = (state: UserStatePropsType = DefaultState, action: UserActions) => {

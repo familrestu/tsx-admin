@@ -63,8 +63,9 @@ const RouterChildren = (menuAuthDetail: MenuAuthStateType & RouteProps) => {
 };
 
 const DynamicRouter = () => {
-    const currentApp = useSelector((state: AppState) => state.UserState.current_app);
-    const MenuAuthState = useSelector((state: AppState) => state.MenuAuthState);
+    const UserState = useSelector((state: { UserState: AppState['UserState'] }) => state.UserState);
+    const MenuAuthState = useSelector((state: { MenuAuthState: AppState['MenuAuthState'] }) => state.MenuAuthState);
+    const { current_app } = UserState;
     const ArrRouterElement: JSX.Element[] = [];
     let ArrayRouter: { componentPath: MenuAuthStateDetailType['componentPath']; link: MenuAuthStateDetailType['link']; isGlobal: MenuAuthStateDetailType['isGlobal'] }[] = [];
 
@@ -107,7 +108,7 @@ const DynamicRouter = () => {
             );
         } else {
             component = lazy(() =>
-                import(`screens/${currentApp}${element.componentPath}`).catch((err) => {
+                import(`screens/${current_app}${element.componentPath}`).catch((err) => {
                     console.log(err);
                     return {
                         // eslint-disable-next-line react/display-name
@@ -129,8 +130,8 @@ const DynamicRouter = () => {
 
 const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
     const dispatch = useDispatch();
-    const PageState = useSelector((state: AppState) => state.PageState);
-    const MenuAuthState = useSelector((state: AppState) => state.MenuAuthState);
+    const PageState = useSelector((state: { PageState: AppState['PageState'] }) => state.PageState);
+    const MenuAuthState = useSelector((state: { MenuAuthState: AppState['MenuAuthState'] }) => state.MenuAuthState);
     const url = window.location.pathname;
 
     if (PageState && PageState.path === null) {
@@ -199,7 +200,7 @@ type LocalState = {
     isMobile: boolean;
 };
 
-class Home extends Component<AppState & typeof MapDispatch, LocalState> {
+class Home extends Component<MapStateToPropsType & typeof MapDispatch, LocalState> {
     state = {
         loggedIn: null,
         isMobile: window.innerWidth <= 480 ? true : false,
@@ -338,7 +339,11 @@ class Home extends Component<AppState & typeof MapDispatch, LocalState> {
     }
 }
 
-const MapStateToProps = (state: AppState) => ({
+type MapStateToPropsType = {
+    UserState: AppState['UserState'];
+};
+
+const MapStateToProps = (state: MapStateToPropsType) => ({
     UserState: state.UserState,
 });
 

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
 import { ModalStateType } from 'redux/reducers/ModalState';
 
-class Modal extends Component<AppState & typeof MapDispatch> {
+class Modal extends Component<MapStateToPropsType & typeof MapDispatch> {
     _ModalTimeout: number | undefined;
 
     SetModalAccess() {
@@ -40,65 +40,66 @@ class Modal extends Component<AppState & typeof MapDispatch> {
     }
 
     render() {
-        if (this.props.ModalState !== undefined && this.props.UserState !== undefined && this.props.MenuAuthState !== undefined) {
-            if (this.props.ModalState.isOpened && this.props.ModalState.path) {
-                this.ShowModal();
-                const path = this.props.ModalState.path;
-                const Component = this.props.MenuAuthState.filter((item) => {
-                    return item.link === path;
-                });
+        if (this.props.ModalState.isOpened && this.props.ModalState.path) {
+            this.ShowModal();
+            const path = this.props.ModalState.path;
+            const Component = this.props.MenuAuthState.filter((item) => {
+                return item.link === path;
+            });
 
-                let X;
-                try {
-                    if (Component[0].isGlobal === 'Yes' || Component[0].isGlobal === 1) {
-                        // eslint-disable-next-line @typescript-eslint/no-var-requires
-                        X = require(`screens/app${Component[0].componentPath}`);
-                    } else {
-                        // eslint-disable-next-line @typescript-eslint/no-var-requires
-                        X = require(`screens/${this.props.UserState.current_app}${Component[0].componentPath}`);
-                    }
-                } catch {
-                    // console.log(error.message);
+            let X;
+            try {
+                if (Component[0].isGlobal === 'Yes' || Component[0].isGlobal === 1) {
                     // eslint-disable-next-line @typescript-eslint/no-var-requires
-                    X = require(`screens/app/pagenotfound`);
+                    X = require(`screens/app${Component[0].componentPath}`);
+                } else {
+                    // eslint-disable-next-line @typescript-eslint/no-var-requires
+                    X = require(`screens/${this.props.UserState.current_app}${Component[0].componentPath}`);
                 }
+            } catch {
+                // eslint-disable-next-line @typescript-eslint/no-var-requires
+                X = require(`screens/app/pagenotfound`);
+            }
 
-                return (
-                    <Overlay>
-                        <div className="modal-content shadow hidden" id="modal-content">
-                            <div className="modal-header" id="modal-header">
-                                <div className="modal-left" id="modal-left"></div>
-                                <div className="modal-right" id="modal-right">
-                                    <i
-                                        className="fas fa-times pointer"
-                                        onClick={() => {
-                                            const modalContent = document.getElementById('modal-content');
-                                            if (modalContent) {
-                                                modalContent.classList.add('hidden');
-                                                window.setTimeout(() => {
-                                                    this.props.CloseModal();
-                                                }, 250);
-                                            }
-                                        }}
-                                    ></i>
-                                </div>
-                            </div>
-                            <div className="modal-body" id="modal-body">
-                                <X.default modal="modal" />
+            return (
+                <Overlay>
+                    <div className="modal-content shadow hidden" id="modal-content">
+                        <div className="modal-header" id="modal-header">
+                            <div className="modal-left" id="modal-left"></div>
+                            <div className="modal-right" id="modal-right">
+                                <i
+                                    className="fas fa-times pointer"
+                                    onClick={() => {
+                                        const modalContent = document.getElementById('modal-content');
+                                        if (modalContent) {
+                                            modalContent.classList.add('hidden');
+                                            window.setTimeout(() => {
+                                                this.props.CloseModal();
+                                            }, 250);
+                                        }
+                                    }}
+                                ></i>
                             </div>
                         </div>
-                    </Overlay>
-                );
-            } else {
-                return <React.Fragment />;
-            }
+                        <div className="modal-body" id="modal-body">
+                            <X.default modal="modal" />
+                        </div>
+                    </div>
+                </Overlay>
+            );
         } else {
             return <React.Fragment />;
         }
     }
 }
 
-const MapStateToProps = (state: AppState) => ({
+type MapStateToPropsType = {
+    ModalState: AppState['ModalState'];
+    UserState: AppState['UserState'];
+    MenuAuthState: AppState['MenuAuthState'];
+};
+
+const MapStateToProps = (state: MapStateToPropsType) => ({
     ModalState: state.ModalState,
     UserState: state.UserState,
     MenuAuthState: state.MenuAuthState,

@@ -92,6 +92,7 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
 
 const MapStateToProps = (state: AppState) => ({
     UserState: state.UserState,
+    MenuAuthState: state.MenuAuthState,
 });
 
 const MapDispatch = {

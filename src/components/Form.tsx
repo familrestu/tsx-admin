@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import { AxiosError, AxiosResponse } from 'axios';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { AppState } from 'redux/store';
 import { useSelector } from 'react-redux';
 import { post } from 'libs/fetch';
@@ -47,7 +47,16 @@ type FormState = {
     isSubmiting: boolean;
 };
 
-class Form extends React.Component<FormProps & AppState, FormState> {
+type MapStateToPropsType = {
+    UserState: AppState['UserState'];
+    PageState: AppState['PageState'];
+    ModalState: AppState['ModalState'];
+    TabState: AppState['TabState'];
+};
+
+type Props = PropsFormRedux & FormProps & MapStateToPropsType;
+
+class Form extends React.Component<Props, FormState> {
     _Form: HTMLFormElement | null | undefined;
     _CurrentPath: string = window.location.pathname;
     _PrevPath: string | undefined;
@@ -335,11 +344,14 @@ class Form extends React.Component<FormProps & AppState, FormState> {
     }
 }
 
-const MapStateToProps = (state: AppState) => ({
+const MapStateToProps = (state: MapStateToPropsType) => ({
     UserState: state.UserState,
     PageState: state.PageState,
     ModalState: state.ModalState,
     TabState: state.TabState,
 });
 
-export default connect(MapStateToProps)(Form);
+const connector = connect(MapStateToProps);
+type PropsFormRedux = ConnectedProps<typeof connector>;
+
+export default connector(Form);

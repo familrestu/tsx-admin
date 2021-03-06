@@ -1,6 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { AppState } from 'redux/store';
 
 import Page from 'components/Page';
 import Form from 'components/Form';
@@ -11,7 +9,7 @@ type LocalState = {
     isChangePassword: boolean;
 };
 
-class AccountInfo extends React.Component<AppState, LocalState> {
+class AccountInfo extends React.Component<null, LocalState> {
     state = {
         isChangePassword: false,
     };
@@ -20,17 +18,12 @@ class AccountInfo extends React.Component<AppState, LocalState> {
         this.setState({
             isChangePassword: !this.state.isChangePassword,
         });
-        /* if (document.getElementById('form-accountinfo')) {
-            (document.getElementById('form-accountinfo') as HTMLFormElement).reset();
-        } */
     }
 
     render() {
-        const { UserState } = this.props;
-
         return (
             <Page>
-                <Form datasource={UserState} action="changepassword" id="form-accountinfo">
+                <Form action="changepassword" id="form-accountinfo">
                     <Input type="text" label="Username" size="4" placeholder="username" name="username" readOnly groups="username" />
                     <Input
                         label="&nbsp;"
@@ -65,8 +58,4 @@ class AccountInfo extends React.Component<AppState, LocalState> {
     }
 }
 
-const MapStateToProps = (state: AppState) => ({
-    UserState: state.UserState,
-});
-
-export default connect(MapStateToProps)(AccountInfo);
+export default AccountInfo;

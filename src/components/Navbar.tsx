@@ -1,13 +1,11 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { AppState } from 'redux/store';
 import { Button } from 'react-bootstrap';
-import { DividerHorizontal } from 'components/Divider';
 import { AvatarImage } from 'components/Avatar';
 import Notification from 'components/Notification';
 import Navlink from 'components/Navlink';
 import { MenuAuthStateDetailType } from 'redux/reducers/MenuAuthState';
-import { PageStateType } from 'redux/reducers/PageState';
 import { ThemeMode } from './Header';
 
 type AppLogoPropsType = {
@@ -34,44 +32,43 @@ const AppLogoDetails: AppDetailsType = {
 };
 
 /* logo should have fetch to server */
-class AppLogo extends React.Component<AppLogoPropsType & AppDetailsType> {
-    render() {
-        const imgUrl = '';
+const AppLogo = (props: AppLogoPropsType & AppDetailsType) => {
+    const imgUrl = '';
 
-        return (
-            <li>
-                <div id="app-nav-container" className="app-nav-container pointer">
-                    <Navlink
-                        to="/"
-                        onClick={() => {
-                            if (this.props.isMobile) {
-                                this.props.ToggleNavbarHandler();
-                            }
-                        }}
-                    >
-                        <div id="app" className="app">
-                            {this.props.app_logo !== null ? <img src={`${imgUrl}/${this.props.app_logo}`} alt={this.props.name} /> : this.props.name}
-                        </div>
-                        <div id="app-small" className="app-small">
-                            {this.props.app_logo_small !== null ? <img src={`${imgUrl}/${this.props.app_logo_small}`} alt={this.props.name} /> : this.props.name_short}
-                        </div>
-                    </Navlink>
-                    {this.props.isMobile && (
-                        <Button onClick={this.props.ToggleNavbarHandler}>
-                            <i className="fas fa-bars" />
-                        </Button>
-                    )}
-                </div>
-            </li>
-        );
-    }
-}
+    return (
+        <li>
+            <div id="app-nav-container" className="app-nav-container pointer">
+                <Navlink
+                    to="/"
+                    onClick={() => {
+                        if (props.isMobile) {
+                            props.ToggleNavbarHandler();
+                        }
+                    }}
+                >
+                    <div id="app" className="app">
+                        {props.app_logo !== null ? <img src={`${imgUrl}/${props.app_logo}`} alt={props.name} /> : props.name}
+                    </div>
+                    <div id="app-small" className="app-small">
+                        {props.app_logo_small !== null ? <img src={`${imgUrl}/${props.app_logo_small}`} alt={props.name} /> : props.name_short}
+                    </div>
+                </Navlink>
+                {props.isMobile && (
+                    <Button onClick={props.ToggleNavbarHandler}>
+                        <i className="fas fa-bars" />
+                    </Button>
+                )}
+            </div>
+        </li>
+    );
+};
 
 const AvatarNav = (props: { isMobile: boolean; UserState: any; ToggleNavbarHandler: () => void }) => {
+    const UserState = useSelector((state: { UserState: AppState['UserState'] }) => state.UserState);
     if (props.isMobile) {
         return (
             <React.Fragment>
-                <DividerHorizontal />
+                <hr className="navbar-divider-horizontal my-0" />
                 <li className="d-flex avatar-group">
                     <Navlink
                         to={{
@@ -87,8 +84,8 @@ const AvatarNav = (props: { isMobile: boolean; UserState: any; ToggleNavbarHandl
                         }}
                     >
                         <div className="navitem-group navitem-avatar-container">
-                            <AvatarImage name={props.UserState.full_name} image={props.UserState.profile_picture} />
-                            <div className="avatar-user-name">{props.UserState.full_name}</div>
+                            <AvatarImage />
+                            <div className="avatar-user-name">{UserState.full_name}</div>
                         </div>
                     </Navlink>
                     <Navlink
@@ -239,82 +236,79 @@ type NavbarPropsType = {
     isMobile: boolean;
 };
 
-class NavbarLeft extends React.Component<NavbarPropsType & AppState> {
-    render() {
-        if (window.location.pathname === '/printpreview') return <React.Fragment />;
+/* type MapStateToPropsType = {
 
-        arrGroup.length = 0;
-        return (
-            <React.Fragment>
-                <div id="navbar-left" className={`navbar-left shadow-sm ${this.props.isMobile ? 'mobile' : ''}`.trim()}>
-                    <ul>
-                        <AppLogo {...AppLogoDetails} isMobile={this.props.isMobile} ToggleNavbarHandler={this.props.ToggleNavbarHandler} />
-                        <AvatarNav UserState={this.props.UserState} isMobile={this.props.isMobile} ToggleNavbarHandler={this.props.ToggleNavbarHandler} />
-                        <DividerHorizontal />
-                        {this.props.MenuAuthState
-                            ? this.props.MenuAuthState.map((item, index) => {
-                                  const arrNav: JSX.Element[] = [];
-                                  if (item.group !== null && arrGroup.indexOf(item.group) < 0 && (item.isMenu === 1 || item.isMenu === 'Yes')) {
-                                      arrNav.push(
-                                          <div key={`${item.id}-${index}-group`} className="navitem-group">
-                                              {item.group}
-                                          </div>,
-                                      );
-                                      arrGroup.push(item.group);
-                                  }
+} */
 
-                                  if (item.isMenu === 1 || item.isMenu === 'Yes' || item.id === 'dashboard') {
-                                      arrNav.push(
-                                          <Navitem
-                                              key={`${item.id}-${index}`}
-                                              {...item}
-                                              isMobile={this.props.isMobile}
-                                              ToggleNavbarHandler={this.props.ToggleNavbarHandler}
-                                              pageType={item.pageType}
-                                          />,
-                                      );
-                                  }
+const Navbar = (props: NavbarPropsType) => {
+    const UserState = useSelector((state: { UserState: AppState['UserState'] }) => state.UserState);
+    const MenuAuthState = useSelector((state: { MenuAuthState: AppState['MenuAuthState'] }) => state.MenuAuthState);
 
-                                  return arrNav;
-                              })
-                            : null}
-                        {this.props.isMobile && (
-                            <React.Fragment>
-                                <DividerHorizontal />
-                                <li>
-                                    <div className="navitem-container" style={{ paddingBottom: 0 }}>
-                                        <div className="d-flex navitem-string align-items-center">
-                                            <div className="item-center" style={{ width: 'min-content', flex: 'unset', marginRight: '1rem' }}>
-                                                Theme
-                                            </div>
-                                            <ThemeMode />
+    if (window.location.pathname === '/printpreview') return <React.Fragment />;
+
+    arrGroup.length = 0;
+    return (
+        <React.Fragment>
+            <div id="navbar-left" className={`navbar-left shadow-sm ${props.isMobile ? 'mobile' : ''}`.trim()}>
+                <ul>
+                    <AppLogo {...AppLogoDetails} isMobile={props.isMobile} ToggleNavbarHandler={props.ToggleNavbarHandler} />
+                    <AvatarNav UserState={UserState} isMobile={props.isMobile} ToggleNavbarHandler={props.ToggleNavbarHandler} />
+                    <hr className="navbar-divider-horizontal my-0" />
+                    {MenuAuthState.map((item, index) => {
+                        const arrNav: JSX.Element[] = [];
+                        if (item.group !== null && arrGroup.indexOf(item.group) < 0 && (item.isMenu === 1 || item.isMenu === 'Yes')) {
+                            arrNav.push(
+                                <div key={`${item.id}-${index}-group`} className="navitem-group">
+                                    {item.group}
+                                </div>,
+                            );
+                            arrGroup.push(item.group);
+                        }
+
+                        if (item.isMenu === 1 || item.isMenu === 'Yes' || item.id === 'dashboard') {
+                            arrNav.push(<Navitem key={`${item.id}-${index}`} {...item} isMobile={props.isMobile} ToggleNavbarHandler={props.ToggleNavbarHandler} pageType={item.pageType} />);
+                        }
+
+                        return arrNav;
+                    })}
+                    {props.isMobile && (
+                        <React.Fragment>
+                            <hr className="navbar-divider-horizontal my-0" />
+                            <li>
+                                <div className="navitem-container" style={{ paddingBottom: 0 }}>
+                                    <div className="d-flex navitem-string align-items-center">
+                                        <div className="item-center" style={{ width: 'min-content', flex: 'unset', marginRight: '1rem' }}>
+                                            Theme
                                         </div>
+                                        <ThemeMode />
                                     </div>
-                                </li>
-                                <li onClick={() => this.props.SignOutHandler()}>
-                                    <div className="navitem-container">
-                                        <div className="d-flex navitem-string">
-                                            <div className="item-center">Sign out</div>
-                                        </div>
+                                </div>
+                            </li>
+                            <li onClick={() => props.SignOutHandler()}>
+                                <div className="navitem-container">
+                                    <div className="d-flex navitem-string">
+                                        <div className="item-center">Sign out</div>
                                     </div>
-                                </li>
-                            </React.Fragment>
-                        )}
-                    </ul>
-                </div>
-                {this.props.isMobile && <div className="navbar-left-overlay" onClick={this.props.ToggleNavbarHandler} />}
-            </React.Fragment>
-        );
-    }
-}
+                                </div>
+                            </li>
+                        </React.Fragment>
+                    )}
+                </ul>
+            </div>
+            {props.isMobile && <div className="navbar-left-overlay" onClick={props.ToggleNavbarHandler} />}
+        </React.Fragment>
+    );
+};
 
-const MapStateToProps = (state: AppState) => ({
+/* const MapStateToProps = (state: AppState) => ({
     MenuAuthState: state.MenuAuthState,
     UserState: state.UserState,
 });
 
 const MapDispatch = {
     OpenPage: (data: PageStateType) => ({ type: 'OPENPAGE', path: data.path, accessmode: data.accessmode }),
-};
+}; */
 
-export default connect(MapStateToProps, MapDispatch)(NavbarLeft);
+// export default connect(MapStateToProps, MapDispatch)(Navbar);
+
+export default Navbar;

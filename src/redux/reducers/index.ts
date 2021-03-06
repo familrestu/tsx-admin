@@ -4,15 +4,24 @@ import PageState from 'redux/reducers/PageState';
 import ModalState from 'redux/reducers/ModalState';
 import TabState from 'redux/reducers/TabState';
 
-type ReducersType = {
+/* type ReducersType = {
     UserState?: typeof UserState;
     MenuAuthState?: typeof MenuAuthState;
     PageState?: typeof PageState;
     ModalState?: typeof ModalState;
     TabState?: typeof TabState;
 };
+ */
 
-const Reducers: ReducersType = {
+/* const Reducers: ReducersType = {
+    UserState,
+    MenuAuthState,
+    PageState,
+    ModalState,
+    TabState,
+}; */
+
+const Reducers = {
     UserState,
     MenuAuthState,
     PageState,

@@ -6,7 +6,7 @@ import { ReactComponent as HomeSVG1 } from 'assets/svg/home.svg';
 import moment from 'moment';
 
 const Greetings = () => {
-    const UserState = useSelector((state: AppState) => state.UserState);
+    const UserState = useSelector((state: { UserState: AppState['UserState'] }) => state.UserState);
     return (
         <div className="row">
             <div className="col col-12 col-md-6 mb-4">
