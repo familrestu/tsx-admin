@@ -13,7 +13,6 @@ import Page from 'components/Page';
 
 const Dashboard = lazy(() => import('screens/app/dashboard'));
 const Login = lazy(() => import('screens/app/login'));
-
 const ForgotPassword = lazy(() => import('screens/app/forgotpassword'));
 const Notification = lazy(() => import('screens/app/notification'));
 const PagenotFound = lazy(() => import('screens/app/pagenotfound'));
@@ -181,26 +180,30 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
     );
 };
 
-const NotAuthorizedScreen = () => (
-    <Router>
-        <div className="content-container" authorized-screen="false">
-            <Suspense fallback={<LoadingSuspense />}>
-                <Switch>
-                    <Route exact path="/" component={Login} />
-                    <Route exact path="/forgotpassword" component={ForgotPassword} />
-                    <Redirect to="/" />
-                </Switch>
-            </Suspense>
-        </div>
-    </Router>
-);
+const NotAuthorizedScreen = () => {
+    return (
+        <Router>
+            <div className="content-container" authorized-screen="false">
+                <Suspense fallback={<LoadingSuspense />}>
+                    <Switch>
+                        <Route exact path="/" component={Login} />
+                        <Route exact path="/forgotpassword" component={ForgotPassword} />
+                        <Redirect to="/" />
+                    </Switch>
+                </Suspense>
+            </div>
+        </Router>
+    );
+};
 
 type LocalState = {
     isLoggedIn: boolean | null;
     isMobile: boolean;
 };
 
-class Home extends Component<MapStateToPropsType & typeof MapDispatch, LocalState> {
+type HomeProps = MapStateToPropsType & typeof MapDispatch;
+
+class Home extends Component<HomeProps, LocalState> {
     state = {
         isLoggedIn: null,
         isMobile: window.innerWidth <= 480 ? true : false,
@@ -318,7 +321,6 @@ class Home extends Component<MapStateToPropsType & typeof MapDispatch, LocalStat
     componentDidMount() {
         this.GetMenuAuth();
         this.CheckLoginState();
-
         this.SetResizeListener();
     }
 

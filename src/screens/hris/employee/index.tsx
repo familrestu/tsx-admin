@@ -3,8 +3,6 @@ import React, { Component } from 'react';
 import Page from 'components/Page';
 import Table from 'components/Table';
 import Column from 'components/Column';
-import Form from 'components/Form';
-import Input from 'components/Input';
 import { Toolbar, BtnLink } from 'components/Toolbar';
 
 class EmployeeListScreen extends Component {
@@ -24,10 +22,6 @@ class EmployeeListScreen extends Component {
                     <Column label="Join Date" name="join_date" type="date" />
                     <Column label="Grade" name="grade" />
                 </Table>
-
-                <Form>
-                    <Input type="text" name="testing" label="Testing" />
-                </Form>
             </Page>
         );
     }
