@@ -19,7 +19,8 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "baseUrl": "./src",
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "removeComments": true,
   },
   "include": [
     "src"
@@ -28,7 +29,9 @@
     "node_modules",
     "babel.config.js",
     "metro.config.js",
-    "jest.config.js"
+    "jest.config.js",
+    ".eslintrc.js",
+    ".prettierrc.js"
   ],
   "files": [
     "src/custom.d.ts"
