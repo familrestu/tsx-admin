@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 
 type ToolbarPropsType = {
-    access?: 1 | 2 | 3 | 4 | 'read' | 'write' | 'update' | 'delete';
     datasource?: TablePropsType['datasource'];
     ClearFilter?: () => void;
     children?: React.ReactNode;
@@ -79,8 +78,9 @@ const BtnPrintPreview = (props: TableStateType) => {
 };
 
 type BtnLinkPropsType = {
-    icon?: string;
     link: string;
+    icon?: string;
+    minaccess?: 0 | 1 | 2 | 3 | 'read' | 'write' | 'update' | 'delete';
     linktype?: string;
     label?: string;
     showif?: boolean;
@@ -107,13 +107,17 @@ const BtnLink = (props: TableStateType & BtnLinkPropsType) => {
         }
     }
 
+    if (props.minaccess && props.minaccess >= accessmode) {
+        show = false;
+    }
+
     const Label = props.label === undefined ? <Fragment /> : <span>{props.label}</span>;
     const Icon = props.icon === undefined ? <Fragment /> : <i className={props.icon}></i>;
 
     if ((props.showif !== undefined && !props.showif) || !show) {
         return <Fragment />;
     } else {
-        if (TabState !== undefined && TabState.path !== null) {
+        if (TabState !== undefined && TabState.path !== null && props.linktype && props.linktype !== 'popup') {
             return (
                 <button className="btn btn-primary" onClick={() => dispatch({ type: 'OPENTAB', path: props.link, accessmode })}>
                     {Icon}

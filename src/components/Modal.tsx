@@ -23,7 +23,6 @@ class Modal extends Component<MapStateToPropsType & typeof MapDispatch> {
 
     ShowModal() {
         const modalContent = document.getElementById('modal-content');
-
         if (modalContent) {
             this._ModalTimeout = window.setTimeout(() => {
                 modalContent.classList.remove('hidden');
@@ -33,6 +32,9 @@ class Modal extends Component<MapStateToPropsType & typeof MapDispatch> {
 
     componentDidUpdate() {
         this.SetModalAccess();
+        if (this.props.ModalState.isOpened && this.props.ModalState.path) {
+            this.ShowModal();
+        }
     }
 
     componentWillUnmount() {
@@ -41,7 +43,7 @@ class Modal extends Component<MapStateToPropsType & typeof MapDispatch> {
 
     render() {
         if (this.props.ModalState.isOpened && this.props.ModalState.path) {
-            this.ShowModal();
+            // this.ShowModal();
             const path = this.props.ModalState.path;
             const Component = this.props.MenuAuthState.filter((item) => {
                 return item.link === path;

@@ -11,7 +11,7 @@ class EmployeeListScreen extends Component {
             <Page breadCrumb="Employee|List">
                 <Table datasource="emp/EmpData">
                     <Toolbar>
-                        <BtnLink link="/employee/add" icon="fas fa-user-plus" label="Add Employee" />
+                        <BtnLink link="/employee/add" linktype="popup" icon="fas fa-user-plus" label="Add Employee" />
                     </Toolbar>
 
                     <Column label="Employee No" name="employee_no" type="link" link="/employee/details/[employee_no]" linktype="popup" />

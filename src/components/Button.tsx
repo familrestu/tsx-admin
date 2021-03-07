@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import { AppState } from 'redux/store';
@@ -39,10 +39,14 @@ type ButtonPropsType = {
 };
 
 const Submit = (props: ButtonPropsType) => {
+    const [localShow, setLocalShow] = useState(null);
+
     const PageState = useSelector((state: { PageState: AppState['PageState'] }) => state.PageState);
     const ModalState = useSelector((state: { ModalState: AppState['ModalState'] }) => state.ModalState);
     const TabState = useSelector((state: { TabState: AppState['TabState'] }) => state.TabState);
     const show = isShowing(props.showif, 1, PageState, ModalState, TabState);
+
+    // console.log(show);
 
     if (show) {
         return (
