@@ -101,10 +101,10 @@ type TabsPropsType = {
 class TabsC extends Component<TabsPropsType & MapStateToPropsType & typeof MapDispatch & RouteComponentProps<null, StaticContext, { tab: string }>> {
     constructor(props: TabsPropsType & MapStateToPropsType & typeof MapDispatch & RouteComponentProps<null, StaticContext, { tab: string }>) {
         super(props);
-        this.SetTabAccess();
+        this.TabOpened();
     }
 
-    SetTabAccess() {
+    TabOpened() {
         const { location } = this.props;
         if (location) {
             const path = location.state.tab;
@@ -113,10 +113,59 @@ class TabsC extends Component<TabsPropsType & MapStateToPropsType & typeof MapDi
             });
 
             if (Component) {
-                // console.log(Component[0]);
                 this.props.OpenTab(Component[0].link, Component[0].accessmode);
             }
         }
+    }
+
+    HideAllOpenedTabs() {
+        if (this.props.TabState.tabcontentpath !== null) {
+            const tabs = document.querySelectorAll('.tab-page-container');
+
+            if (tabs) {
+                for (let i = 0; i < tabs.length; i++) {
+                    const tabscontent = tabs[i];
+                    if (tabscontent.getAttribute('tab-container-number') !== '99') {
+                        tabscontent.classList.remove('show');
+                        tabscontent.classList.remove('active');
+                    }
+                }
+            }
+        }
+    }
+
+    GetTabsContent() {
+        let X;
+        const Component = this.props.MenuAuthState.filter((a) => {
+            return a.link === this.props.TabState.tabcontentpath;
+        });
+
+        try {
+            if (Component) {
+                if (Component[0].isGlobal === 'Yes' || Component[0].isGlobal === 1) {
+                    // eslint-disable-next-line @typescript-eslint/no-var-requires
+                    X = require(`screens/app${Component[0].componentPath}`);
+                } else {
+                    // eslint-disable-next-line @typescript-eslint/no-var-requires
+                    X = require(`screens/${this.props.UserState.current_app}${Component[0].componentPath}`);
+                }
+            } else {
+                // eslint-disable-next-line @typescript-eslint/no-var-requires
+                X = require(`screens/app/pagenotfound`);
+            }
+        } catch (error) {
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            X = require(`screens/app/pagenotfound`);
+        }
+        return (
+            <div id="tab-pane" className="fade tab-page-container tab-pane active show" tab-container-number={99}>
+                <X.default />
+            </div>
+        );
+    }
+
+    componentDidUpdate() {
+        this.HideAllOpenedTabs();
     }
 
     componentWillUnmount() {
@@ -159,7 +208,7 @@ class TabsC extends Component<TabsPropsType & MapStateToPropsType & typeof MapDi
                             <div
                                 key={index}
                                 id="tab-pane"
-                                className={`fade tab-page-container tab-pane ${index === 0 ? 'active show' : ''}`.trim()}
+                                className={`fade tab-page-container tab-pane ${index === 0 && this.props.TabState.tabcontentpath === null ? 'active show' : ''}`.trim()}
                                 tab-container-number={index}
                                 tab-container-name={child.props.title.toLowerCase().replaceAll(' ', '-')}
                             >
@@ -167,6 +216,7 @@ class TabsC extends Component<TabsPropsType & MapStateToPropsType & typeof MapDi
                             </div>
                         );
                     })}
+                    {this.props.TabState.tabcontentpath !== null && this.GetTabsContent()}
                 </div>
             </React.Fragment>
         );
