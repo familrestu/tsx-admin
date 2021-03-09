@@ -57,11 +57,11 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
                         </Row>
                         {this.state.useAccountCode ? (
                             <React.Fragment>
-                                <Input type="text" label="Account Code" size="12" placeholder="accountcode" name="accountcode" defaultValue="partout" />
+                                <Input type="text" label="Account Code" size="12" placeholder="accountcode" name="accountcode" defaultValue="ersys" />
                                 <Input type="text" label="Username" size="12" placeholder="username" name="username" defaultValue="dev" />
                             </React.Fragment>
                         ) : (
-                            <Input type="email" label="Email" size="12" placeholder="example@companyemail.com" name="email" defaultValue="dev@partout.com" />
+                            <Input type="email" label="Email" size="12" placeholder="example@companyemail.com" name="email" defaultValue="dev@ersys.com" />
                         )}
                         <Input type="password" label="Password" size="12" placeholder="Password" name="password" defaultValue="password" />
 
