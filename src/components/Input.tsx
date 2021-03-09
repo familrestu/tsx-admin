@@ -287,6 +287,7 @@ const Input = (props: InputPropsType) => {
                         placeholder={props.placeholder}
                         maxLength={props.maxLength}
                         style={props.style}
+                        autoComplete="no"
                         {...Events}
                         {...Attr}
                     />
