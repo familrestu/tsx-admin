@@ -374,8 +374,12 @@ class Column extends Component<ColumnPropsType & RouteComponentProps & MapStateT
                                         const id = replaceThis[0].replace('[', '').replace(']', '');
                                         const indexOfId = this.props.header.indexOf(id);
                                         const navlink = link.replace(replaceThis[0], `:${id}`);
+                                        const { linktype } = this.props;
+                                        const menu = this.props.MenuAuthState.filter((a) => {
+                                            return a.link === navlink;
+                                        });
 
-                                        if (this.props.TabState && this.props.TabState.path !== null) {
+                                        if (this.props.TabState && this.props.TabState.path !== null && linktype !== 'popup') {
                                             const params: { [key: string]: any } = {};
                                             const idValue = this.props.body ? this.props.body[indexOfId][i] : '';
                                             params[id] = idValue;
@@ -383,13 +387,13 @@ class Column extends Component<ColumnPropsType & RouteComponentProps & MapStateT
                                                 <span
                                                     className="link"
                                                     onClick={() => {
-                                                        this.props.OpenTab(navlink, 0);
+                                                        this.props.ChangeCurrentTab(navlink, this.props.TabState.path, menu[0].accessmode);
                                                     }}
                                                 >
                                                     {value}
                                                 </span>
                                             );
-                                        } else if ((this.props.ModalState && this.props.ModalState.isOpened) || (this.props.linktype !== undefined && this.props.linktype === 'popup')) {
+                                        } else if ((this.props.ModalState && this.props.ModalState.isOpened) || linktype === 'popup') {
                                             const params: { [key: string]: any } = {};
                                             const idValue = this.props.body ? this.props.body[indexOfId][i] : '';
                                             params[id] = idValue;
@@ -398,7 +402,7 @@ class Column extends Component<ColumnPropsType & RouteComponentProps & MapStateT
                                                 <span
                                                     className="link"
                                                     onClick={() => {
-                                                        this.props.OpenModal(navlink, params);
+                                                        this.props.OpenModal(navlink, menu[0].accessmode, params);
                                                     }}
                                                 >
                                                     {value}
@@ -415,7 +419,7 @@ class Column extends Component<ColumnPropsType & RouteComponentProps & MapStateT
                                                 }
                                             }
                                             return (
-                                                <Navlink to={link} navlink={navlink}>
+                                                <Navlink to={link} navlink={navlink} accessmode={menu[0].accessmode}>
                                                     {value}
                                                 </Navlink>
                                             );
@@ -494,16 +498,23 @@ class Column extends Component<ColumnPropsType & RouteComponentProps & MapStateT
 type MapStateToPropsType = {
     ModalState: AppState['ModalState'];
     TabState: AppState['TabState'];
+    MenuAuthState: AppState['MenuAuthState'];
 };
 
 const MapStateToProps = (state: MapStateToPropsType) => ({
     ModalState: state.ModalState,
     TabState: state.TabState,
+    MenuAuthState: state.MenuAuthState,
 });
 
 const MapDispatch = {
-    OpenModal: (path: ModalStateType['path'], modalParams?: ModalStateType['modalParams']) => ({ type: 'OPENMODAL', path, modalParams }),
-    OpenTab: (path: TabStateType['path'], accessmode: TabStateType['accessmode']) => ({ type: 'OPENTAB', path, accessmode }),
+    OpenModal: (path: ModalStateType['path'], accessmode: TabStateType['accessmode'], modalParams?: ModalStateType['modalParams']) => ({ type: 'OPENMODAL', path, accessmode, modalParams }),
+    ChangeCurrentTab: (tabcontentpath: TabStateType['tabcontentpath'], tabcontentrefferer: TabStateType['tabcontentrefferer'], tabcontentaccessmode: TabStateType['tabcontentaccessmode']) => ({
+        type: 'CHANGETABCONTENT',
+        tabcontentpath,
+        tabcontentrefferer,
+        tabcontentaccessmode,
+    }),
     CloseModal: () => ({ type: 'CLOSEMODAL' }),
 };
 
