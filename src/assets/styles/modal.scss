@@ -26,6 +26,12 @@
             flex-wrap: wrap;
         }
 
+        .modal-left {
+            span {
+                text-transform: capitalize;
+            }
+        }
+
         .modal-right {
             justify-content: flex-end;
             flex: unset;
