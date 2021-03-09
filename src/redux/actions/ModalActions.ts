@@ -15,9 +15,4 @@ type CloseModal = {
     type: typeof CLOSEMODAL;
 };
 
-type SetModalAccess = {
-    type: typeof SETMODALACCESS;
-    accessmode: ModalStateType['accessmode'];
-};
-
-export type ModalActions = OpenModal | CloseModal | SetModalAccess;
+export type ModalActions = OpenModal | CloseModal;

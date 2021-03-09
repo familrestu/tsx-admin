@@ -1,4 +1,4 @@
-import { OPENMODAL, SETMODALACCESS, CLOSEMODAL, ModalActions } from '../actions/ModalActions';
+import { OPENMODAL, CLOSEMODAL, ModalActions } from '../actions/ModalActions';
 
 export type ModalStateType = {
     isOpened: boolean;
@@ -18,8 +18,6 @@ const ModalState = (state: ModalStateType = DefaultState, action: ModalActions) 
     switch (action.type) {
         case OPENMODAL:
             return { ...state, isOpened: true, path: action.path, accessmode: action.accessmode, modalParams: action.modalParams };
-        case SETMODALACCESS:
-            return { ...state, accessmode: action.accessmode };
         case CLOSEMODAL:
             return DefaultState;
         default:

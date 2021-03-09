@@ -1,7 +1,5 @@
 import { AppState } from 'redux/store';
 
-/* accessmode nya tidak ketemu jika page yang dikirim mempunyai parameter */
-
 const GetAccessMode = (PageState: AppState['PageState'], ModalState: AppState['ModalState'], TabState: AppState['TabState']) => {
     let accessmode = null;
 
@@ -12,6 +10,7 @@ const GetAccessMode = (PageState: AppState['PageState'], ModalState: AppState['M
     } else {
         accessmode = PageState.accessmode;
     }
+
     return accessmode;
 };
 

@@ -7,20 +7,6 @@ import { ModalStateType } from 'redux/reducers/ModalState';
 class Modal extends Component<MapStateToPropsType & typeof MapDispatch> {
     _ModalTimeout: number | undefined;
 
-    SetModalAccess() {
-        if (this.props.ModalState !== undefined && this.props.UserState !== undefined && this.props.MenuAuthState !== undefined) {
-            if (this.props.ModalState.isOpened && this.props.ModalState.path) {
-                const path = this.props.ModalState.path;
-                const Component = this.props.MenuAuthState.filter((item) => {
-                    return item.link === path;
-                });
-                if (!this.props.ModalState.accessmode) {
-                    this.props.SetAccess(Component[0].accessmode);
-                }
-            }
-        }
-    }
-
     ShowModal() {
         const modalContent = document.getElementById('modal-content');
         if (modalContent) {
@@ -31,7 +17,6 @@ class Modal extends Component<MapStateToPropsType & typeof MapDispatch> {
     }
 
     componentDidUpdate() {
-        this.SetModalAccess();
         if (this.props.ModalState.isOpened && this.props.ModalState.path) {
             this.ShowModal();
         }
