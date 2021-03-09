@@ -106,7 +106,7 @@ class TabsC extends Component<TabsPropsType & MapStateToPropsType & typeof MapDi
 
     TabOpened() {
         const { location } = this.props;
-        if (location) {
+        if (location.state) {
             const path = location.state.tab;
             const Component = this.props.MenuAuthState.filter((a) => {
                 return a.link === path;
