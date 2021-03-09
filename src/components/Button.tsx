@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import { AppState } from 'redux/store';
@@ -39,14 +39,22 @@ type ButtonPropsType = {
 };
 
 const Submit = (props: ButtonPropsType) => {
-    const [localShow, setLocalShow] = useState(null);
-
     const PageState = useSelector((state: { PageState: AppState['PageState'] }) => state.PageState);
     const ModalState = useSelector((state: { ModalState: AppState['ModalState'] }) => state.ModalState);
     const TabState = useSelector((state: { TabState: AppState['TabState'] }) => state.TabState);
-    const show = isShowing(props.showif, 1, PageState, ModalState, TabState);
+    const [show, setShow] = useState(false);
 
+    // const show = isShowing(props.showif, 1, PageState, ModalState, TabState);
     // console.log(show);
+    // if (show === undefined) {
+    // }
+
+    useEffect(() => {
+        setShow(isShowing(props.showif, 1, PageState, ModalState, TabState));
+        return () => {
+            // if (show) setShow(false);
+        };
+    }, []);
 
     if (show) {
         return (
@@ -74,7 +82,19 @@ const Reset = (props: ButtonPropsType) => {
     const PageState = useSelector((state: AppState) => state.PageState);
     const ModalState = useSelector((state: AppState) => state.ModalState);
     const TabState = useSelector((state: AppState) => state.TabState);
-    const show = isShowing(props.showif, 1, PageState, ModalState, TabState);
+    const [show, setShow] = useState(false);
+
+    // const show = isShowing(props.showif, 1, PageState, ModalState, TabState);
+    // console.log(show);
+    // if (show === undefined) {
+    // }
+
+    useEffect(() => {
+        setShow(isShowing(props.showif, 1, PageState, ModalState, TabState));
+        return () => {
+            // if (show) setShow(false);
+        };
+    }, []);
 
     if (show) {
         return (
@@ -102,7 +122,19 @@ const Save = (props: ButtonPropsType) => {
     const PageState = useSelector((state: AppState) => state.PageState);
     const ModalState = useSelector((state: AppState) => state.ModalState);
     const TabState = useSelector((state: AppState) => state.TabState);
-    const show = isShowing(props.showif, 2, PageState, ModalState, TabState);
+    const [show, setShow] = useState(false);
+
+    // const show = isShowing(props.showif, 1, PageState, ModalState, TabState);
+    // console.log(show);
+    // if (show === undefined) {
+    // }
+
+    useEffect(() => {
+        setShow(isShowing(props.showif, 2, PageState, ModalState, TabState));
+        return () => {
+            // if (show) setShow(false);
+        };
+    }, []);
 
     if (show) {
         return (
@@ -130,7 +162,19 @@ const Delete = (props: ButtonPropsType) => {
     const PageState = useSelector((state: AppState) => state.PageState);
     const ModalState = useSelector((state: AppState) => state.ModalState);
     const TabState = useSelector((state: AppState) => state.TabState);
-    const show = isShowing(props.showif, 3, PageState, ModalState, TabState);
+    const [show, setShow] = useState(false);
+
+    // const show = isShowing(props.showif, 1, PageState, ModalState, TabState);
+    // console.log(show);
+    // if (show === undefined) {
+    // }
+
+    useEffect(() => {
+        setShow(isShowing(props.showif, 3, PageState, ModalState, TabState));
+        return () => {
+            // if (show) setShow(false);
+        };
+    }, []);
 
     if (show) {
         return (
