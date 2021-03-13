@@ -6,6 +6,7 @@ import { AppState } from 'redux/store';
 import { useSelector } from 'react-redux';
 import { post } from 'libs/fetch';
 import { KTPFormat, NPWPFormat } from 'libs/form';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 import { GetAccessMode, GetCurrentPath } from 'libs/access';
 
@@ -36,7 +37,6 @@ type FormProps = {
 
     onSubmitSuccessCallBack?: (res: AxiosResponse) => void;
     onSubmitErrorCallBack?: (err: AxiosError) => void;
-    params?: { [key: string]: string | number | Date | string[] | number[] } | { [key: string]: string | number | Date | string[] | number[] }[];
     children?: React.ReactNode;
 };
 
@@ -54,7 +54,7 @@ type MapStateToPropsType = {
     TabState: AppState['TabState'];
 };
 
-type Props = PropsFormRedux & FormProps & MapStateToPropsType;
+type Props = PropsFormRedux & FormProps & MapStateToPropsType & RouteComponentProps;
 
 class Form extends React.Component<Props, FormState> {
     _Form: HTMLFormElement | null | undefined;
@@ -120,7 +120,7 @@ class Form extends React.Component<Props, FormState> {
                 }
 
                 post(
-                    this.props.params ? this.props.params : null,
+                    this.props.ModalState.isOpened ? this.props.ModalState.modalParams : this.props.match.params,
                     path,
                     null,
                     (res: AxiosResponse) => onSuccessPost(res),
@@ -300,8 +300,6 @@ class Form extends React.Component<Props, FormState> {
     }
 
     render() {
-        // console.log(this._Form?.parentElement?.parentElement?.parentElement);
-
         const GroupElement: { [key: string]: JSX.Element[] } = {};
         const CurrentGroupNum: { [key: string]: number } = {};
         const GroupTotal: { [key: string]: number } = this.GetGroupTotal();
@@ -358,6 +356,7 @@ const MapStateToProps = (state: MapStateToPropsType) => ({
 });
 
 const connector = connect(MapStateToProps);
+const FormWithRouter = withRouter(connector(Form));
 type PropsFormRedux = ConnectedProps<typeof connector>;
 
-export default connector(Form);
+export default FormWithRouter;

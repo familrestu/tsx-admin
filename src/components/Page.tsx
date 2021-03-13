@@ -1,6 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import CSS from 'csstype';
+import { connect, ConnectedProps } from 'react-redux';
+import { AppState } from 'redux/store';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 type PageProps = {
     breadCrumb?: string;
@@ -13,13 +16,11 @@ type PageState = {
     showBreadCrumb: boolean;
 };
 
-export type PageCloneChildrenPropsType = {
-    'page-max-height'?: number;
-    'parent-element'?: HTMLDivElement | null;
-    'children-number'?: number;
+type MapStateToPropsType = {
+    MenuAuthState: AppState['MenuAuthState'];
 };
 
-class Page extends React.Component<PageProps, PageState> {
+class Page extends React.Component<PageProps & PropsPageRedux & RouteComponentProps & typeof MapDispatch, PageState> {
     _BreadCrumbContainer: HTMLDivElement | null | undefined;
     _Page: HTMLDivElement | null | undefined;
 
@@ -81,7 +82,16 @@ class Page extends React.Component<PageProps, PageState> {
         }
     }
 
+    SetPageAccess() {
+        const arrAuth = this.props.MenuAuthState.filter((a) => {
+            return a.link === this.props.match.path;
+        });
+        const accessmode = arrAuth.length > 0 ? arrAuth[0].accessmode : 0;
+        this.props.OpenPage(this.props.match.path, accessmode);
+    }
+
     componentDidMount() {
+        this.SetPageAccess();
         this.SetBreadcrumbForModal();
     }
 
@@ -97,4 +107,18 @@ class Page extends React.Component<PageProps, PageState> {
     }
 }
 
-export default Page;
+// export default withRouter(Page);
+
+const MapStateToProps = (state: MapStateToPropsType) => ({
+    MenuAuthState: state.MenuAuthState,
+});
+
+const MapDispatch = {
+    OpenPage: (path: AppState['PageState']['path'], accessmode: AppState['PageState']['accessmode']) => ({ type: 'OPENPAGE', path, accessmode }),
+};
+
+const connector = connect(MapStateToProps, MapDispatch);
+const PageWithRouter = withRouter(connector(Page));
+type PropsPageRedux = ConnectedProps<typeof connector>;
+
+export default PageWithRouter;
