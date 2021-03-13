@@ -2,8 +2,8 @@ $primary: #519a66;
 html { height: 100%; }
 body[themes=light] {
 	--white: #ffffff;
-	--secondary-white: #f3f3f3;
-	--secondary: #8ac099;
+	--secondary-white: #fcfcfc;
+	--secondary: #68be82;
 	
 	--light-grey: #dee2e6;
 	--dark-grey: #545454;
@@ -13,8 +13,8 @@ body[themes=light] {
 
 body[themes=dark] {	
 	--white: #3f3f3f;
-	--secondary-white: #f7f7f7;
-	--secondary: #82b08f;
+	--secondary-white: #272727;
+	--secondary: #68be82;
 	
 	--light-grey: #929292;
 	--dark-grey: #e9e9e9;
