@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { FormControl, InputGroup, Button } from 'react-bootstrap';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { RouteComponentProps, withRouter, NavLink } from 'react-router-dom';
 import { StaticContext } from 'react-router';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
 import { ModalStateType } from 'redux/reducers/ModalState';
 import { TabStateType } from 'redux/reducers/TabState';
-import Navlink from 'components/Navlink';
 
 let mouseMove: any;
 let mouseUp: any;
@@ -418,11 +417,7 @@ class Column extends Component<ColumnPropsType & RouteComponentProps & MapStateT
                                                     link = link.replace(replaceThis[0], '');
                                                 }
                                             }
-                                            return (
-                                                <Navlink to={link} navlink={navlink} accessmode={menu[0].accessmode}>
-                                                    {value}
-                                                </Navlink>
-                                            );
+                                            return <NavLink to={link}>{value}</NavLink>;
                                         }
                                     } else {
                                         return <React.Fragment>{value}</React.Fragment>;

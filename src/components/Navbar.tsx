@@ -4,10 +4,10 @@ import { AppState } from 'redux/store';
 import { Button } from 'react-bootstrap';
 import Avatar from 'components/Avatar';
 import Notification from 'components/Notification';
-import Navlink from 'components/Navlink';
 import { MenuAuthStateDetailType } from 'redux/reducers/MenuAuthState';
 import { ThemeMode } from './Header';
 import { GetInitial } from 'libs/utils';
+import { NavLink } from 'react-router-dom';
 
 type AppLogoPropsType = {
     isMobile: boolean;
@@ -68,7 +68,7 @@ const AppLogo = (props: AppLogoPropsType) => {
     return (
         <li>
             <div id="app-nav-container" className="app-nav-container pointer">
-                <Navlink
+                <NavLink
                     to="/"
                     onClick={() => {
                         if (props.isMobile) {
@@ -94,7 +94,7 @@ const AppLogo = (props: AppLogoPropsType) => {
                     >
                         {!imageLoadedSmall && UserState.app_name !== null && GetInitial(UserState.app_name)}
                     </div>
-                </Navlink>
+                </NavLink>
                 {props.isMobile && (
                     <Button onClick={props.ToggleNavbarHandler}>
                         <i className="fas fa-bars" />
@@ -112,7 +112,7 @@ const AvatarNav = (props: { isMobile: boolean; UserState: any; ToggleNavbarHandl
             <React.Fragment>
                 <hr className="navbar-divider-horizontal my-0" />
                 <li className="d-flex avatar-group">
-                    <Navlink
+                    <NavLink
                         to={{
                             pathname: '/profile',
                             state: {
@@ -129,8 +129,8 @@ const AvatarNav = (props: { isMobile: boolean; UserState: any; ToggleNavbarHandl
                             <Avatar />
                             <div className="avatar-user-name">{UserState.full_name}</div>
                         </div>
-                    </Navlink>
-                    <Navlink
+                    </NavLink>
+                    <NavLink
                         to="/notification"
                         className="notification"
                         onClick={() => {
@@ -140,7 +140,7 @@ const AvatarNav = (props: { isMobile: boolean; UserState: any; ToggleNavbarHandl
                         }}
                     >
                         <Notification isMobile={props.isMobile} />
-                    </Navlink>
+                    </NavLink>
                 </li>
             </React.Fragment>
         );
@@ -245,7 +245,7 @@ const Navitem = (props: MenuAuthStateDetailType & NavitemPropsType) => {
         </div>
     );
 
-    const Container = props.children !== undefined && props.children.length > 0 ? Div : Navlink;
+    const Container = props.children !== undefined && props.children.length > 0 ? Div : NavLink;
 
     return (
         <li>

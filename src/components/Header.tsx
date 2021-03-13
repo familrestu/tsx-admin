@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { InputGroup, Button } from 'react-bootstrap';
-import Navlink from 'components/Navlink';
+// import Navlink from 'components/Navlink';
+import { NavLink } from 'react-router-dom';
 import Avatar from 'components/Avatar';
 import { AppState } from 'redux/store';
 import Notification from 'components/Notification';
@@ -306,10 +307,9 @@ class HeaderSearchConnect extends Component<PropsHeaderSearch, HandleSearchState
                                     }
 
                                     return (
-                                        <Navlink
+                                        <NavLink
                                             key={index}
                                             to={item.link}
-                                            navlink={item.navlink}
                                             className={`dropdown-item header-search-item ${this.state.selectedList === index ? 'focus' : ''}`.trim()}
                                             is-selected={`${this.state.selectedList === index ? 'yes' : 'no'}`}
                                             index-number={index}
@@ -321,7 +321,7 @@ class HeaderSearchConnect extends Component<PropsHeaderSearch, HandleSearchState
                                         >
                                             {icon !== '' && <i className={icon}></i>}
                                             <span>{item.title}</span>
-                                        </Navlink>
+                                        </NavLink>
                                     );
                                 })
                             ) : (
@@ -428,7 +428,7 @@ class Header extends Component<PropsHeader> {
                                         <div className="nowrap text-center">{this.props.UserState.full_name}</div>
                                     </div>
                                 </div>
-                                <Navlink
+                                <NavLink
                                     to={{
                                         pathname: '/profile',
                                         state: {
@@ -442,8 +442,8 @@ class Header extends Component<PropsHeader> {
                                     <div className="d-flex dropdown-item small justify-content-start align-items-center">
                                         <span className="text-black">Your Profile</span>
                                     </div>
-                                </Navlink>
-                                <Navlink
+                                </NavLink>
+                                <NavLink
                                     to={{
                                         pathname: '/profile',
                                         state: {
@@ -457,7 +457,7 @@ class Header extends Component<PropsHeader> {
                                     <div className="d-flex dropdown-item small justify-content-start align-items-center">
                                         <span className="text-black">Change Password</span>
                                     </div>
-                                </Navlink>
+                                </NavLink>
                                 <div
                                     className="pointer"
                                     onClick={() => {

@@ -4,7 +4,7 @@ import { StaticContext } from 'react-router';
 import { connect, useSelector, useDispatch } from 'react-redux';
 import { AppState } from 'redux/store';
 import { TabStateType } from 'redux/reducers/TabState';
-// import ModalScreen from 'screens/app/components/modal';
+import { NavLink } from 'react-router-dom';
 
 const TabClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, childNumber: number) => {
     const navTabParents = e.currentTarget.parentElement;
@@ -77,7 +77,12 @@ const Tab = (props: TabPropsType) => {
         Element = <React.Fragment />;
     } else {
         Element = (
-            <span
+            <NavLink
+                to={{
+                    state: {
+                        tab: props.link,
+                    },
+                }}
                 className={`nav-item nav-link noactivenavlink ${props.link === tablocation ? 'activelink' : ''}`.trim()}
                 tab-number={props.childNumber}
                 tab-location={props.link}
@@ -87,7 +92,7 @@ const Tab = (props: TabPropsType) => {
                 }}
             >
                 {props.title}
-            </span>
+            </NavLink>
         );
     }
 
@@ -208,7 +213,7 @@ class TabsC extends Component<TabsPropsType & MapStateToPropsType & typeof MapDi
                             <div
                                 key={index}
                                 id="tab-pane"
-                                className={`fade tab-page-container tab-pane ${index === 0 && this.props.TabState.tabcontentpath === null ? 'active show' : ''}`.trim()}
+                                className={`fade tab-page-container tab-pane ${this.props.location.state.tab === child.props.link ? 'active show' : ''}`.trim()}
                                 tab-container-number={index}
                                 tab-container-name={child.props.title.toLowerCase().replaceAll(' ', '-')}
                             >
