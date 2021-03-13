@@ -358,18 +358,36 @@ type PropsHeader = HeaderPropsType & MapStateToPropsType;
 class Header extends Component<PropsHeader> {
     OpenDropDownHandler(e: Event, element: Element) {
         const target = e.currentTarget as HTMLDivElement;
-        // console.log(target);
+        const thisElement = element as HTMLDivElement;
         if (target.classList.value.indexOf('btn-open-dropdown') > 0) {
-            (element.lastChild as HTMLDivElement).classList.toggle('show');
-            (element as HTMLDivElement).focus();
+            if ((thisElement.lastChild as HTMLDivElement).classList.value.indexOf('show') >= 0) {
+                (thisElement.lastChild as HTMLDivElement).classList.add('hidden');
+                window.setTimeout(() => {
+                    (thisElement.lastChild as HTMLDivElement).classList.remove('show');
+                    (thisElement.lastChild as HTMLDivElement).classList.remove('hidden');
+                }, 150);
+            } else {
+                (thisElement.lastChild as HTMLDivElement).classList.add('hidden');
+                window.setTimeout(() => {
+                    (thisElement.lastChild as HTMLDivElement).classList.add('show');
+                    (thisElement.lastChild as HTMLDivElement).classList.remove('hidden');
+                }, 150);
+                thisElement.focus();
+            }
         }
     }
 
     DropDownOnBlurHandler(element: Element) {
         const keepFocus = element.getAttribute('keep-focus');
+        const thisElement = element as HTMLDivElement;
 
         if (keepFocus === null) {
-            (element.lastChild as HTMLDivElement).classList.remove('show');
+            (thisElement.lastChild as HTMLDivElement).classList.remove('show');
+            (thisElement.lastChild as HTMLDivElement).classList.add('hidden');
+            window.setTimeout(() => {
+                (thisElement.lastChild as HTMLDivElement).classList.remove('show');
+                (thisElement.lastChild as HTMLDivElement).classList.remove('hidden');
+            }, 150);
         }
     }
 
@@ -379,8 +397,19 @@ class Header extends Component<PropsHeader> {
         if (arrBtnDropDown !== null) {
             for (let i = 0; i < arrBtnDropDown.length; i++) {
                 const element = arrBtnDropDown[i];
-                element.addEventListener('click', (e: Event) => this.OpenDropDownHandler(e, element));
-                element.addEventListener('blur', () => this.DropDownOnBlurHandler(element));
+                element.addEventListener('click', (e: Event) => this.OpenDropDownHandler(e, element), false);
+                element.addEventListener('blur', () => this.DropDownOnBlurHandler(element), false);
+            }
+        }
+    }
+
+    RemoveDropdownListener() {
+        const arrBtnDropDown = document.querySelectorAll('.header-container .btn-open-dropdown');
+        if (arrBtnDropDown !== null) {
+            for (let i = 0; i < arrBtnDropDown.length; i++) {
+                const element = arrBtnDropDown[i];
+                element.removeEventListener('click', (e: Event) => this.OpenDropDownHandler(e, element), false);
+                element.removeEventListener('blur', () => this.DropDownOnBlurHandler(element), false);
             }
         }
     }
@@ -403,6 +432,10 @@ class Header extends Component<PropsHeader> {
 
     componentDidMount() {
         this.AddOpenDrowndownListener();
+    }
+
+    componentWillUnmount() {
+        this.RemoveDropdownListener();
     }
 
     render() {
