@@ -35,7 +35,7 @@ body {
 	background-color: var(--white);
 
 	h2, label { color: var(--black); }
-	* { transition: background-color .2s ease-in, color .2s ease-in; }
+	// * { transition: background-color .2s ease-in, color .2s ease-in; }
 }
 
 .nowrap { white-space: nowrap; }

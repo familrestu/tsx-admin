@@ -97,6 +97,20 @@
 
 		
 	}
+
+	.dropdown-menu {
+		transition: transform .15s ease-in-out, top .15s ease-in-out;
+		
+		&.show {
+			transform: scale(1);
+		}
+
+		&.hidden {
+			display: block;
+			transform: scale(0);
+			top: -100%;
+		}
+	}
 }
 
 .toggle-theme-container {
