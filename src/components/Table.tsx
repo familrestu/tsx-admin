@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import CSS from 'csstype';
 import { Badge } from 'react-bootstrap';
-import { AxiosError, AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import { post } from 'libs/fetch';
-import { PageCloneChildrenPropsType } from 'components/Page';
 import { Toolbar, ExportToExcel, ExportToPDF, BtnPrintPreview } from 'components/Toolbar';
 
 type TableDataType = {
@@ -32,8 +31,10 @@ export type TableStateType = {
     arrSearchData?: { [key: string]: string }[];
 };
 
-class Table extends Component<TablePropsType & PageCloneChildrenPropsType, TableStateType> {
+class Table extends Component<TablePropsType, TableStateType> {
     _isMounted = false;
+    _ScrollFetch = false;
+    _ScrolLFetchTimeout: number | undefined;
     _Table: HTMLDivElement | null | undefined;
 
     state: TableStateType = {
@@ -161,6 +162,7 @@ class Table extends Component<TablePropsType & PageCloneChildrenPropsType, Table
     }
 
     FetchTableData(initial: boolean) {
+        this._ScrollFetch = true;
         if (this.props.datasource && this.state.arrTableData) {
             let path: string;
             if (this.props.datasource.split('/').length < 3) {
@@ -195,6 +197,7 @@ class Table extends Component<TablePropsType & PageCloneChildrenPropsType, Table
                         this.CloneChildren(datasets);
                         this.SetLoadingRow(true);
                         // this.AddToolBarDOM();
+                        this._ScrollFetch = false;
                     }
 
                     if (this.props.onSubmitSuccessCallBack) {
@@ -203,13 +206,14 @@ class Table extends Component<TablePropsType & PageCloneChildrenPropsType, Table
                 }
             };
 
-            const onErrorPost = (err: AxiosError) => {
+            const onErrorPost = () => {
                 if (this.props.onSubmitErrorCallBack) {
                     this.props.onSubmitErrorCallBack();
                 }
-                console.error(err);
+                // console.error(err);
                 this.CloneChildren({ header: [], body: [] });
                 this.SetLoadingRow(true);
+                this._ScrollFetch = false;
             };
 
             post(
@@ -221,7 +225,7 @@ class Table extends Component<TablePropsType & PageCloneChildrenPropsType, Table
                 path,
                 null,
                 (res: AxiosResponse) => onSuccessPost(res),
-                (err: AxiosError) => onErrorPost(err),
+                () => onErrorPost(),
             );
         }
     }
@@ -335,13 +339,41 @@ class Table extends Component<TablePropsType & PageCloneChildrenPropsType, Table
         );
     }
 
+    TableScrollEvent() {
+        window.clearTimeout(this._ScrolLFetchTimeout);
+        if (this._Table && this._Table.parentElement) {
+            const { scrollHeight, scrollTop, clientHeight } = this._Table.parentElement;
+            this._ScrolLFetchTimeout = window.setTimeout(() => {
+                if (clientHeight + scrollTop >= scrollHeight * (70 / 100)) {
+                    if (!this._ScrollFetch) {
+                        this.FetchTableData(false);
+                    }
+                }
+            }, 300);
+        }
+    }
+
+    SetListenerToBodyContent() {
+        if (this._Table && this._Table.parentElement) {
+            this._Table.parentElement.addEventListener('scroll', () => this.TableScrollEvent(), true);
+        }
+    }
+
+    RemoveListenerFromBodyContent() {
+        if (this._Table && this._Table.parentElement) {
+            this._Table.parentElement.removeEventListener('scroll', () => this.TableScrollEvent(), true);
+        }
+    }
+
     componentDidMount() {
         this._isMounted = true;
         this.FetchTableData(true);
+        this.SetListenerToBodyContent();
     }
 
     componentWillUnmount() {
         this._isMounted = false;
+        this.RemoveListenerFromBodyContent();
     }
 
     render() {
