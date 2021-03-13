@@ -28,6 +28,10 @@
 			border-bottom-color: #dee2e6;
 		}
 	}
+
+	.nav-item:focus {
+		border-color: transparent;
+	}
 }
 
 @media (max-width: 480px) {
