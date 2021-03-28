@@ -3,7 +3,6 @@
 	display: flex;
 	align-items: center;
 	border-radius: 0.25rem;
-	padding: 0.25rem;
 
 	.avatar-user-name {
 		margin-right: 1rem;
@@ -70,4 +69,30 @@
 		color: #ffffff;
 		font-weight: 600;
 	}	
+}
+
+.avatar-upload {
+	width: 10rem;
+	height: 10rem;
+
+	span {
+		font-size: 5rem;
+	}
+}
+
+.avatar-outline {
+	width: max-content;
+	border-radius: 50%;
+    border: 2px solid var(--black);
+	padding: 0.15rem;
+}
+
+@media (max-width: 480px) {
+	.avatar-upload {
+		width: 5rem;
+		height: 5rem;
+		span {
+			font-size: 2.5rem;
+		}
+	}
 }

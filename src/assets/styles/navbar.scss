@@ -68,6 +68,8 @@ ul {
 					align-items: flex-start;
 					.item-center {
 						flex: 1;
+						position: relative;
+						bottom: 2px;
 					}
 
 					.item-right, .item-left {
@@ -293,6 +295,10 @@ ul {
 	box-sizing: content-box;
 	height: 0;
 	overflow: visible;
+
+	& +.navitem-group {
+		padding-top: .75rem !important;
+	}
 }
 
 .navbar-divider-vertical {

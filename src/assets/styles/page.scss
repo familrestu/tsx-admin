@@ -4,7 +4,7 @@
 	overflow: hidden;
 	
 	.bread-crumb + .body-content { height: calc(100vh - 154px); }
-
+	
 	.body-content {
 		position: relative;
 		border-radius: .25rem;
@@ -12,6 +12,8 @@
 
 		color: var(--dark-grey);
 		overflow: auto;
+		
+		padding: .25rem;
 
 		.tab-content {
 			.page {

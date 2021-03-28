@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
 import { ModalStateType } from 'redux/reducers/ModalState';
 import { TabStateType } from 'redux/reducers/TabState';
+import { UserAccessDetailType } from 'redux/reducers/AccessState';
 
 let mouseMove: any;
 let mouseUp: any;
@@ -67,7 +68,6 @@ type ColumnPropsType = {
     format?: string;
     masking?: string;
     align?: 'left' | 'center' | 'right';
-
     header?: string[] /* table data */;
     body?: string[] /* table data */;
     arrSortColumn?: string[] /* table data */;
@@ -140,7 +140,6 @@ class Column extends Component<ColumnPropsType & RouteComponentProps & MapStateT
 
         /* datepicker icon keep focus */
         const datePickerIcon = document.getElementById('datepicker-icon');
-        // console.log(datePickerIcon);
         if (datePickerIcon) {
             if (datePickerIcon.getAttribute('keep-focus')) {
                 changeState = false;
@@ -161,7 +160,6 @@ class Column extends Component<ColumnPropsType & RouteComponentProps & MapStateT
     OnKeyPressSearchHandler(e: React.KeyboardEvent<HTMLInputElement>) {
         if (e.key.toUpperCase() === 'ENTER') {
             const value = (e.target as HTMLInputElement).value;
-            // console.log('enter pressed', value);
             if (this.props.SearchClickHandler && value !== '') {
                 this.props.SearchClickHandler(this.props.name, this.props.label, value);
                 this.ToggleSearch();
@@ -374,8 +372,8 @@ class Column extends Component<ColumnPropsType & RouteComponentProps & MapStateT
                                         const indexOfId = this.props.header.indexOf(id);
                                         const navlink = link.replace(replaceThis[0], `:${id}`);
                                         const { linktype } = this.props;
-                                        const menu = this.props.MenuAuthState.filter((a) => {
-                                            return a.link === navlink;
+                                        const menu = this.props.AccessState.filter((a: UserAccessDetailType) => {
+                                            return a.url === navlink;
                                         });
 
                                         if (this.props.TabState && this.props.TabState.path !== null && linktype !== 'popup') {
@@ -493,13 +491,13 @@ class Column extends Component<ColumnPropsType & RouteComponentProps & MapStateT
 type MapStateToPropsType = {
     ModalState: AppState['ModalState'];
     TabState: AppState['TabState'];
-    MenuAuthState: AppState['MenuAuthState'];
+    AccessState: AppState['AccessState'];
 };
 
 const MapStateToProps = (state: MapStateToPropsType) => ({
     ModalState: state.ModalState,
     TabState: state.TabState,
-    MenuAuthState: state.MenuAuthState,
+    AccessState: state.AccessState,
 });
 
 const MapDispatch = {

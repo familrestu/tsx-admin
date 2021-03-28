@@ -4,7 +4,7 @@ import { AppState } from 'redux/store';
 import { Button } from 'react-bootstrap';
 import Avatar from 'components/Avatar';
 import Notification from 'components/Notification';
-import { MenuAuthStateDetailType } from 'redux/reducers/MenuAuthState';
+import { UserMenuDetailType } from 'redux/reducers/MenuState';
 import { ThemeMode } from './Header';
 import { GetInitial } from 'libs/utils';
 import { NavLink } from 'react-router-dom';
@@ -20,19 +20,19 @@ const AppLogo = (props: AppLogoPropsType) => {
     const [imageLoadedSmall, setImageLoadedSmall] = useState(false);
 
     const UserState = useSelector((state: { UserState: AppState['UserState'] }) => state.UserState);
-    const { app_logo, app_logo_small } = UserState;
+    const { company_logo, company_logo_small } = UserState;
     let path = `${process.env.REACT_APP_FILES_PATH}`;
 
     useEffect(() => {
-        if (app_logo !== null && UserState.app_code !== null) {
-            if (app_logo.indexOf('http') >= 0 || app_logo.indexOf('https') >= 0) {
-                path = app_logo;
+        if (company_logo !== null && UserState.company_code !== null) {
+            if (company_logo.indexOf('http') >= 0 || company_logo.indexOf('https') >= 0) {
+                path = company_logo;
             } else {
-                path += `${UserState.app_code}/logo/${app_logo}`;
+                path += `${UserState.company_code}/logo/${company_logo}`;
             }
         }
 
-        if (app_logo !== null) {
+        if (company_logo !== null) {
             fetch(path)
                 .then((res) => {
                     return res.blob();
@@ -44,15 +44,15 @@ const AppLogo = (props: AppLogoPropsType) => {
                 });
         }
 
-        if (app_logo_small !== null && UserState.app_code !== null) {
-            if (app_logo_small.indexOf('http') >= 0 || app_logo_small.indexOf('https') >= 0) {
-                path = app_logo_small;
+        if (company_logo_small !== null && UserState.company_code !== null) {
+            if (company_logo_small.indexOf('http') >= 0 || company_logo_small.indexOf('https') >= 0) {
+                path = company_logo_small;
             } else {
-                path += `${UserState.app_code}/logo/${app_logo_small}`;
+                path += `${UserState.company_code}/logo/${company_logo_small}`;
             }
         }
 
-        if (app_logo_small !== null) {
+        if (company_logo_small !== null) {
             fetch(path)
                 .then((res) => {
                     return res.blob();
@@ -80,19 +80,19 @@ const AppLogo = (props: AppLogoPropsType) => {
                         id="app"
                         className="app"
                         style={{
-                            backgroundImage: UserState.app_logo !== null ? `url(${UserState.app_logo})` : undefined,
+                            backgroundImage: UserState.company_logo !== null ? `url(${UserState.company_logo})` : undefined,
                         }}
                     >
-                        {!imageLoaded && UserState.app_name}
+                        {!imageLoaded && UserState.company_name}
                     </div>
                     <div
                         id="app-small"
                         className="app-small"
                         style={{
-                            backgroundImage: UserState.app_logo_small !== null ? `url(${path})` : undefined,
+                            backgroundImage: UserState.company_logo_small !== null ? `url(${path})` : undefined,
                         }}
                     >
-                        {!imageLoadedSmall && UserState.app_name !== null && GetInitial(UserState.app_name)}
+                        {!imageLoadedSmall && UserState.company_name !== null && GetInitial(UserState.company_name)}
                     </div>
                 </NavLink>
                 {props.isMobile && (
@@ -126,8 +126,10 @@ const AvatarNav = (props: { isMobile: boolean; UserState: any; ToggleNavbarHandl
                         }}
                     >
                         <div className="navitem-group navitem-avatar-container">
-                            <Avatar />
-                            <div className="avatar-user-name">{UserState.full_name}</div>
+                            <div className="avatar-container">
+                                <Avatar />
+                            </div>
+                            <div className="avatar-user-name">{UserState.displayname}</div>
                         </div>
                     </NavLink>
                     <NavLink
@@ -221,20 +223,20 @@ type NavitemPropsType = {
 
 const arrGroup: string[] = [];
 
-const Navitem = (props: MenuAuthStateDetailType & NavitemPropsType) => {
+const Navitem = (props: UserMenuDetailType & NavitemPropsType) => {
     const ChildrenElement: React.ReactNode[] = [];
     if (props.children !== undefined && props.children.length > 0) {
         props.children.forEach((item, index) => {
-            if (item.group !== null && arrGroup.indexOf(item.group) < 0 && (item.isMenu === 1 || item.isMenu === 'Yes')) {
+            if (item.group_name !== null && item.group_name !== '' && item.group_name !== '' && arrGroup.indexOf(item.group_name) < 0) {
                 ChildrenElement.push(
-                    <div key={`${item.id}-${index}-group`} className="navitem-group">
-                        {item.group}
+                    <div key={`${item.menu_id}-${index}-group`} className="navitem-group">
+                        {item.group_name}
                     </div>,
                 );
-                arrGroup.push(item.group);
+                arrGroup.push(item.group_name);
             }
-            if (item.isMenu === 1 || item.isMenu === 'Yes') {
-                ChildrenElement.push(<Navitem key={`${item.id}-${index}`} {...item} isMobile={props.isMobile} ToggleNavbarHandler={props.ToggleNavbarHandler} />);
+            if (item.access_only !== 1) {
+                ChildrenElement.push(<Navitem key={`${item.menu_id}-${index}`} {...item} isMobile={props.isMobile} ToggleNavbarHandler={props.ToggleNavbarHandler} />);
             }
         });
     }
@@ -251,8 +253,9 @@ const Navitem = (props: MenuAuthStateDetailType & NavitemPropsType) => {
         <li>
             <Container
                 exact
-                to={props.link}
-                id={props.id}
+                menu-id={props.menu_id}
+                id={props.menu_id}
+                to={props.url}
                 className="navitem-container"
                 onClick={(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
                     if (props.isMobile) {
@@ -263,7 +266,7 @@ const Navitem = (props: MenuAuthStateDetailType & NavitemPropsType) => {
             >
                 <div className="d-flex navitem-string">
                     {props.icon !== null && <i className={`${props.icon} mr-2 item-left`}></i>}
-                    <div className="item-center">{props.name}</div>
+                    <div className="item-center">{props.menu_name}</div>
                     {props.children !== undefined && props.children.length > 0 && <i className={`fas fa-chevron-right mr-2 item-right`}></i>}
                 </div>
             </Container>
@@ -280,7 +283,7 @@ type NavbarPropsType = {
 
 const Navbar = (props: NavbarPropsType) => {
     const UserState = useSelector((state: { UserState: AppState['UserState'] }) => state.UserState);
-    const MenuAuthState = useSelector((state: { MenuAuthState: AppState['MenuAuthState'] }) => state.MenuAuthState);
+    const MenuState = useSelector((state: { MenuState: AppState['MenuState'] }) => state.MenuState);
 
     if (window.location.pathname === '/printpreview') return <React.Fragment />;
 
@@ -292,19 +295,19 @@ const Navbar = (props: NavbarPropsType) => {
                     <AppLogo isMobile={props.isMobile} ToggleNavbarHandler={props.ToggleNavbarHandler} />
                     <AvatarNav UserState={UserState} isMobile={props.isMobile} ToggleNavbarHandler={props.ToggleNavbarHandler} />
                     <hr className="navbar-divider-horizontal my-0" />
-                    {MenuAuthState.map((item, index) => {
+                    {MenuState.map((item: UserMenuDetailType, index: number) => {
                         const arrNav: JSX.Element[] = [];
-                        if (item.group !== null && arrGroup.indexOf(item.group) < 0 && (item.isMenu === 1 || item.isMenu === 'Yes')) {
+                        if (item.group_name !== null && item.group_name !== '' && arrGroup.indexOf(item.group_name) < 0) {
                             arrNav.push(
-                                <div key={`${item.id}-${index}-group`} className="navitem-group">
-                                    {item.group}
+                                <div key={`${item.menu_id}-${index}-group`} className="navitem-group">
+                                    {item.group_name}
                                 </div>,
                             );
-                            arrGroup.push(item.group);
+                            arrGroup.push(item.group_name);
                         }
 
-                        if (item.isMenu === 1 || item.isMenu === 'Yes' || item.id === 'dashboard') {
-                            arrNav.push(<Navitem key={`${item.id}-${index}`} {...item} isMobile={props.isMobile} ToggleNavbarHandler={props.ToggleNavbarHandler} pageType={item.pageType} />);
+                        if (item.access_only !== 1) {
+                            arrNav.push(<Navitem key={`${item.menu_id}-${index}`} {...item} isMobile={props.isMobile} ToggleNavbarHandler={props.ToggleNavbarHandler} />);
                         }
 
                         return arrNav;

@@ -4,10 +4,14 @@ import { Badge } from 'react-bootstrap';
 import { AxiosResponse } from 'axios';
 import { post } from 'libs/fetch';
 import { Toolbar, ExportToExcel, ExportToPDF, BtnPrintPreview } from 'components/Toolbar';
+import { connect } from 'react-redux';
+import { AppState } from 'redux/store';
 
 type TableDataType = {
     header: string[];
     body: string[][];
+    totalData: number;
+    currentPage: number;
 };
 
 export type TablePropsType = {
@@ -29,9 +33,11 @@ export type TableStateType = {
     arrSortColumn?: string[];
     arrSortType?: string[];
     arrSearchData?: { [key: string]: string }[];
+    totalTableData?: number;
+    currentPage?: number;
 };
 
-class Table extends Component<TablePropsType, TableStateType> {
+class Table extends Component<TablePropsType & MapStateToPropsType & typeof MapDispatch, TableStateType> {
     _isMounted = false;
     _ScrollFetch = false;
     _ScrolLFetchTimeout: number | undefined;
@@ -41,6 +47,8 @@ class Table extends Component<TablePropsType, TableStateType> {
         arrTableData: {
             header: [],
             body: [],
+            totalData: 0,
+            currentPage: 0,
         },
         arrCloneChildren: [],
         arrNumberElement: [],
@@ -164,13 +172,7 @@ class Table extends Component<TablePropsType, TableStateType> {
     FetchTableData(initial: boolean) {
         this._ScrollFetch = true;
         if (this.props.datasource && this.state.arrTableData) {
-            let path: string;
-            if (this.props.datasource.split('/').length < 3) {
-                path = `${this.props.datasource}/TableData`;
-            } else {
-                path = `${this.props.datasource}`;
-            }
-
+            const path: string = this.props.datasource;
             const maxLength = this.GetDataMaxLength(this.state.arrTableData.body);
 
             if (initial) {
@@ -196,7 +198,6 @@ class Table extends Component<TablePropsType, TableStateType> {
                         const { datasets } = res.data;
                         this.CloneChildren(datasets);
                         this.SetLoadingRow(true);
-                        // this.AddToolBarDOM();
                         this._ScrollFetch = false;
                     }
 
@@ -210,10 +211,14 @@ class Table extends Component<TablePropsType, TableStateType> {
                 if (this.props.onSubmitErrorCallBack) {
                     this.props.onSubmitErrorCallBack();
                 }
-                // console.error(err);
-                this.CloneChildren({ header: [], body: [] });
+                const emptyData: TableDataType = { header: [], body: [], totalData: 0, currentPage: 0 };
+                this.CloneChildren(emptyData);
                 this.SetLoadingRow(true);
                 this._ScrollFetch = false;
+
+                if (this.props.TriggerState.eventName === 'FetchTable') {
+                    this.props.CLEARTRIGGER();
+                }
             };
 
             post(
@@ -247,17 +252,19 @@ class Table extends Component<TablePropsType, TableStateType> {
         const arrHeaderData: string[] = datasets.header;
         const maxLength = this.GetDataMaxLength(arrBodyData);
 
+        const arrNumber = [];
+
         for (let i = 1; i <= maxLength; i++) {
             arrarrNumberElement.push(
                 <div key={`body-number-${i}`} className="row-body">
                     <span className="text-center">{i}.</span>
                 </div>,
             );
+            arrNumber.push(i);
         }
 
         React.Children.map(this.props.children, (child, index) => {
             const tempChild: any = child;
-            // console.log(tempChild);
             if (React.isValidElement(child) && tempChild.type.displayName !== undefined && tempChild.type.displayName === 'Column') {
                 tempArr.push(
                     React.cloneElement(child, {
@@ -283,6 +290,8 @@ class Table extends Component<TablePropsType, TableStateType> {
                     arrTableData: {
                         header: arrHeaderData,
                         body: arrBodyData,
+                        totalData: datasets.totalData,
+                        currentPage: datasets.currentPage,
                     },
                 };
             });
@@ -295,6 +304,29 @@ class Table extends Component<TablePropsType, TableStateType> {
         } else {
             return this.props.children;
         }
+    }
+
+    SetNumbering() {
+        return (
+            <React.Fragment>
+                <div className="column-group">
+                    <div className="row-header number">
+                        <span className="text-center">#</span>
+                    </div>
+                    {this.state.arrNumberElement && this.state.arrNumberElement.length > 0
+                        ? this.state.arrNumberElement
+                        : this.state.arrTableData &&
+                          this.state.arrTableData.header.length === 0 &&
+                          [1, 2, 3, 4, 5].map((i: number) => {
+                              return (
+                                  <div key={`unknown-key-${i}`} className="row-body">
+                                      <span>&nbsp;</span>
+                                  </div>
+                              );
+                          })}
+                </div>
+            </React.Fragment>
+        );
     }
 
     SearchData() {
@@ -322,18 +354,26 @@ class Table extends Component<TablePropsType, TableStateType> {
         return arrBadges;
     }
 
-    ToolbarChildren() {
+    ToolbarChildren(position?: 'left' | 'right') {
         const tempArr: React.ReactElement[] = [];
         React.Children.map(this.props.children, (child, index) => {
             const tempChild: any = child;
 
             if (React.isValidElement(child) && tempChild.type.displayName !== undefined && tempChild.type.displayName === 'Toolbar') {
-                tempArr.push(React.cloneElement(child, { key: `child-cloned-toolbar-${index}`, tableState: this.state, datasource: this.props.datasource }));
+                // console.log(child);
+                tempArr.push(
+                    React.cloneElement(child, {
+                        key: `child-cloned-toolbar-${index}`,
+                        tableState: this.state,
+                        datasource: this.props.datasource,
+                        toolbarPosition: position === undefined ? 'right' : position,
+                    }),
+                );
             }
         });
 
         return (
-            <Toolbar {...this.state} datasource={this.props.datasource} ClearFilter={() => this.ClearFilter()}>
+            <Toolbar {...this.state} datasource={this.props.datasource} toolbarPosition={position}>
                 {tempArr}
             </Toolbar>
         );
@@ -371,6 +411,13 @@ class Table extends Component<TablePropsType, TableStateType> {
         this.SetListenerToBodyContent();
     }
 
+    componentDidUpdate() {
+        if (this.props.TriggerState.eventName === 'FetchTable') {
+            this.FetchTableData(false);
+            this.props.CLEARTRIGGER();
+        }
+    }
+
     componentWillUnmount() {
         this._isMounted = false;
         this.RemoveListenerFromBodyContent();
@@ -382,12 +429,26 @@ class Table extends Component<TablePropsType, TableStateType> {
                 <div id="toolbar-container" className="toolbar-container">
                     <div className="toolbar-left">
                         <div className="toolbar-wrapper" id="toolbar-wrapper">
-                            {this.ToolbarChildren()}
+                            {this.ToolbarChildren('left')}
                         </div>
                     </div>
                     <div className="toolbar-right">
                         <div className="toolbar-wrapper" id="toolbar-wrapper">
-                            {/* {this.ToolbarChildren()} */}
+                            {this.state.arrSearchData && this.state.arrSearchData.length > 0 && (
+                                <button
+                                    title="Clear Filter"
+                                    className="btn btn-primary position-relative"
+                                    onClick={() => {
+                                        if (this.ClearFilter) {
+                                            this.ClearFilter();
+                                        }
+                                    }}
+                                >
+                                    <i className="fas fa-filter"></i>
+                                    <i className="fas fa-times-circle position-absolute" style={{ right: '.25rem', bottom: '.25rem', fontSize: '.75rem' }}></i>
+                                </button>
+                            )}
+                            {this.ToolbarChildren('right')}
                             <ExportToExcel {...this.state} />
                             <ExportToPDF {...this.state} />
                             <BtnPrintPreview {...this.state} />
@@ -401,12 +462,7 @@ class Table extends Component<TablePropsType, TableStateType> {
                         this._Table = ref;
                     }}
                 >
-                    <div className="column-group">
-                        <div className="row-header number">
-                            <span className="text-center">#</span>
-                        </div>
-                        {this.state.arrNumberElement}
-                    </div>
+                    {this.SetNumbering()}
                     {this.NewChildren()}
                 </div>
                 {this.state.arrSearchData && this.state.arrSearchData.length > 0 && <div className="table-search-data">{this.SearchData()}</div>}
@@ -415,4 +471,16 @@ class Table extends Component<TablePropsType, TableStateType> {
     }
 }
 
-export default Table;
+type MapStateToPropsType = {
+    TriggerState: AppState['TriggerState'];
+};
+
+const MapStateToProps = (state: MapStateToPropsType) => ({
+    TriggerState: state.TriggerState,
+});
+
+const MapDispatch = {
+    CLEARTRIGGER: () => ({ type: 'CLEARTRIGGER' }),
+};
+
+export default connect(MapStateToProps, MapDispatch)(Table);

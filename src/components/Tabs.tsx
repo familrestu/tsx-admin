@@ -5,6 +5,7 @@ import { connect, useSelector, useDispatch } from 'react-redux';
 import { AppState } from 'redux/store';
 import { TabStateType } from 'redux/reducers/TabState';
 import { NavLink } from 'react-router-dom';
+import { UserAccessDetailType } from 'redux/reducers/AccessState';
 
 const TabClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, childNumber: number) => {
     const navTabParents = e.currentTarget.parentElement;
@@ -45,7 +46,7 @@ type TabPropsType = {
 const Tab = (props: TabPropsType) => {
     const dispatch = useDispatch();
     const ModalState = useSelector((state: AppState) => state.ModalState);
-    const MenuAuthState = useSelector((state: AppState) => state.MenuAuthState);
+    const AccessState = useSelector((state: AppState) => state.AccessState);
     const location = useLocation<{ tab: string }>();
 
     let show = false;
@@ -59,10 +60,10 @@ const Tab = (props: TabPropsType) => {
     }
 
     /* automatic not showing tabs if didn't get access */
-    for (let x = 0; x < MenuAuthState.length; x++) {
-        const Menu = MenuAuthState[x];
+    for (let x = 0; x < AccessState.length; x++) {
+        const Menu = AccessState[x];
 
-        if (Menu.link === props.link) {
+        if (Menu.url === props.link) {
             show = true;
             accessmode = Menu.accessmode;
             break;
@@ -113,12 +114,12 @@ class TabsC extends Component<TabsPropsType & MapStateToPropsType & typeof MapDi
         const { location } = this.props;
         if (location.state) {
             const path = location.state.tab;
-            const Component = this.props.MenuAuthState.filter((a) => {
-                return a.link === path;
+            const Component = this.props.AccessState.filter((a: UserAccessDetailType) => {
+                return a.url === path;
             });
 
             if (Component) {
-                this.props.OpenTab(Component[0].link, Component[0].accessmode);
+                this.props.OpenTab(Component[0].url, Component[0].accessmode);
             }
         }
     }
@@ -141,19 +142,14 @@ class TabsC extends Component<TabsPropsType & MapStateToPropsType & typeof MapDi
 
     GetTabsContent() {
         let X;
-        const Component = this.props.MenuAuthState.filter((a) => {
-            return a.link === this.props.TabState.tabcontentpath;
+        const Component = this.props.AccessState.filter((a: UserAccessDetailType) => {
+            return a.url === this.props.TabState.tabcontentpath;
         });
 
         try {
             if (Component) {
-                if (Component[0].isGlobal === 'Yes' || Component[0].isGlobal === 1) {
-                    // eslint-disable-next-line @typescript-eslint/no-var-requires
-                    X = require(`screens/app${Component[0].componentPath}`);
-                } else {
-                    // eslint-disable-next-line @typescript-eslint/no-var-requires
-                    X = require(`screens/${this.props.UserState.current_app}${Component[0].componentPath}`);
-                }
+                // eslint-disable-next-line @typescript-eslint/no-var-requires
+                X = require(`screens/${this.props.UserState.current_app}${Component[0].pagepath}`);
             } else {
                 // eslint-disable-next-line @typescript-eslint/no-var-requires
                 X = require(`screens/app/pagenotfound`);
@@ -188,18 +184,13 @@ class TabsC extends Component<TabsPropsType & MapStateToPropsType & typeof MapDi
                 <div className="tab-content">
                     {React.Children.map(this.props.children, (child: { props: TabPropsType }, index: number) => {
                         let X;
-                        const Component = this.props.MenuAuthState.filter((a) => {
-                            return a.link === child.props.link;
+                        const Component = this.props.AccessState.filter((a: UserAccessDetailType) => {
+                            return a.url === child.props.link;
                         });
                         try {
                             if (Component) {
-                                if (Component[0].isGlobal === 'Yes' || Component[0].isGlobal === 1) {
-                                    // eslint-disable-next-line @typescript-eslint/no-var-requires
-                                    X = require(`screens/app${Component[0].componentPath}`);
-                                } else {
-                                    // eslint-disable-next-line @typescript-eslint/no-var-requires
-                                    X = require(`screens/${this.props.UserState.current_app}${Component[0].componentPath}`);
-                                }
+                                // eslint-disable-next-line @typescript-eslint/no-var-requires
+                                X = require(`screens/${this.props.UserState.current_app}${Component[0].pagepath}`);
                             } else {
                                 // eslint-disable-next-line @typescript-eslint/no-var-requires
                                 X = require(`screens/app/pagenotfound`);
@@ -230,14 +221,14 @@ class TabsC extends Component<TabsPropsType & MapStateToPropsType & typeof MapDi
 
 type MapStateToPropsType = {
     UserState: AppState['UserState'];
-    MenuAuthState: AppState['MenuAuthState'];
+    AccessState: AppState['AccessState'];
     ModalState: AppState['ModalState'];
     TabState: AppState['TabState'];
 };
 
 const MapStateToProps = (state: MapStateToPropsType) => ({
     UserState: state.UserState,
-    MenuAuthState: state.MenuAuthState,
+    AccessState: state.AccessState,
     ModalState: state.ModalState,
     TabState: state.TabState,
 });

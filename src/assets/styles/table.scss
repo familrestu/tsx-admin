@@ -36,7 +36,7 @@
 	}
 
 	.row-header {
-		position: relative;
+		// position: relative;
 		z-index: 100;
 		background-color: var(--primary);
 		color: #ffffff;
@@ -86,7 +86,7 @@
 
 	.row-header {
 		position: sticky;
-		top: 0;
+		top: -.25rem;
 		z-index: 100;
 
 		.left {

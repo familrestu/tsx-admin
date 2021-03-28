@@ -4,6 +4,7 @@ import CSS from 'csstype';
 import { connect, ConnectedProps } from 'react-redux';
 import { AppState } from 'redux/store';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { UserMenuDetailType } from 'redux/reducers/MenuState';
 
 type PageProps = {
     breadCrumb?: string;
@@ -17,7 +18,7 @@ type PageState = {
 };
 
 type MapStateToPropsType = {
-    MenuAuthState: AppState['MenuAuthState'];
+    MenuState: AppState['MenuState'];
 };
 
 class Page extends React.Component<PageProps & PropsPageRedux & RouteComponentProps & typeof MapDispatch, PageState> {
@@ -83,8 +84,8 @@ class Page extends React.Component<PageProps & PropsPageRedux & RouteComponentPr
     }
 
     SetPageAccess() {
-        const arrAuth = this.props.MenuAuthState.filter((a) => {
-            return a.link === this.props.match.path;
+        const arrAuth = this.props.MenuState.filter((a: UserMenuDetailType) => {
+            return a.url === this.props.match.path;
         });
         const accessmode = arrAuth.length > 0 ? arrAuth[0].accessmode : 0;
         this.props.OpenPage(this.props.match.path, accessmode);
@@ -110,7 +111,7 @@ class Page extends React.Component<PageProps & PropsPageRedux & RouteComponentPr
 // export default withRouter(Page);
 
 const MapStateToProps = (state: MapStateToPropsType) => ({
-    MenuAuthState: state.MenuAuthState,
+    MenuState: state.MenuState,
 });
 
 const MapDispatch = {

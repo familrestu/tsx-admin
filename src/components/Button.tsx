@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router';
 import { AppState } from 'redux/store';
+import { useHistory } from 'react-router';
 import { Row, Col } from 'react-bootstrap';
 import { GetAccessMode } from 'libs/access';
+import { post } from 'libs/fetch';
+import { FormState } from 'components/Form';
 
 const setIdBasedOnParent = (ref: HTMLButtonElement | null) => {
     if (ref) {
@@ -123,11 +125,11 @@ const Save = (props: ButtonPropsType) => {
                 ref={(ref) => setIdBasedOnParent(ref)}
                 id={`${props.id ? props.id : 'btn-save'}`}
                 className={`btn btn-primary ${props.className ? props.className : ''}`.trim()}
-                onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+                /* onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
                     if (props.onClick) {
                         props.onClick(e);
                     }
-                }}
+                }} */
             >
                 {props.label ? props.label : 'Save'}
             </button>
@@ -137,11 +139,18 @@ const Save = (props: ButtonPropsType) => {
     }
 };
 
-const Delete = (props: ButtonPropsType) => {
+type ButtonDeletePropsType = {
+    action: string;
+    formData?: FormState['formData'];
+};
+
+const Delete = (props: ButtonPropsType & ButtonDeletePropsType) => {
     const PageState = useSelector((state: AppState) => state.PageState);
     const ModalState = useSelector((state: AppState) => state.ModalState);
     const TabState = useSelector((state: AppState) => state.TabState);
     const [show, setShow] = useState(false);
+
+    // console.log(props);
 
     useEffect(() => {
         setShow(isShowing(props.showif, 3, PageState, ModalState, TabState));
@@ -155,11 +164,11 @@ const Delete = (props: ButtonPropsType) => {
                 ref={(ref) => setIdBasedOnParent(ref)}
                 id={`${props.id ? props.id : 'btn-delete'}`}
                 className={`btn btn-danger ${props.className ? props.className : ''}`.trim()}
-                onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+                onClick={() => {
                     if (window.confirm('Are you sure want to delete this data?')) {
-                        if (props.onClick) {
-                            props.onClick(e);
-                        }
+                        post(props.formData, props.action, null, (res) => {
+                            // window.alert('gampangan gini');
+                        });
                     }
                 }}
             >
@@ -189,7 +198,10 @@ const Cancel = (props: ButtonPropsType) => {
                 }
 
                 if (ModalState !== undefined && ModalState.isOpened) {
-                    dispatch({ type: 'CLOSEMODAL' });
+                    e.currentTarget.closest('#modal-content')?.classList.add('hidden');
+                    window.setTimeout(() => {
+                        dispatch({ type: 'CLOSEMODAL' });
+                    }, 250);
                 } else {
                     history.goBack();
                 }
@@ -202,16 +214,21 @@ const Cancel = (props: ButtonPropsType) => {
 
 type ButtonGroupsPropsType = {
     children?: any;
+    formData?: FormState['formData'];
 };
 
 const ButtonGroup = (props: ButtonGroupsPropsType) => {
     const LeftElement: JSX.Element[] = [];
     const RightElement: JSX.Element[] = [];
-    React.Children.map(props.children, (child: { type: { name: string } }, index: number) => {
-        if (child.type.name === 'Delete' || child.type.name === 'Cancel') {
-            RightElement.push(<React.Fragment key={`button-form-number-${index}`}>{child}</React.Fragment>);
-        } else {
-            LeftElement.push(<React.Fragment key={`button-form-number-${index}`}>{child}</React.Fragment>);
+
+    React.Children.map(props.children, (child, index) => {
+        if (React.isValidElement(child)) {
+            const tempChild: any = child;
+            if (tempChild.type.name === 'Delete' || tempChild.type.name === 'Cancel') {
+                RightElement.push(React.cloneElement(child as React.ReactElement<any>, { key: `button-form-right-${index}`, formData: props.formData }));
+            } else {
+                LeftElement.push(React.cloneElement(child as React.ReactElement<any>, { key: `button-form-left-${index}`, formData: props.formData }));
+            }
         }
     });
 

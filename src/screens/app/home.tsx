@@ -1,9 +1,8 @@
-import React, { Suspense, lazy, Component } from 'react';
-import { BrowserRouter as Router, Switch, Route, Redirect, RouteProps } from 'react-router-dom';
-import { connect, useDispatch, useSelector } from 'react-redux';
+import React, { Suspense, lazy, Component, useState, useEffect } from 'react';
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import { connect, useSelector } from 'react-redux';
 import { AppState } from 'redux/store';
-import { MenuAuthStateType, MenuAuthStateDetailType } from 'redux/reducers/MenuAuthState';
-import { AxiosError, AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import { get } from 'libs/fetch';
 import Header from 'components/Header';
 import Navbar from 'components/Navbar';
@@ -11,7 +10,7 @@ import LoadingSuspense from 'components/LoadingSuspense';
 import Modal from 'components/Modal';
 import Page from 'components/Page';
 
-const Dashboard = lazy(() => import('screens/app/dashboard'));
+// const Dashboard = lazy(() => import('screens/app/dashboard'));
 const Login = lazy(() => import('screens/app/login'));
 const ForgotPassword = lazy(() => import('screens/app/forgotpassword'));
 const Notification = lazy(() => import('screens/app/notification'));
@@ -19,129 +18,71 @@ const PagenotFound = lazy(() => import('screens/app/pagenotfound'));
 const Printpreview = lazy(() => import('screens/app/printpreview'));
 
 let interval: number;
-const getTokenInterval = 14000;
 
 type AuthorizedScreenPropsType = {
-    GetToken: () => void;
+    CheckToken: () => void;
     SignOutHandler: () => void;
     isMobile: boolean;
 };
 
 const CheckTokenInterval = (props: AuthorizedScreenPropsType) => {
     if (interval === undefined) {
-        props.GetToken();
+        props.CheckToken();
         interval = window.setInterval(() => {
-            props.GetToken();
-        }, getTokenInterval);
+            props.CheckToken();
+        }, 14000);
     }
-};
-
-const RouterChildren = (menuAuthDetail: MenuAuthStateType & RouteProps) => {
-    let ArrayRouter: { componentPath: MenuAuthStateDetailType['componentPath']; link: MenuAuthStateDetailType['link']; isGlobal: MenuAuthStateDetailType['isGlobal'] }[] = [];
-
-    if (menuAuthDetail.length > 1) {
-        for (let x = 0; x < menuAuthDetail.length; x++) {
-            const element = menuAuthDetail[x];
-
-            if (element.children) {
-                /* when have children, call RouterChildren function */
-                const tempArray = RouterChildren(element.children);
-                ArrayRouter = [...ArrayRouter, ...tempArray];
-            } else {
-                /* if not have children, push to ArrayRouter */
-                ArrayRouter.push({
-                    componentPath: element.componentPath,
-                    link: element.link,
-                    isGlobal: element.isGlobal,
-                });
-            }
-        }
-    }
-
-    return ArrayRouter;
 };
 
 const DynamicRouter = () => {
+    const AccessState = useSelector((state: { AccessState: AppState['AccessState'] }) => state.AccessState);
     const UserState = useSelector((state: { UserState: AppState['UserState'] }) => state.UserState);
-    const MenuAuthState = useSelector((state: { MenuAuthState: AppState['MenuAuthState'] }) => state.MenuAuthState);
     const { current_app } = UserState;
     const ArrRouterElement: JSX.Element[] = [];
-    let ArrayRouter: { componentPath: MenuAuthStateDetailType['componentPath']; link: MenuAuthStateDetailType['link']; isGlobal: MenuAuthStateDetailType['isGlobal'] }[] = [];
 
-    if (MenuAuthState.length > 1) {
-        for (let x = 0; x < MenuAuthState.length; x++) {
-            const element = MenuAuthState[x];
-
-            if (element.children) {
-                /* when have children, call RouterChildren function */
-                const tempArray = RouterChildren(element.children);
-                ArrayRouter = [...ArrayRouter, ...tempArray];
-            } else {
-                /* if not have children, push to ArrayRouter */
-                ArrayRouter.push({
-                    componentPath: element.componentPath,
-                    link: element.link,
-                    isGlobal: element.isGlobal,
-                });
-            }
-        }
-    }
-
-    for (let i = 0; i < ArrayRouter.length; i++) {
-        const element = ArrayRouter[i];
-        let component;
-
-        if (element.isGlobal === 'Yes' || element.isGlobal === 1) {
-            component = lazy(() =>
-                import(`screens/app${element.componentPath}`).catch((err) => {
+    if (AccessState.length > 0) {
+        for (let i = 0; i < AccessState.length; i++) {
+            const element = AccessState[i];
+            const component = lazy(() =>
+                import(`screens/${current_app}${element.pagepath}`).catch((err) => {
                     console.log(err);
                     return {
                         // eslint-disable-next-line react/display-name
                         default: () => (
                             <Page>
-                                <div className="pt-4">{`Cannot found screen ${element.componentPath}`}</div>
+                                <div className="pt-4">{`Screen ${element.pagepath} not found`}</div>
                             </Page>
                         ),
                     };
                 }),
             );
-        } else {
-            component = lazy(() =>
-                import(`screens/${current_app}${element.componentPath}`).catch((err) => {
-                    console.log(err);
-                    return {
-                        // eslint-disable-next-line react/display-name
-                        default: () => (
-                            <Page>
-                                <div className="pt-4">{`Cannot found screen ${element.componentPath}`}</div>
-                            </Page>
-                        ),
-                    };
-                }),
-            );
+            ArrRouterElement.push(<Route key={`dynamic-route-${i}`} exact path={element.url} component={component} />);
         }
-
-        ArrRouterElement.push(<Route key={`dynamic-route-${i}`} exact path={element.link} component={component} />);
     }
 
     return ArrRouterElement;
 };
 
+let setRouterTimeout: number;
+
 const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
-    const dispatch = useDispatch();
-    const PageState = useSelector((state: { PageState: AppState['PageState'] }) => state.PageState);
-    const MenuAuthState = useSelector((state: { MenuAuthState: AppState['MenuAuthState'] }) => state.MenuAuthState);
-    const url = window.location.pathname;
+    /* add this so DynamicRouter will be fully loaded first */
+    const DRouter = DynamicRouter();
+    const [router, setRouter] = useState(false);
 
-    if (PageState && PageState.path === null) {
-        const arrAuth = MenuAuthState.filter((a) => {
-            return a.link === url;
-        });
-        const accessmode = arrAuth.length > 0 ? arrAuth[0].accessmode : 0;
-        dispatch({ type: 'OPENPAGE', path: url, accessmode });
-    }
+    useEffect(() => {
+        /* do something here */
+        CheckTokenInterval(props);
+        setRouterTimeout = window.setTimeout(() => {
+            if (!router) {
+                setRouter(true);
+            }
+        }, 500);
 
-    CheckTokenInterval(props);
+        return () => {
+            window.clearTimeout(setRouterTimeout);
+        };
+    }, []);
 
     const ToggleNavbarHandler = () => {
         const navbar = document.getElementById('navbar-left');
@@ -162,16 +103,21 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
                 <Header ToggleNavbarHandler={() => ToggleNavbarHandler()} isMobile={props.isMobile} SignOutHandler={() => props.SignOutHandler()} />
                 <div id="body" className="body">
                     <Suspense fallback={<LoadingSuspense />}>
-                        <Switch>
-                            <Route exact path="/" component={Dashboard} />
-                            {DynamicRouter()}
-                            <Route exact path="/notification" component={Notification} />
-                            <Route exact path="/pagenotfound">
-                                <PagenotFound />
-                            </Route>
-                            <Route exact path="/printpreview" component={Printpreview} />
-                            <Redirect to="/pagenotfound" />
-                        </Switch>
+                        {router ? (
+                            <Switch>
+                                {/* <Route exact path="/" component={Dashboard} /> */}
+                                {/* {DynamicRouter()} */}
+                                {DRouter}
+                                <Route exact path="/notification" component={Notification} />
+                                <Route exact path="/pagenotfound">
+                                    <PagenotFound />
+                                </Route>
+                                <Route exact path="/printpreview" component={Printpreview} />
+                                <Redirect to="/pagenotfound" />
+                            </Switch>
+                        ) : (
+                            <LoadingSuspense />
+                        )}
                     </Suspense>
                 </div>
             </div>
@@ -227,47 +173,33 @@ class Home extends Component<HomeProps, LocalState> {
             }
         };
 
-        const onErrorPost = (err: AxiosError) => {
-            this.setState((prevState) => {
-                return { ...prevState, isLoggedIn: false };
-            });
-            console.log(err);
-        };
-
-        get(
-            '/system/application/LoginStatus',
-            null,
-            (res: AxiosResponse) => onSuccessPost(res),
-            (err: AxiosError) => onErrorPost(err),
-        );
+        get('/system/authorization.loginStatus', null, (res) => onSuccessPost(res));
     }
 
-    GetMenuAuth() {
+    GetMenu() {
         const onSuccessPost = (res: AxiosResponse) => {
             if (res) {
-                if (res.data && res.data.menuData) {
-                    const { menuData } = res.data;
-                    this.props.SetUserMenu(menuData);
+                // console.log(res);
+                if (res.data) {
+                    if (res.data.status) {
+                        if (res.data.menuData && res.data.menuData.length > 0 && res.data.accessData.length > 0) {
+                            const { menuData, accessData } = res.data;
+                            // this.props.SETACCESS(accessData);
+                            // this.props.SETMENU(menuData);
+                            this.props.SetMenuAndAccess(menuData, accessData);
+                        }
+                    }
                 } else {
                     console.error({ code: 'ErrUnknown', data: res.data, message: `Your might have bad data` });
                 }
             }
         };
 
-        const onErrorPost = (err: AxiosError) => {
-            console.error(err);
-        };
-
-        get(
-            '/system/application/GetMenuAuth',
-            null,
-            (res: AxiosResponse) => onSuccessPost(res),
-            (err: AxiosError) => onErrorPost(err),
-        );
+        get('/system/application.getMenu', null, (res) => onSuccessPost(res));
     }
 
-    GetToken() {
-        get(`/system/application/GetToken`, null);
+    CheckToken() {
+        get(`/system/authorization.checkToken`, null);
     }
 
     SignOutHandler() {
@@ -282,16 +214,7 @@ class Home extends Component<HomeProps, LocalState> {
             }
         };
 
-        const onErrorPost = (err: AxiosError) => {
-            console.error(err);
-        };
-
-        get(
-            '/system/application/Logout',
-            null,
-            (res: AxiosResponse) => onSuccessPost(res),
-            (err: AxiosError) => onErrorPost(err),
-        );
+        get('/system/authorization.logout', null, (res) => onSuccessPost(res));
     }
 
     ResizeHandler() {
@@ -319,7 +242,7 @@ class Home extends Component<HomeProps, LocalState> {
     }
 
     componentDidMount() {
-        this.GetMenuAuth();
+        this.GetMenu();
         this.CheckLoginState();
         this.SetResizeListener();
     }
@@ -331,7 +254,7 @@ class Home extends Component<HomeProps, LocalState> {
         } else {
             if (this.state.isLoggedIn) {
                 this.SetThemes();
-                Screen = () => <AuthorizedScreen GetToken={() => this.GetToken()} isMobile={this.state.isMobile} SignOutHandler={() => this.SignOutHandler()} />;
+                Screen = () => <AuthorizedScreen CheckToken={() => this.CheckToken()} isMobile={this.state.isMobile} SignOutHandler={() => this.SignOutHandler()} />;
             } else {
                 Screen = () => <NotAuthorizedScreen />;
             }
@@ -352,7 +275,9 @@ const MapStateToProps = (state: MapStateToPropsType) => ({
 const MapDispatch = {
     Login: (data: any) => ({ type: 'LOGIN', data }),
     Logout: () => ({ type: 'LOGOUT' }),
-    SetUserMenu: (data: any) => ({ type: 'SETUSERMENU', data }),
+    SETMENU: (data: any) => ({ type: 'SETMENU', data }),
+    SETACCESS: (data: any) => ({ type: 'SETACCESS', data }),
+    SetMenuAndAccess: (menu: any, access: any) => ({ type: 'SETMENUANDACCESS', menu, access }),
 };
 
 export default connect(MapStateToProps, MapDispatch)(Home);

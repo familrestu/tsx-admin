@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { InputGroup, Button } from 'react-bootstrap';
-// import Navlink from 'components/Navlink';
 import { NavLink } from 'react-router-dom';
 import Avatar from 'components/Avatar';
 import { AppState } from 'redux/store';
 import Notification from 'components/Notification';
-import { MenuAuthStateType } from 'redux/reducers/MenuAuthState';
+import { UserAccessDetailType } from 'redux/reducers/AccessState';
 import { get } from 'libs/fetch';
 
 const GetCurrentTheme = () => {
@@ -45,31 +44,36 @@ export const ThemeMode = () => {
     );
 };
 
-const GetMenu = (menuAuthDetail: MenuAuthStateType) => {
-    let arrMenuReturn: HandleSearchStateType['arrSearch'] = [];
+const GetMenu = (UserAccess: UserAccessDetailType[]) => {
+    const arrUserMenu: any = [];
 
-    if (menuAuthDetail.length > 1) {
-        for (let x = 0; x < menuAuthDetail.length; x++) {
-            const element = menuAuthDetail[x];
+    if (UserAccess.length > 1) {
+        for (let x = 0; x < UserAccess.length; x++) {
+            const access = UserAccess[x];
 
-            if (element.children) {
-                /* when have children, call RouterChildren function */
-                const tempArray = GetMenu(element.children);
-                arrMenuReturn = [...arrMenuReturn, ...tempArray];
-            } else {
-                /* if not have children, push to ArrayRouter */
-                if (element.link.indexOf(':') < 0) {
-                    arrMenuReturn.push({
-                        link: element.link,
-                        title: element.name,
-                        type: 'menu',
-                    });
-                }
-            }
+            // if (element.children) {
+            //     /* when have children, call RouterChildren function */
+            //     const tempArray = GetMenu(element.children);
+            //     arrUserMenu = [...arrUserMenu, ...tempArray];
+            // } else {
+            //     /* if not have children, push to ArrayRouter */
+            //     if (element.url.indexOf(':') < 0) {
+            //         arrUserMenu.push({
+            //             link: element.url,
+            //             title: element.menu_name,
+            //             type: 'menu',
+            //         });
+            //     }
+            // }
+            arrUserMenu.push({
+                link: access.url,
+                title: access.name,
+                type: 'menu',
+            });
         }
     }
 
-    return arrMenuReturn;
+    return arrUserMenu;
 };
 
 type SearchDetails = {
@@ -116,10 +120,10 @@ class HeaderSearchConnect extends Component<PropsHeaderSearch, HandleSearchState
         let tempArr: HandleSearchStateType['arrSearch'] = [];
         let arrMenu: HandleSearchStateType['arrSearch'] = [];
 
-        if (this.props.MenuAuthState) {
-            arrMenu = GetMenu(this.props.MenuAuthState);
+        if (this.props.AccessState) {
+            arrMenu = GetMenu(this.props.AccessState);
 
-            get('system/application/GetSearch', { withCredentials: true }, (res) => {
+            get('system/application.GetSearch', { withCredentials: true }, (res) => {
                 tempArr = [...arrMenu, ...res.data.data];
 
                 tempArr.sort((a, b) => {
@@ -337,12 +341,12 @@ class HeaderSearchConnect extends Component<PropsHeaderSearch, HandleSearchState
 
 type MapStateToPropsType = {
     UserState: AppState['UserState'];
-    MenuAuthState: AppState['MenuAuthState'];
+    AccessState: AppState['AccessState'];
 };
 
 const MapStateToProps = (state: MapStateToPropsType) => ({
     UserState: state.UserState,
-    MenuAuthState: state.MenuAuthState,
+    AccessState: state.AccessState,
 });
 
 const HeaderSearch = connect(MapStateToProps)(HeaderSearchConnect);
@@ -456,41 +460,47 @@ class Header extends Component<PropsHeader> {
                         <div className="avatar-container btn-open-dropdown" tabIndex={0}>
                             <Avatar />
                             <div className="dropdown-menu p-0 shadow">
-                                <div className="d-flex justify-content-center dropdown-item border-bottom nohover">
-                                    <div className="d-flex flex-column">
-                                        <div className="nowrap text-center">{this.props.UserState.full_name}</div>
-                                    </div>
+                                <div className="dropdown-item border-bottom nohover" style={{ cursor: 'default' }}>
+                                    <div className="nowrap">{this.props.UserState.displayname}</div>
                                 </div>
-                                <NavLink
-                                    to={{
-                                        pathname: '/profile',
-                                        state: {
-                                            tab: '/profile/personal-information',
-                                        },
-                                    }}
-                                    onMouseEnter={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 0)}
-                                    onMouseLeave={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
-                                    onClick={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
-                                >
-                                    <div className="d-flex dropdown-item small justify-content-start align-items-center">
-                                        <span className="text-black">Your Profile</span>
-                                    </div>
-                                </NavLink>
-                                <NavLink
-                                    to={{
-                                        pathname: '/profile',
-                                        state: {
-                                            tab: '/profile/account-information',
-                                        },
-                                    }}
-                                    onMouseEnter={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 0)}
-                                    onMouseLeave={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
-                                    onClick={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
-                                >
-                                    <div className="d-flex dropdown-item small justify-content-start align-items-center">
-                                        <span className="text-black">Change Password</span>
-                                    </div>
-                                </NavLink>
+                                {this.props.AccessState.filter((a: UserAccessDetailType) => {
+                                    return a.url === '/profile/personal-information';
+                                }).length > 0 && (
+                                    <NavLink
+                                        to={{
+                                            pathname: '/profile',
+                                            state: {
+                                                tab: '/profile/personal-information',
+                                            },
+                                        }}
+                                        onMouseEnter={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 0)}
+                                        onMouseLeave={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
+                                        onClick={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
+                                    >
+                                        <div className="d-flex dropdown-item small justify-content-start align-items-center">
+                                            <span className="text-black">Your Profile</span>
+                                        </div>
+                                    </NavLink>
+                                )}
+                                {this.props.AccessState.filter((a: UserAccessDetailType) => {
+                                    return a.url === '/profile/account-information';
+                                }).length > 0 && (
+                                    <NavLink
+                                        to={{
+                                            pathname: '/profile',
+                                            state: {
+                                                tab: '/profile/account-information',
+                                            },
+                                        }}
+                                        onMouseEnter={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 0)}
+                                        onMouseLeave={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
+                                        onClick={(e: React.MouseEvent) => this.ToggleKeepFocusHandler(e, 1)}
+                                    >
+                                        <div className="d-flex dropdown-item small justify-content-start align-items-center">
+                                            <span className="text-black">Change Password</span>
+                                        </div>
+                                    </NavLink>
+                                )}
                                 <div
                                     className="pointer"
                                     onClick={() => {

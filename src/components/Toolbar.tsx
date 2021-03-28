@@ -6,29 +6,21 @@ import { NavLink } from 'react-router-dom';
 
 type ToolbarPropsType = {
     datasource?: TablePropsType['datasource'];
-    ClearFilter?: () => void;
+    toolbarPosition?: 'left' | 'right';
     children?: React.ReactNode;
 };
 
 const Toolbar = (props: ToolbarPropsType & TableStateType) => {
     return (
         <Fragment>
-            {props.arrSearchData && props.arrSearchData.length > 0 && (
-                <button
-                    title="Clear Filter"
-                    onClick={() => {
-                        if (props.ClearFilter) {
-                            props.ClearFilter();
-                        }
-                    }}
-                >
-                    <i className="fas fa-filter"></i>
-                    <i className="fas fa-times-circle position-absolute" style={{ right: '.25rem', bottom: '.25rem', fontSize: '.75rem' }}></i>
-                </button>
-            )}
             {React.Children.map(props.children, (child, index) => {
                 if (React.isValidElement(child)) {
-                    return React.cloneElement(child, { key: `child-cloned-toolbar-button-${index}`, arrTableData: props.arrTableData, datasource: props.datasource });
+                    return React.cloneElement(child, {
+                        key: `child-cloned-toolbar-button-${index}`,
+                        arrTableData: props.arrTableData,
+                        datasource: props.datasource,
+                        toolbarPosition: props.toolbarPosition,
+                    });
                 }
             })}
         </Fragment>
@@ -84,23 +76,27 @@ type BtnLinkPropsType = {
     linktype?: string;
     label?: string;
     showif?: boolean;
+    position?: 'left' | 'right';
+    toolbarPosition?: 'left' | 'right';
 };
 
 const BtnLink = (props: TableStateType & BtnLinkPropsType) => {
-    const MenuAuthState = useSelector((state: AppState) => state.MenuAuthState);
+    const AccessState = useSelector((state: AppState) => state.AccessState);
     const ModalState = useSelector((state: AppState) => state.ModalState);
     const TabState = useSelector((state: AppState) => state.TabState);
     const dispatch = useDispatch();
     let show = false;
     let accessmode: AppState['TabState']['accessmode'] = 0;
+    const thisPosition = props.position === undefined ? 'right' : props.position;
+    // console.log(props);
 
     /* automatic not showing btn link if didn't get access */
-    for (let x = 0; x < MenuAuthState.length; x++) {
-        const Menu = MenuAuthState[x];
+    for (let x = 0; x < AccessState.length; x++) {
+        const Access = AccessState[x];
 
-        if (Menu.link === props.link) {
+        if (Access.url === props.link) {
             show = true;
-            accessmode = Menu.accessmode;
+            accessmode = Access.accessmode;
             break;
         } else {
             accessmode = 0;
@@ -108,6 +104,10 @@ const BtnLink = (props: TableStateType & BtnLinkPropsType) => {
     }
 
     if (props.minaccess && props.minaccess >= accessmode) {
+        show = false;
+    }
+
+    if (props.toolbarPosition !== thisPosition) {
         show = false;
     }
 

@@ -1,6 +1,7 @@
-import React, { Fragment } from 'react';
-import CSS from 'csstype';
+import React, { Fragment, useRef, useState } from 'react';
 import { Row, Col, FormCheck, ColProps } from 'react-bootstrap';
+import { get, post } from 'libs/fetch';
+import CSS from 'csstype';
 
 const ShowPasswordHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     const target = e.currentTarget.parentElement?.previousElementSibling;
@@ -8,7 +9,6 @@ const ShowPasswordHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
         target.setAttribute('type', 'text');
         e.currentTarget.classList.remove('fa-eye');
         e.currentTarget.classList.add('fa-eye-slash');
-        // setShowPassword(true);
     }
 };
 
@@ -18,14 +18,12 @@ const HidePasswordHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
         target.setAttribute('type', 'password');
         e.currentTarget.classList.add('fa-eye');
         e.currentTarget.classList.remove('fa-eye-slash');
-        // setShowPassword(false);
     }
 };
 
 const TogglePasswordHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     const target = e.currentTarget.parentElement?.previousElementSibling;
     if (target) {
-        // console.log(target?.getAttribute('type'));
         if (target.getAttribute('type') === 'password') {
             target.setAttribute('type', 'text');
             e.currentTarget.classList.remove('fa-eye');
@@ -35,38 +33,32 @@ const TogglePasswordHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>) => 
             e.currentTarget.classList.add('fa-eye');
             e.currentTarget.classList.remove('fa-eye-slash');
         }
-        // target.setAttribute('type', showPassword ? 'password' : 'text');
-        // setShowPassword(!showPassword);
     }
 };
 
 type InputPropsType = {
     name: string;
-    type: 'switch' | 'radio' | 'checkbox' | 'select' | 'button' | 'password' | 'date' | 'time' | 'text' | 'email' | 'textarea' | 'suggest' | 'filter' | 'label' | 'file';
+    type: 'switch' | 'radio' | 'checkbox' | 'select' | 'button' | 'password' | 'date' | 'time' | 'text' | 'email' | 'textarea' | 'suggest' | 'filter' | 'label' | 'file' | 'search' | 'hidden';
     className?: string;
     id?: string;
     label?: string;
     size?: ColProps['md'] /* ambil colprops yang md saja */;
     placeholder?: string;
-
     value?: string;
     defaultValue?: string;
     defaultChecked?: boolean;
-
     maxLength?: number;
     rows?: number /* textarea row */;
-
     textInfo?: string /* untuk informasi pada form input nya */;
     data?: string /* select | checkbox | radio */;
     groups?: string /* grouping element */;
     attributes?: { [key: string]: string } /* custom attributes */;
-
     multiple?: boolean /* select */;
     readOnly?: boolean;
     disabled?: boolean;
     required?: boolean;
     showif?: boolean /* true = showing */;
-
+    datasource?: string /* fetch data */;
     style?: CSS.Properties;
 
     onClick?: (e: React.MouseEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement, MouseEvent>) => void;
@@ -77,7 +69,27 @@ type InputPropsType = {
 
 type ColumnPropsType = { size?: InputPropsType['size']; children: React.ReactNode };
 
+const Columns = (props: ColumnPropsType) => {
+    return (
+        <Col
+            sm={props.size === undefined ? 'auto' : 12}
+            md={props.size === undefined ? 'auto' : Math.floor((props.size as number) * 1.5)}
+            lg={props.size === undefined ? 'auto' : props.size}
+            className="pl-0"
+        >
+            {props.children}
+        </Col>
+    );
+};
+
+let selectedChildren = 0;
+
 const Input = (props: InputPropsType) => {
+    /* search Hooks */
+    const [loadSearch, setLoadsearch] = useState(false);
+    const [arrSearchData, setArrSearchData] = useState<{ label: string; value: any }[]>([]);
+    const inputRef = useRef<HTMLInputElement>(null);
+
     /* i did this so user wont hardcode accessmode into Input components */
     const TempProps: InputPropsType & { accessmode?: number; loggedIn?: boolean } = props;
     const { accessmode, loggedIn } = TempProps;
@@ -85,7 +97,7 @@ const Input = (props: InputPropsType) => {
     const Wrapper = props.groups === undefined ? Row : Fragment;
     let Element = <Fragment />;
 
-    const Events = {
+    const Events: { [key: string]: (e: any) => void } = {
         onClick: (e: React.MouseEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement, MouseEvent>) => {
             if (props.onClick) {
                 props.onClick(e);
@@ -113,7 +125,22 @@ const Input = (props: InputPropsType) => {
         disabled: props.disabled,
         'form-name': `inp_${props.name}`,
         'form-required': props.required === undefined ? 'false' : `${props.required}`,
+        'form-label': props.label,
         ...props.attributes,
+    };
+
+    const setInputSearchValue = (label: string, value: string) => {
+        if (inputRef.current) {
+            inputRef.current.value = label;
+
+            if (inputRef.current.parentElement) {
+                (inputRef.current.parentElement.lastChild as HTMLInputElement).value = value;
+            }
+            window.setTimeout(() => {
+                setLoadsearch(false);
+                selectedChildren = 0;
+            }, 100);
+        }
     };
 
     /*
@@ -143,22 +170,14 @@ const Input = (props: InputPropsType) => {
         };
     }
 
-    const Columns = (props: ColumnPropsType) => {
-        return (
-            <Col
-                sm={props.size === undefined ? 'auto' : 12}
-                md={props.size === undefined ? 'auto' : Math.floor((props.size as number) * 1.5)}
-                lg={props.size === undefined ? 'auto' : props.size}
-                className="pl-0"
-            >
-                {props.children}
-            </Col>
-        );
-    };
-
     if (props.showif !== undefined && !props.showif) {
         Element = <Fragment />;
     } else {
+        /* untuk set attribute datasource, agar saat setFormData di form, akan cari dulu valuenya */
+        if (props.datasource) {
+            Attr['datasource'] = props.datasource;
+        }
+
         if (props.type.toUpperCase() === 'SWITCH' || props.type.toUpperCase() === 'RADIO' || props.type.toUpperCase() === 'CHECKBOX') {
             const arrInput = [];
             if (props.data) {
@@ -173,7 +192,7 @@ const Input = (props: InputPropsType) => {
                     arrInput.push(
                         <FormCheck
                             key={`${id}-${i}`}
-                            id={id}
+                            id={`${props.name}-${id}`}
                             className={`inp_${props.name} ${props.className ? props.className : ''}`.trim()}
                             type={type}
                             label={elementLabel}
@@ -200,6 +219,11 @@ const Input = (props: InputPropsType) => {
                                 </React.Fragment>
                             )}
                             <div className="row">{arrInput}</div>
+                            {props.textInfo && (
+                                <small id={`form-help-${props.name}`} className="form-text text-muted">
+                                    {props.textInfo}
+                                </small>
+                            )}
                         </div>
                     </Columns>
                 </Wrapper>
@@ -247,6 +271,11 @@ const Input = (props: InputPropsType) => {
                                 {props.rows === undefined && <option value="none">-Select-</option>}
                                 {arrOpt}
                             </select>
+                            {props.textInfo && (
+                                <small id={`form-help-${props.name}`} className="form-text text-muted">
+                                    {props.textInfo}
+                                </small>
+                            )}
                         </div>
                     </Columns>
                 </Wrapper>
@@ -271,18 +300,127 @@ const Input = (props: InputPropsType) => {
             } else {
                 let type = props.type;
                 let className = 'form-control';
+                let name = props.name;
 
                 if (props.type.toUpperCase() === 'LABEL') {
                     type = 'text';
                     className = 'form-control-plaintext';
+                } else if (props.type.toUpperCase() === 'SEARCH') {
+                    let searchTimeout: number;
+                    type = 'text';
+                    name = `${props.name}_label`;
+
+                    Events.onFocus = (/* e: React.FocusEvent<HTMLInputElement> */) => {
+                        setLoadsearch(true);
+                        if (props.datasource) {
+                            get(props.datasource, null, (res) => {
+                                const { data } = res;
+                                setArrSearchData(data.searchData);
+                            });
+                        }
+                    };
+                    Events.onBlur = () => {
+                        const searchContainer = document.getElementById('input-search-container');
+                        if (searchContainer) {
+                            const keepFocus = searchContainer.getAttribute('keep-focus');
+                            if (keepFocus !== '1') {
+                                setLoadsearch(false);
+                                selectedChildren = 0;
+                            }
+                        }
+                    };
+                    Events.onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
+                        const value = e.currentTarget.value;
+
+                        if (e.key === 'ArrowUp' || (e.key === 'ArrowDown' && !loadSearch)) {
+                            setLoadsearch(true);
+                        }
+
+                        if (e.key === 'ArrowUp') {
+                            if (selectedChildren - 1 < 1) {
+                                selectedChildren = arrSearchData.length;
+                            } else {
+                                selectedChildren--;
+                            }
+                        } else if (e.key === 'ArrowDown') {
+                            if (selectedChildren + 1 > arrSearchData.length) {
+                                selectedChildren = 1;
+                            } else {
+                                selectedChildren++;
+                            }
+                        }
+
+                        const child = document.getElementById(`${props.name}-${selectedChildren}`);
+
+                        if (child) {
+                            if (child.parentElement) {
+                                const childRect = child.getBoundingClientRect();
+                                const childBottom = childRect.bottom;
+                                const childTop = childRect.top;
+                                const parentClientRect = child.parentElement.getBoundingClientRect();
+                                const parentBottom = parentClientRect.bottom;
+                                const parentTop = parentClientRect.top;
+
+                                if (selectedChildren > 1 && selectedChildren < arrSearchData.length) {
+                                    if (childBottom > parentBottom) {
+                                        child.parentElement.scrollTop += childRect.height;
+                                    }
+
+                                    if (childTop < parentTop) {
+                                        child.parentElement.scrollTop -= childRect.height;
+                                    }
+                                } else if (selectedChildren === 1) {
+                                    child.parentElement.scrollTop = 0;
+                                } else {
+                                    child.parentElement.scrollTop = parentBottom;
+                                }
+
+                                for (let x = 0; x < child.parentElement.children.length; x++) {
+                                    const element = child.parentElement.children[x];
+                                    element.classList.remove('active');
+                                }
+                            }
+
+                            child.classList.add('active');
+                        }
+
+                        if (props.datasource && e.key !== 'ArrowUp' && e.key !== 'ArrowDown') {
+                            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                                if (child) {
+                                    setInputSearchValue(`${child.getAttribute('search-label')}`, `${child.getAttribute('search-value')}`);
+                                }
+                                // return false;
+                            } else {
+                                window.clearTimeout(searchTimeout);
+                                searchTimeout = window.setTimeout(() => {
+                                    if (value !== '') {
+                                        post({ value }, props.datasource, null, (res) => {
+                                            const { data } = res;
+                                            setArrSearchData(data.searchData);
+                                        });
+                                    } else {
+                                        get(props.datasource, null, (res) => {
+                                            const { data } = res;
+                                            setArrSearchData(data.searchData);
+                                        });
+                                    }
+                                }, 100);
+                            }
+                        }
+                    };
+
+                    Attr['input-type'] = 'search';
+                } else if (props.type.toUpperCase() === 'HIDDEN') {
+                    name = `${name}_hidden`;
                 }
 
                 InpElement = (
                     <input
+                        ref={inputRef}
                         id={`inp_${props.name}`}
                         className={`${className} inp_${props.name} ${props.className ? props.className : ''}`.trim()}
                         type={type}
-                        name={props.name}
+                        name={name}
                         defaultValue={props.defaultValue}
                         placeholder={props.placeholder}
                         maxLength={props.maxLength}
@@ -294,36 +432,79 @@ const Input = (props: InputPropsType) => {
                 );
             }
 
-            Element = (
-                <Wrapper>
-                    <Columns size={props.size}>
-                        <div className="form-group">
-                            {props.label !== undefined && (
-                                <React.Fragment>
-                                    <label className="form-label">{props.label}</label>
-                                    {props.required !== undefined && props.required && <span className="text-danger ml-1 bold">*</span>}
-                                </React.Fragment>
-                            )}
-                            {InpElement}
-                            {props.textInfo && (
-                                <small id={`form-help-${props.name}`} className="form-text text-muted">
-                                    {props.textInfo}
-                                </small>
-                            )}
-                            {props.type.toUpperCase() === 'PASSWORD' && (
-                                <div className="form-icon">
-                                    <i
-                                        className="fas fa-eye text-grey"
-                                        onMouseDown={(e) => ShowPasswordHandler(e)}
-                                        onMouseUp={(e) => HidePasswordHandler(e)}
-                                        onDoubleClick={(e) => TogglePasswordHandler(e)}
-                                    ></i>
-                                </div>
-                            )}
-                        </div>
-                    </Columns>
-                </Wrapper>
-            );
+            const SearchDropDown = (props: { name: InputPropsType['name'] }) => {
+                return (
+                    <div
+                        className="input-search-container dropdown-menu show"
+                        id="input-search-container"
+                        onMouseEnter={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+                            const target = e.currentTarget;
+                            target.setAttribute('keep-focus', '1');
+                        }}
+                        onMouseLeave={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+                            const target = e.currentTarget;
+                            target.removeAttribute('keep-focus');
+                        }}
+                    >
+                        {arrSearchData.length === 0 ? (
+                            <div className="dropdown-item">Loading...</div>
+                        ) : (
+                            arrSearchData.map((item, index) => {
+                                return (
+                                    <div
+                                        key={`input-search-item-${props.name}-${index}`}
+                                        id={`${props.name}-${index + 1}`}
+                                        search-number={index + 1}
+                                        className="dropdown-item pointer"
+                                        search-label={item.label}
+                                        search-value={item.value}
+                                        onClick={() => setInputSearchValue(item.label, item.value)}
+                                    >
+                                        {item.label}
+                                    </div>
+                                );
+                            })
+                        )}
+                    </div>
+                );
+            };
+
+            if (props.type.toUpperCase() === 'HIDDEN') {
+                Element = <Fragment>{InpElement}</Fragment>;
+            } else {
+                Element = (
+                    <Wrapper>
+                        <Columns size={props.size}>
+                            <div className="form-group">
+                                {props.label !== undefined && (
+                                    <React.Fragment>
+                                        <label className="form-label">{props.label}</label>
+                                        {props.required !== undefined && props.required && <span className="text-danger ml-1 bold">*</span>}
+                                    </React.Fragment>
+                                )}
+                                {InpElement}
+                                {props.textInfo && (
+                                    <small id={`form-help-${props.name}`} className="form-text text-muted">
+                                        {props.textInfo}
+                                    </small>
+                                )}
+                                {props.type.toUpperCase() === 'PASSWORD' && (
+                                    <div className="form-icon">
+                                        <i
+                                            className="fas fa-eye text-grey"
+                                            onMouseDown={(e) => ShowPasswordHandler(e)}
+                                            onMouseUp={(e) => HidePasswordHandler(e)}
+                                            onDoubleClick={(e) => TogglePasswordHandler(e)}
+                                        ></i>
+                                    </div>
+                                )}
+                                {props.type.toUpperCase() === 'SEARCH' && loadSearch && <SearchDropDown name={props.name} />}
+                                {props.type.toUpperCase() === 'SEARCH' && <input type="hidden" name={props.name} />}
+                            </div>
+                        </Columns>
+                    </Wrapper>
+                );
+            }
         }
     }
 

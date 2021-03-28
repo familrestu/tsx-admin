@@ -3,6 +3,7 @@ import Overlay from 'components/Overlay';
 import { connect } from 'react-redux';
 import { AppState } from 'redux/store';
 import { ModalStateType } from 'redux/reducers/ModalState';
+import { UserAccessDetailType } from 'redux/reducers/AccessState';
 
 class Modal extends Component<MapStateToPropsType & typeof MapDispatch> {
     _ModalTimeout: number | undefined;
@@ -30,20 +31,14 @@ class Modal extends Component<MapStateToPropsType & typeof MapDispatch> {
         if (this.props.ModalState.isOpened && this.props.ModalState.path) {
             // this.ShowModal();
             const path = this.props.ModalState.path;
-            const Component = this.props.MenuAuthState.filter((item) => {
-                return item.link === path;
+            const Component = this.props.AccessState.filter((item: UserAccessDetailType) => {
+                return item.url === path;
             });
 
             let X;
             try {
-                if (Component[0].isGlobal === 'Yes' || Component[0].isGlobal === 1) {
-                    // eslint-disable-next-line @typescript-eslint/no-var-requires
-                    X = require(`screens/app${Component[0].componentPath}`);
-                } else {
-                    // eslint-disable-next-line @typescript-eslint/no-var-requires
-                    X = require(`screens/${this.props.UserState.current_app}${Component[0].componentPath}`);
-                }
-            } catch {
+                X = require(`screens/${this.props.UserState.current_app}${Component[0].pagepath}`);
+            } catch (error) {
                 // eslint-disable-next-line @typescript-eslint/no-var-requires
                 X = require(`screens/app/pagenotfound`);
             }
@@ -83,13 +78,13 @@ class Modal extends Component<MapStateToPropsType & typeof MapDispatch> {
 type MapStateToPropsType = {
     ModalState: AppState['ModalState'];
     UserState: AppState['UserState'];
-    MenuAuthState: AppState['MenuAuthState'];
+    AccessState: AppState['AccessState'];
 };
 
 const MapStateToProps = (state: MapStateToPropsType) => ({
     ModalState: state.ModalState,
     UserState: state.UserState,
-    MenuAuthState: state.MenuAuthState,
+    AccessState: state.AccessState,
 });
 
 const MapDispatch = {

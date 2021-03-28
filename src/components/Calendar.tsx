@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import moment from 'moment';
 import { Button, FormControl } from 'react-bootstrap';
-import { AxiosError, AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import { get } from 'libs/fetch';
 
 type ToolbarPropsType = {
@@ -326,7 +326,7 @@ class Calendar extends Component<CalendarPropsType, CalendarStateType> {
                         );
                     }
                 },
-                (err: AxiosError) => {
+                (err) => {
                     console.log(err);
                 },
             );

@@ -1,33 +1,19 @@
 import UserState from 'redux/reducers/UserState';
-import MenuAuthState from 'redux/reducers/MenuAuthState';
+import MenuState from 'redux/reducers/MenuState';
+import AccessState from 'redux/reducers/AccessState';
 import PageState from 'redux/reducers/PageState';
 import ModalState from 'redux/reducers/ModalState';
 import TabState from 'redux/reducers/TabState';
-
-/* type ReducersType = {
-    UserState?: typeof UserState;
-    MenuAuthState?: typeof MenuAuthState;
-    PageState?: typeof PageState;
-    ModalState?: typeof ModalState;
-    TabState?: typeof TabState;
-};
- */
-
-/* const Reducers: ReducersType = {
-    UserState,
-    MenuAuthState,
-    PageState,
-    ModalState,
-    TabState,
-}; */
+import TriggerState from 'redux/reducers/TriggerState';
 
 const Reducers = {
     UserState,
-    MenuAuthState,
+    MenuState,
+    AccessState,
     PageState,
     ModalState,
     TabState,
+    TriggerState,
 };
 
-// const rootReducer = combineReducers(Reducers);
 export default Reducers;

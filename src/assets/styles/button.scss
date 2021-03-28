@@ -1,5 +1,5 @@
 /* override bootstrap style */
-.btn-primary, .btn-primary:focus, .btn-primary:hover, .btn-primary:active {
+.btn-primary/* , .btn-primary:focus, .btn-primary:hover, .btn-primary:active */ {
 	background-color: var(--primary) !important;
 	border-color: var(--primary) !important;
 }

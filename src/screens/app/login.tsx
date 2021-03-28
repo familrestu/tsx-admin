@@ -7,6 +7,7 @@ import Input from 'components/Input';
 import Form from 'components/Form';
 import { ButtonGroup } from 'components/Button';
 import packagejson from '../../../package.json';
+import { AxiosResponse } from 'axios';
 
 type LoginScreenState = {
     useAccountCode: boolean;
@@ -17,8 +18,8 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
         useAccountCode: false,
     };
 
-    Login(res: { [key: string]: any }) {
-        if (res.data) {
+    Login(res?: AxiosResponse) {
+        if (res && res.data) {
             // this.props.Login(res.data);
             if (res.data.loginStatus) {
                 /* for debug purpose */
@@ -43,13 +44,7 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
                 </div>
 
                 <div className="right-container">
-                    <Form
-                        action="system/application/Login"
-                        onSubmitSuccessCallBack={(res) => this.Login(res)}
-                        onSubmitErrorCallBack={(e) => {
-                            alert(e);
-                        }}
-                    >
+                    <Form action="/system/authorization.login" submitCallBack={(res) => this.Login(res)}>
                         <Row>
                             <Col>
                                 <h2>Welcome</h2>
@@ -57,19 +52,18 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
                         </Row>
                         {this.state.useAccountCode ? (
                             <React.Fragment>
-                                <Input type="text" label="Account Code" size="12" placeholder="accountcode" name="accountcode" defaultValue="ersys" />
-                                <Input type="text" label="Username" size="12" placeholder="username" name="username" defaultValue="dev" />
+                                <Input type="text" label="Account Code" size="12" placeholder="accountcode" name="accountcode" defaultValue="ersysdev" />
+                                <Input type="text" label="Username" size="12" placeholder="username" name="username" defaultValue="ersysdev" />
                             </React.Fragment>
                         ) : (
-                            <Input type="email" label="Email" size="12" placeholder="example@companyemail.com" name="email" defaultValue="dev@ersys.com" />
+                            <Input type="email" label="Email" size="12" placeholder="example@companyemail.com" name="email" defaultValue="famil.restu@ersysdev.com" />
                         )}
                         <Input type="password" label="Password" size="12" placeholder="Password" name="password" defaultValue="password" />
 
                         <Input
                             type="checkbox"
-                            name="is_accountcode"
+                            name="useAccountcode"
                             data="Login with account code=Y"
-                            // defaultChecked={this.state.useAccountCode}
                             defaultValue={this.state.useAccountCode ? 'Y' : ''}
                             onClick={() =>
                                 this.setState((prevState) => {
@@ -82,7 +76,7 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
                                 Sign In
                             </button>
                         </ButtonGroup>
-                        <div className="row">
+                        <div className="row mt-4">
                             <Col className="text-center small text-grey">Web app version {packagejson.version}</Col>
                         </div>
                     </Form>
@@ -92,13 +86,8 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
     }
 }
 
-const MapStateToProps = (state: AppState) => ({
-    UserState: state.UserState,
-    MenuAuthState: state.MenuAuthState,
-});
-
 const MapDispatch = {
     Login: (data: any) => ({ type: 'LOGIN', data }),
 };
 
-export default connect(MapStateToProps, MapDispatch)(LoginScreen);
+export default connect(null, MapDispatch)(LoginScreen);

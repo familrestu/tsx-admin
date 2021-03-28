@@ -35,3 +35,6 @@ _*.jsx
 # env
 .env
 !.env*.local
+
+#local
+/_notes

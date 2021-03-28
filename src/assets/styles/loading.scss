@@ -9,11 +9,11 @@
 	-webkit-animation-iteration-count: infinite;
 	-webkit-animation-name: placeHolderShimmer;
 	-webkit-animation-timing-function: linear;
-	// background: #e6e6e6 !important;
-    background-color: #e6e6e6 !important;
-	border-color: #e6e6e6 !important;
+	// background: #ffffff !important;
+    background-color: #ffffff !important;
+	border-color: #ffffff !important;
 	border-radius: .25rem;
-	background-image: linear-gradient(to right, #e6e6e6 0%, #d6d6d6 20%, #e6e6e6 40%, #e6e6e6 100%);
+	background-image: linear-gradient(to right, #ffffff 0%, #bababa 20%, #ffffff 40%, #ffffff 100%);
 	background-repeat: no-repeat;
 	background-size: 800px 800px;
 	color: transparent;
@@ -24,7 +24,6 @@
 	&.loading {
 		.row-body {
 			span {
-				// transition: unset;
 				width: 100%;
 				border-radius: .25rem;
 
@@ -38,10 +37,11 @@
 
 .form {
 	&.loading {
-		input, textarea, .btn, .btn:focus, .btn:active, .form-check-inline {
+		input, textarea, select, .btn, .btn:focus, .btn:active, .form-check-inline {
 			transition: unset !important;
 			@include loadingAnimation;
 			pointer-events: none;
+			border: 0;
 
 			label {
 				transition: unset !important;
@@ -86,13 +86,42 @@
 		}
 	}
 }
-/* 
-.dropdown-item {
+
+.form-control {
 	&.loading {
-		span {
-			display: block;
-			width: 100%;
-			@include loadingAnimation;
-		}
+		@include loadingAnimation;
+		pointer-events: none;
 	}
-} */
+	/* WebKit, Blink, Edge */
+	&::-webkit-input-placeholder { 
+		color: transparent;
+	}
+
+	/* Mozilla Firefox 4 to 18 */
+	&:-moz-placeholder { 
+		color: transparent;
+		opacity:  1;
+	}
+
+	/* Mozilla Firefox 19+ */
+	&::-moz-placeholder { 
+		color: transparent;
+		opacity:  1;
+	}
+
+	/* Internet Explorer 10-11 */
+	&:-ms-input-placeholder { 
+		color: transparent;
+	}
+
+	/* Microsoft Edge */
+	&::-ms-input-placeholder { 
+		color: transparent;
+	}
+
+	/* Most modern browsers support this now. */
+	&::placeholder { 
+		color: transparent;
+	}
+
+}

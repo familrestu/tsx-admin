@@ -1,5 +1,37 @@
-import { OPENTAB, CHANGETABCONTENT, CLEARTAB, CLEARMODALTAB, TabActions } from '../actions/TabActions';
+// import { OPENTAB, CHANGETABCONTENT, CLEARTAB, CLEARMODALTAB, TabActions } from '../actions/TabActions';
+/* action */
+const OPENTAB = 'OPENTAB';
+const CHANGETABCONTENT = 'CHANGETABCONTENT';
+const CLEARTAB = 'CLEARTAB';
+const CLEARMODALTAB = 'CLEARMODALTAB';
 
+type OPENTABACTION = {
+    type: typeof OPENTAB;
+    path: TabStateType['path'];
+    accessmode: TabStateType['accessmode'];
+    tabcontentpath: TabStateType['tabcontentpath'];
+    tabcontentrefferer: TabStateType['tabcontentrefferer'];
+    tabcontentaccessmode: TabStateType['tabcontentaccessmode'];
+};
+
+type CHANGETABCONTENTACTION = {
+    type: typeof CHANGETABCONTENT;
+    tabcontentpath: TabStateType['tabcontentpath'];
+    tabcontentrefferer: TabStateType['tabcontentrefferer'];
+    tabcontentaccessmode: TabStateType['tabcontentaccessmode'];
+};
+
+type CLEARTABACTION = {
+    type: typeof CLEARTAB;
+};
+
+type CLEARMODALTABACTION = {
+    type: typeof CLEARMODALTAB;
+};
+
+type TABACTIONTYPE = OPENTABACTION | CHANGETABCONTENTACTION | CLEARTABACTION | CLEARMODALTABACTION;
+
+/* reducer */
 export type TabStateType = {
     path: string | null;
     accessmode: 0 | 1 | 2 | 3 | 'read' | 'write' | 'update' | 'delete' | null;
@@ -16,7 +48,7 @@ const DefaultState: TabStateType = {
     tabcontentaccessmode: null,
 };
 
-const TabState = (state: TabStateType = DefaultState, action: TabActions) => {
+const TabState = (state: TabStateType = DefaultState, action: TABACTIONTYPE) => {
     switch (action.type) {
         case OPENTAB:
             return { ...state, path: action.path, accessmode: action.accessmode, tabcontentpath: null, tabcontentrefferer: null, tabcontentaccessmode: null };
