@@ -24,7 +24,21 @@ const Alert = (props: AlertPropsType) => {
                     <p>{props.message}</p>
                 </div>
                 <div className="modal-footer justify-content-center pt-0" id="modal-footer">
-                    <button className="btn btn-primary" onClick={() => props.closeDialogBox()}>
+                    <button
+                        className="btn btn-primary"
+                        onClick={() => {
+                            const arrModal = document.querySelectorAll('.modal-content');
+
+                            for (let i = 0; i < arrModal.length; i++) {
+                                const element = arrModal[i];
+                                element.classList.add('hidden');
+                            }
+
+                            window.setTimeout(() => {
+                                props.closeDialogBox();
+                            }, 250);
+                        }}
+                    >
                         Ok
                     </button>
                 </div>
@@ -35,7 +49,6 @@ const Alert = (props: AlertPropsType) => {
 
 type ConfirmPropsType = {
     message: string;
-    onConfirm: () => void;
     closeDialogBox: () => void;
 };
 

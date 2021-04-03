@@ -3,7 +3,7 @@ import { LOGOUT, LOGOUTACTION } from 'redux/reducers/UserState';
 /* action */
 export type SETTRIGGERACTION = {
     type: typeof SETTRIGGER;
-    name: string;
+    eventName: string;
 };
 
 type CLEARTRIGGERACTION = {
@@ -27,7 +27,7 @@ const DefaultState: TriggerStateType = {
 const TriggerState = (state: TriggerStateType = DefaultState, action: TRIGGERACTIONTYPE) => {
     switch (action.type) {
         case SETTRIGGER:
-            return { eventName: action.name };
+            return { eventName: action.eventName };
         case CLEARTRIGGER:
         case LOGOUT:
             return DefaultState;

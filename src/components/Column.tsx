@@ -444,7 +444,7 @@ class Column extends Component<ColumnPropsType & RouteComponentProps & MapStateT
                         }
 
                         ValueElement = () => {
-                            if (value === undefined || value === null) {
+                            if (value === undefined || value === null || value === '') {
                                 return <React.Fragment>&nbsp;</React.Fragment>;
                             } else {
                                 return <React.Fragment>{value}</React.Fragment>;

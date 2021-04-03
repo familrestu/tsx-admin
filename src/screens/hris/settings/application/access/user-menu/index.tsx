@@ -9,14 +9,6 @@ const AccessListing = () => {
     // const dispatch = useDispatch();
     return (
         <Page breadCrumb="Settings|Application Settings|Access|User Menu">
-            {/* <div
-                className="btn btn-primary"
-                onClick={() => {
-                    dispatch({ type: 'SETTRIGGER', name: 'FetchTable' });
-                }}
-            >
-                Test Re-Fetch
-            </div> */}
             <Table datasource="settings/userMenu.Listing">
                 <Toolbar>
                     <BtnLink link="/settings/application/access/user-menu/add" linktype="popup" icon="fas fa-plus" />

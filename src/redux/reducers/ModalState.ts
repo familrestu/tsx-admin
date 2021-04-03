@@ -1,5 +1,3 @@
-import { SETTRIGGER, SETTRIGGERACTION } from 'redux/reducers/TriggerState';
-
 /* action */
 const OPENMODAL = 'OPENMODAL';
 const CLOSEMODAL = 'CLOSEMODAL';
@@ -15,7 +13,7 @@ type CLOSEMODALACTION = {
     type: typeof CLOSEMODAL;
 };
 
-type MODALACTIONTYPE = OPENMODALACTION | CLOSEMODALACTION | SETTRIGGERACTION;
+type MODALACTIONTYPE = OPENMODALACTION | CLOSEMODALACTION;
 
 /* reducer */
 export type ModalStateType = {
@@ -36,7 +34,6 @@ const ModalState = (state: ModalStateType = DefaultState, action: MODALACTIONTYP
     switch (action.type) {
         case OPENMODAL:
             return { ...state, isOpened: true, path: action.path, accessmode: action.accessmode, modalParams: action.modalParams };
-        case SETTRIGGER:
         case CLOSEMODAL:
             return DefaultState;
         default:

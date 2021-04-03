@@ -12,12 +12,6 @@ export const post = (data: any, link: string | undefined, config: AxiosRequestCo
 
     let axiosConfig: AxiosRequestConfig = { withCredentials: true };
 
-    if (process.env.NODE_ENV === 'production') {
-        axiosConfig.headers = {
-            'Access-Control-Allow-Origin': 'https://ersys.familrestu.com',
-        };
-    }
-
     if (config !== null) {
         axiosConfig = {
             ...axiosConfig,
@@ -64,12 +58,6 @@ export const get = (link: string | undefined, config: AxiosRequestConfig | null,
     let axiosConfig: AxiosRequestConfig = {
         withCredentials: true,
     };
-
-    if (process.env.NODE_ENV === 'production') {
-        axiosConfig.headers = {
-            'Access-Control-Allow-Origin': 'https://ersys.familrestu.com',
-        };
-    }
 
     if (config !== null) {
         axiosConfig = {

@@ -4,7 +4,7 @@ import { AppState } from 'redux/store';
 import { useHistory } from 'react-router';
 import { Row, Col } from 'react-bootstrap';
 import { GetAccessMode } from 'libs/access';
-import { post } from 'libs/fetch';
+// import { post } from 'libs/fetch';
 import { FormState } from 'components/Form';
 
 const setIdBasedOnParent = (ref: HTMLButtonElement | null) => {
@@ -142,6 +142,7 @@ const Save = (props: ButtonPropsType) => {
 type ButtonDeletePropsType = {
     action: string;
     formData?: FormState['formData'];
+    ToggleConfirm?: (show: boolean, message: string) => void;
 };
 
 const Delete = (props: ButtonPropsType & ButtonDeletePropsType) => {
@@ -150,7 +151,7 @@ const Delete = (props: ButtonPropsType & ButtonDeletePropsType) => {
     const TabState = useSelector((state: AppState) => state.TabState);
     const [show, setShow] = useState(false);
 
-    // console.log(props);
+    console.log(props);
 
     useEffect(() => {
         setShow(isShowing(props.showif, 3, PageState, ModalState, TabState));
@@ -165,10 +166,13 @@ const Delete = (props: ButtonPropsType & ButtonDeletePropsType) => {
                 id={`${props.id ? props.id : 'btn-delete'}`}
                 className={`btn btn-danger ${props.className ? props.className : ''}`.trim()}
                 onClick={() => {
-                    if (window.confirm('Are you sure want to delete this data?')) {
+                    /* if (window.confirm('Are you sure want to delete this data?')) {
                         post(props.formData, props.action, null, (res) => {
                             // window.alert('gampangan gini');
                         });
+                    } */
+                    if (props.ToggleConfirm) {
+                        props.ToggleConfirm(true, 'Are you sure want to delete this data?');
                     }
                 }}
             >
@@ -215,6 +219,7 @@ const Cancel = (props: ButtonPropsType) => {
 type ButtonGroupsPropsType = {
     children?: any;
     formData?: FormState['formData'];
+    ToggleConfirm?: (show: boolean, message: string) => void;
 };
 
 const ButtonGroup = (props: ButtonGroupsPropsType) => {
@@ -225,9 +230,29 @@ const ButtonGroup = (props: ButtonGroupsPropsType) => {
         if (React.isValidElement(child)) {
             const tempChild: any = child;
             if (tempChild.type.name === 'Delete' || tempChild.type.name === 'Cancel') {
-                RightElement.push(React.cloneElement(child as React.ReactElement<any>, { key: `button-form-right-${index}`, formData: props.formData }));
+                RightElement.push(
+                    React.cloneElement(child as React.ReactElement<any>, {
+                        key: `button-form-right-${index}`,
+                        formData: props.formData,
+                        ToggleConfirm: (show: boolean, message: string) => {
+                            if (props.ToggleConfirm) {
+                                props.ToggleConfirm(show, message);
+                            }
+                        },
+                    }),
+                );
             } else {
-                LeftElement.push(React.cloneElement(child as React.ReactElement<any>, { key: `button-form-left-${index}`, formData: props.formData }));
+                LeftElement.push(
+                    React.cloneElement(child as React.ReactElement<any>, {
+                        key: `button-form-left-${index}`,
+                        formData: props.formData,
+                        ToggleConfirm: (show: boolean, message: string) => {
+                            if (props.ToggleConfirm) {
+                                props.ToggleConfirm(show, message);
+                            }
+                        },
+                    }),
+                );
             }
         }
     });

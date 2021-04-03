@@ -378,20 +378,27 @@ class Form extends React.Component<Props, FormState> {
     }
 
     ToggleAlert(show: boolean, message: string) {
-        this.setState((prevState) => {
-            return { ...prevState, showAlert: show, dialogBoxMessage: message };
-        }, this.CloseModal);
+        this.setState(
+            (prevState) => {
+                return { ...prevState, showAlert: show, dialogBoxMessage: message };
+            },
+            () => this.CloseModal(show),
+        );
     }
 
-    CloseModal() {
+    ToggleConfirm(show: boolean, message: string) {
+        this.setState((prevState) => {
+            return { ...prevState, showConfirm: show, dialogBoxMessage: message };
+        });
+    }
+
+    CloseModal(show: boolean) {
         if (this.props.ModalState.isOpened) {
             /* re-fetch table, if table is exists and it's modal */
-            // console.log(document.getElementById('table'));
-            if (document.getElementById('table')) {
-                this.props.SETTRIGER();
+            if (document.getElementById('table') && !show) {
+                this.props.SETTRIGGER('FetchTable');
+                this.props.CLOSEMODAL();
             }
-
-            // this.props.CLOSEMODAL();
         }
     }
 
@@ -440,9 +447,7 @@ class Form extends React.Component<Props, FormState> {
                                 CurrentGroupNum[child.props.groups] = 0;
                             }
 
-                            GroupElement[child.props.groups].push(
-                                <React.Fragment key={`form-${index}`}>{React.cloneElement(child, { accessmode, isLoggedIn, formData: this.state.formData })}</React.Fragment>,
-                            );
+                            GroupElement[child.props.groups].push(<React.Fragment key={`form-${index}`}>{React.cloneElement(child, { accessmode, isLoggedIn })}</React.Fragment>);
                             CurrentGroupNum[child.props.groups]++;
 
                             if (CurrentGroupNum[child.props.groups] === GroupTotal[child.props.groups]) {
@@ -451,7 +456,12 @@ class Form extends React.Component<Props, FormState> {
                                 return <React.Fragment />;
                             }
                         } else {
-                            return React.cloneElement(child, { accessmode, isLoggedIn, formData: this.state.formData });
+                            return React.cloneElement(child, {
+                                accessmode,
+                                isLoggedIn,
+                                formData: this.state.formData,
+                                ToggleConfirm: (show: boolean, message: string) => this.ToggleConfirm(show, message),
+                            });
                         }
                     } else {
                         return <React.Fragment />;
@@ -468,10 +478,7 @@ class Form extends React.Component<Props, FormState> {
                 )}
                 {this.state.showConfirm && (
                     <Confirm
-                        message={this.state.dialogBoxMessage || `Are you sure?`}
-                        onConfirm={() => {
-                            /*  */
-                        }}
+                        message={this.state.dialogBoxMessage}
                         closeDialogBox={() => {
                             this.setState((prevState) => {
                                 return { ...prevState, showConfirm: false, dialogBoxMessage: '' };
@@ -493,7 +500,7 @@ const MapStateToProps = (state: MapStateToPropsType) => ({
 });
 
 const MapDispatch = {
-    SETTRIGER: () => ({ type: 'SETTRIGER', name: 'FetchTable' }),
+    SETTRIGGER: (eventName: string) => ({ type: 'SETTRIGGER', eventName }),
     CLOSEMODAL: () => ({ type: 'CLOSEMODAL' }),
 };
 
