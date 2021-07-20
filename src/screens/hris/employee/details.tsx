@@ -7,9 +7,11 @@ import { Save, Reset, Cancel, Delete, ButtonGroup } from 'components/Button';
 const EmployeeListDetailScreen = () => {
     return (
         <Page breadCrumb="Employee|Information|Details">
-            <Form datasource="emp/EmpData" action="emp/EmpData/Update">
+            <Form datasource="/employee/employeeInformation.ViewData" action="emp/EmpData/Update">
                 <Input type="text" label="Name" size="4" placeholder="Full Name" name="full_name" readOnly />
-                <Input type="text" label="Position" size="auto" placeholder="Position" name="position" readOnly />
+                <Input type="text" label="Position" size="6" placeholder="Position" name="position" readOnly />
+                <Input type="text" label="Department" size="6" placeholder="Department" name="department" readOnly />
+                <Input type="text" label="Division" size="6" placeholder="Division" name="division" readOnly />
 
                 <Input type="text" size={3} label="First name" placeholder="First name" name="first_name" required={true} groups="name" />
                 <Input type="text" size={3} label="Middle name" placeholder="Middle name" name="middle_name" groups="name" />
@@ -28,7 +30,7 @@ const EmployeeListDetailScreen = () => {
                 <ButtonGroup>
                     <Save />
                     <Reset />
-                    <Delete action="" />
+                    <Delete action="/employee/employeeInformation.Delete" />
                     <Cancel />
                 </ButtonGroup>
             </Form>

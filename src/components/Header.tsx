@@ -449,7 +449,7 @@ class Header extends Component<PropsHeader> {
             <React.Fragment>
                 <div id="header-container" className="header-container shadow-sm">
                     <div className="header-left">
-                        <Button className="mr-4" onClick={this.props.ToggleNavbarHandler}>
+                        <Button className="me-4" onClick={this.props.ToggleNavbarHandler}>
                             <i className="fas fa-bars" />
                         </Button>
                         <HeaderSearch />

@@ -1,5 +1,6 @@
 import React from 'react';
 import Overlay from 'components/Overlay';
+import { post } from 'libs/fetch';
 
 type AlertPropsType = {
     message: string;
@@ -49,10 +50,12 @@ const Alert = (props: AlertPropsType) => {
 
 type ConfirmPropsType = {
     message: string;
+    action?: string;
     closeDialogBox: () => void;
 };
 
 const Confirm = (props: ConfirmPropsType) => {
+    // console.log(props);
     return (
         <Overlay className="dialog overlay-alert" id="overlay-alert-dialog" closeDialogBox={props.closeDialogBox}>
             <div
@@ -76,7 +79,14 @@ const Confirm = (props: ConfirmPropsType) => {
                         </button>
                     </div>
                     <div>
-                        <button className="btn btn-primary" onClick={() => console.log('process')}>
+                        <button
+                            className="btn btn-primary"
+                            onClick={() => {
+                                if (props.action) {
+                                    post({}, props.action, null);
+                                }
+                            }}
+                        >
                             Yes
                         </button>
                     </div>

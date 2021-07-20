@@ -142,7 +142,7 @@ const Save = (props: ButtonPropsType) => {
 type ButtonDeletePropsType = {
     action: string;
     formData?: FormState['formData'];
-    ToggleConfirm?: (show: boolean, message: string) => void;
+    ToggleConfirm?: (show: boolean, message: string, action?: string) => void;
 };
 
 const Delete = (props: ButtonPropsType & ButtonDeletePropsType) => {
@@ -150,8 +150,6 @@ const Delete = (props: ButtonPropsType & ButtonDeletePropsType) => {
     const ModalState = useSelector((state: AppState) => state.ModalState);
     const TabState = useSelector((state: AppState) => state.TabState);
     const [show, setShow] = useState(false);
-
-    console.log(props);
 
     useEffect(() => {
         setShow(isShowing(props.showif, 3, PageState, ModalState, TabState));
@@ -172,7 +170,7 @@ const Delete = (props: ButtonPropsType & ButtonDeletePropsType) => {
                         });
                     } */
                     if (props.ToggleConfirm) {
-                        props.ToggleConfirm(true, 'Are you sure want to delete this data?');
+                        props.ToggleConfirm(true, 'Are you sure want to delete this data?', props.action);
                     }
                 }}
             >
@@ -219,7 +217,7 @@ const Cancel = (props: ButtonPropsType) => {
 type ButtonGroupsPropsType = {
     children?: any;
     formData?: FormState['formData'];
-    ToggleConfirm?: (show: boolean, message: string) => void;
+    ToggleConfirm?: (show: boolean, message: string, action?: string) => void;
 };
 
 const ButtonGroup = (props: ButtonGroupsPropsType) => {
@@ -234,9 +232,9 @@ const ButtonGroup = (props: ButtonGroupsPropsType) => {
                     React.cloneElement(child as React.ReactElement<any>, {
                         key: `button-form-right-${index}`,
                         formData: props.formData,
-                        ToggleConfirm: (show: boolean, message: string) => {
+                        ToggleConfirm: (show: boolean, message: string, action: string) => {
                             if (props.ToggleConfirm) {
-                                props.ToggleConfirm(show, message);
+                                props.ToggleConfirm(show, message, action);
                             }
                         },
                     }),
@@ -246,9 +244,9 @@ const ButtonGroup = (props: ButtonGroupsPropsType) => {
                     React.cloneElement(child as React.ReactElement<any>, {
                         key: `button-form-left-${index}`,
                         formData: props.formData,
-                        ToggleConfirm: (show: boolean, message: string) => {
+                        ToggleConfirm: (show: boolean, message: string, action: string) => {
                             if (props.ToggleConfirm) {
-                                props.ToggleConfirm(show, message);
+                                props.ToggleConfirm(show, message, action);
                             }
                         },
                     }),

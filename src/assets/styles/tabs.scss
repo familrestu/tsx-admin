@@ -1,47 +1,51 @@
 .tab-content {
-	position: relative;
-	padding-top: 1rem;
+    position: relative;
+    padding-top: 1rem;
 
-	.bread-crumb { padding-top: 0rem; }
+    .bread-crumb {
+        padding-top: 0rem;
+    }
 }
 
 .nav.nav-tabs {
-	position: sticky;
-    top: 0;
+    position: sticky;
+    top: -4px;
     background-color: var(--white);
     z-index: 200;
-	border-bottom: 1px solid var(--light-grey);
-	
-	.noactivenavlink.activelink {
-		color: var(--primary);
-		font-weight: 500;
-		background-color: var(--white);
-		border-color: var(--light-grey) !important;
-	}
+    border-bottom: 1px solid var(--light-grey);
 
-	.noactivenavlink {
-		color: var(--black);
-		cursor: pointer;
+    .noactivenavlink.activelink {
+        color: var(--primary);
+        font-weight: 500;
+        background-color: var(--white);
+        border-color: var(--light-grey) !important;
+    }
 
-		&.active {
-			border-color: transparent;
-			border-bottom-color: #dee2e6;
-		}
-	}
+    .noactivenavlink {
+        color: var(--black);
+        cursor: pointer;
 
-	.nav-item:focus {
-		border-color: transparent;
-	}
+        &.active {
+            border-color: transparent;
+            border-bottom-color: #dee2e6;
+        }
+    }
+
+    .nav-item:focus {
+        border-color: transparent;
+    }
 }
 
 @media (max-width: 480px) {
-	.nav {
-		flex-wrap: nowrap;
-		&.nav-tabs {
-			width: 100%;
-			overflow-y: hidden;
-			overflow-x: scroll;
-			a { white-space: nowrap; }
-		}
-	}
+    .nav {
+        flex-wrap: nowrap;
+        &.nav-tabs {
+            width: 100%;
+            overflow-y: hidden;
+            overflow-x: scroll;
+            a {
+                white-space: nowrap;
+            }
+        }
+    }
 }

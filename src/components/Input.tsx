@@ -1,6 +1,7 @@
 import React, { Fragment, useRef, useState } from 'react';
 import { Row, Col, FormCheck, ColProps } from 'react-bootstrap';
 import { get, post } from 'libs/fetch';
+import { FormState } from 'components/Form';
 import CSS from 'csstype';
 
 const ShowPasswordHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
@@ -59,12 +60,14 @@ type InputPropsType = {
     required?: boolean;
     showif?: boolean /* true = showing */;
     datasource?: string /* fetch data */;
+    formData?: FormState['formData'];
     style?: CSS.Properties;
 
     onClick?: (e: React.MouseEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement, MouseEvent>) => void;
     onDoubleClick?: (e: React.MouseEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement, MouseEvent>) => void;
     onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
     onBlur?: (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+    ToggleConfirm?: (show: boolean, message: string) => void;
 };
 
 type ColumnPropsType = { size?: InputPropsType['size']; children: React.ReactNode };
@@ -421,7 +424,13 @@ const Input = (props: InputPropsType) => {
                         className={`${className} inp_${props.name} ${props.className ? props.className : ''}`.trim()}
                         type={type}
                         name={name}
-                        defaultValue={props.defaultValue}
+                        defaultValue={
+                            props.defaultValue !== undefined
+                                ? props.defaultValue
+                                : props.formData !== undefined && props.formData !== null && props.formData[name] !== undefined && props.formData[name] !== null
+                                ? props.formData[name]
+                                : ''
+                        }
                         placeholder={props.placeholder}
                         maxLength={props.maxLength}
                         style={props.style}

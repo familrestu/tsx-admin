@@ -376,46 +376,50 @@ class Column extends Component<ColumnPropsType & RouteComponentProps & MapStateT
                                             return a.url === navlink;
                                         });
 
-                                        if (this.props.TabState && this.props.TabState.path !== null && linktype !== 'popup') {
-                                            const params: { [key: string]: any } = {};
-                                            const idValue = this.props.body ? this.props.body[indexOfId][i] : '';
-                                            params[id] = idValue;
-                                            return (
-                                                <span
-                                                    className="link"
-                                                    onClick={() => {
-                                                        this.props.ChangeCurrentTab(navlink, this.props.TabState.path, menu[0].accessmode);
-                                                    }}
-                                                >
-                                                    {value}
-                                                </span>
-                                            );
-                                        } else if ((this.props.ModalState && this.props.ModalState.isOpened) || linktype === 'popup') {
-                                            const params: { [key: string]: any } = {};
-                                            const idValue = this.props.body ? this.props.body[indexOfId][i] : '';
-                                            params[id] = idValue;
+                                        if (menu.length) {
+                                            if (this.props.TabState && this.props.TabState.path !== null && linktype !== 'popup') {
+                                                const params: { [key: string]: any } = {};
+                                                const idValue = this.props.body ? this.props.body[indexOfId][i] : '';
+                                                params[id] = idValue;
+                                                return (
+                                                    <span
+                                                        className="link"
+                                                        onClick={() => {
+                                                            this.props.ChangeCurrentTab(navlink, this.props.TabState.path, menu[0].accessmode);
+                                                        }}
+                                                    >
+                                                        {value}
+                                                    </span>
+                                                );
+                                            } else if ((this.props.ModalState && this.props.ModalState.isOpened) || linktype === 'popup') {
+                                                const params: { [key: string]: any } = {};
+                                                const idValue = this.props.body ? this.props.body[indexOfId][i] : '';
+                                                params[id] = idValue;
 
-                                            return (
-                                                <span
-                                                    className="link"
-                                                    onClick={() => {
-                                                        this.props.OpenModal(navlink, menu[0].accessmode, params);
-                                                    }}
-                                                >
-                                                    {value}
-                                                </span>
-                                            );
-                                        } else {
-                                            if (replaceThis && this.props.header) {
-                                                let idValue = '';
-                                                if (this.props.body && indexOfId !== undefined && indexOfId >= 0) {
-                                                    idValue = this.props.body[indexOfId][i];
-                                                    link = link.replace(replaceThis[0], idValue);
-                                                } else {
-                                                    link = link.replace(replaceThis[0], '');
+                                                return (
+                                                    <span
+                                                        className="link"
+                                                        onClick={() => {
+                                                            this.props.OpenModal(navlink, menu[0].accessmode, params);
+                                                        }}
+                                                    >
+                                                        {value}
+                                                    </span>
+                                                );
+                                            } else {
+                                                if (replaceThis && this.props.header) {
+                                                    let idValue = '';
+                                                    if (this.props.body && indexOfId !== undefined && indexOfId >= 0) {
+                                                        idValue = this.props.body[indexOfId][i];
+                                                        link = link.replace(replaceThis[0], idValue);
+                                                    } else {
+                                                        link = link.replace(replaceThis[0], '');
+                                                    }
                                                 }
+                                                return <NavLink to={link}>{value}</NavLink>;
                                             }
-                                            return <NavLink to={link}>{value}</NavLink>;
+                                        } else {
+                                            return <React.Fragment>{value}</React.Fragment>;
                                         }
                                     } else {
                                         return <React.Fragment>{value}</React.Fragment>;

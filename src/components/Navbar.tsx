@@ -265,9 +265,9 @@ const Navitem = (props: UserMenuDetailType & NavitemPropsType) => {
                 }}
             >
                 <div className="d-flex navitem-string">
-                    {props.icon !== null && <i className={`${props.icon} mr-2 item-left`}></i>}
+                    {props.icon !== null && <i className={`${props.icon} me-2 item-left`}></i>}
                     <div className="item-center">{props.menu_name}</div>
-                    {props.children !== undefined && props.children.length > 0 && <i className={`fas fa-chevron-right mr-2 item-right`}></i>}
+                    {props.children !== undefined && props.children.length > 0 && <i className={`fas fa-chevron-right me-2 item-right`}></i>}
                 </div>
             </Container>
             {props.children !== undefined && props.children.length > 0 && <ul className="navitem-children-parent shadow">{ChildrenElement}</ul>}

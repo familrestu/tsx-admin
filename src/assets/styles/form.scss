@@ -1,117 +1,132 @@
-.form { flex: 1; }
+.form {
+    flex: 1;
+}
 
 .form-button-group {
-	margin-bottom: 0;
-	
-	.left-group, .right-group {
-		display: flex;
-	}
+    margin-bottom: 0;
 
-	.right-group {
-		
-		justify-content: flex-end;
-	}
+    .left-group,
+    .right-group {
+        display: flex;
+    }
 
-	.left-group {
-		.btn:not(:first-child) {
-			margin-left: .5rem;
-		}
-	}
+    .right-group {
+        justify-content: flex-end;
+    }
 
-	.right-group {
-		.btn:not(:last-child) {
-			margin-right: .5rem;
-		}
-	}
+    .left-group {
+        .btn:not(:first-child) {
+            margin-left: 0.5rem;
+        }
+    }
+
+    .right-group {
+        .btn:not(:last-child) {
+            margin-right: 0.5rem;
+        }
+    }
 }
 
 .form-group {
-	position: relative;
-	margin-right: 1rem;
+    position: relative;
+    margin-right: 1rem;
 
-	.form-control-plaintext {
-		cursor: default;
-		pointer-events: none;
-		border-radius: .25rem;
-	}
+    .form-control-plaintext {
+        cursor: default;
+        pointer-events: none;
+        border-radius: 0.25rem;
+    }
 
-	.form-icon {
-		position: absolute;
-		right: 10px;
-		top: calc(50% + 5px);
-		cursor: pointer;
-		i {
-			color: var(--grey);
-		}
-	}
+    .form-icon {
+        position: absolute;
+        right: 10px;
+        top: calc(50% + 5px);
+        cursor: pointer;
+        i {
+            color: var(--grey);
+        }
+    }
 }
 
 .form-control {
-	background-color: rgb(233, 237, 240);
-	border-color: rgb(233, 237, 240);
-	// margin-left: 2.5px;
+    background-color: rgb(233, 237, 240);
+    border-color: rgb(233, 237, 240);
+    // margin-left: 2.5px;
 }
 
-.form-control:focus, .btn-primary:focus {
-	border-color: var(--secondary);
-	box-shadow: 0 0 0 0.2rem rgba(104, 190, 130, 0.3);
-	// box-shadow: unset !important;
+.form-control:focus,
+.btn-primary:focus {
+    border-color: var(--secondary);
+    box-shadow: 0 0 0 0.2rem rgba(104, 190, 130, 0.3);
+    // box-shadow: unset !important;
 }
 
-.form-check, .custom-switch {
-	label[for], input[type=radio], input[type=checkbox] {
-		cursor: pointer;
-	}
+.form-check,
+.custom-switch {
+    label[for],
+    input[type='radio'],
+    input[type='checkbox'] {
+        cursor: pointer;
+    }
 }
 
-.custom-control-input:checked~.custom-control-label::before {
-	border-color: var(--primary);
-	background-color: var(--primary);
+.custom-control-input:checked ~ .custom-control-label::before {
+    border-color: var(--primary);
+    background-color: var(--primary);
 }
 
 .input-portal {
-	position: absolute;
-	z-index: 106;
-	margin-top: 2.5rem;
+    position: absolute;
+    z-index: 106;
+    margin-top: 2.5rem;
 }
 
 .form-button-group {
-	display: flex;
-	padding: 1rem 0;
-	padding-bottom: 0rem;
-	width: 100%;
+    display: flex;
+    padding: 1rem 0;
+    padding-bottom: 0rem;
+    width: 100%;
 
-	position: sticky;
-	bottom: -4px;
-	background-color: var(--white) !important;
+    position: sticky;
+    bottom: -4px;
+    background-color: var(--white) !important;
 
-	.col {
-		padding: 0;
-	}
+    .col {
+        padding: 0;
+    }
 }
 
 .input-search-container {
-	position: absolute;
-	margin-top: 3px;
-	background-color: #e9edf0;
-	color: #495057;
-	border-radius: .25rem;
-	// padding: .375rem .75rem;
-	width: 100%;
-	max-height: 10rem;
-	overflow: auto;
+    position: absolute;
+    margin-top: 3px;
+    background-color: #e9edf0;
+    color: #495057;
+    border-radius: 0.25rem;
+    // padding: .375rem .75rem;
+    width: 100%;
+    max-height: 10rem;
+    overflow: auto;
 }
 
-select, option {
-	cursor: pointer;
+select,
+option {
+    cursor: pointer;
 }
 
 .form {
-	.row:nth-last-of-type(2) {
-		margin-bottom: 0;
+    .row:nth-last-of-type(2) {
+        // margin-bottom: 0;
 
-		.form-group {
-			margin-bottom: 0;
-		}
-	}
+        .form-group {
+            margin-bottom: 0;
+        }
+    }
+}
+
+.form-check {
+    .form-check-input {
+        margin-left: unset;
+        float: unset;
+        margin-right: 0.5rem;
+    }
 }

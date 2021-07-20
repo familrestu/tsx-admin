@@ -47,6 +47,7 @@ export type FormState = {
     showAlert: boolean;
     showConfirm: boolean;
     dialogBoxMessage: string;
+    dialogBoxAction: string | undefined;
 };
 
 type MapStateToPropsType = {
@@ -73,6 +74,7 @@ class Form extends React.Component<Props, FormState> {
         showAlert: false,
         showConfirm: false,
         dialogBoxMessage: '',
+        dialogBoxAction: '',
     };
 
     GetFormData() {
@@ -386,9 +388,9 @@ class Form extends React.Component<Props, FormState> {
         );
     }
 
-    ToggleConfirm(show: boolean, message: string) {
+    ToggleConfirm(show: boolean, message: string, action?: string) {
         this.setState((prevState) => {
-            return { ...prevState, showConfirm: show, dialogBoxMessage: message };
+            return { ...prevState, showConfirm: show, dialogBoxMessage: message, dialogBoxAction: action };
         });
     }
 
@@ -424,6 +426,7 @@ class Form extends React.Component<Props, FormState> {
         const GroupElement: { [key: string]: JSX.Element[] } = {};
         const CurrentGroupNum: { [key: string]: number } = {};
         const GroupTotal: { [key: string]: number } = this.GetGroupTotal();
+
         return (
             <form
                 ref={(ref) => (this._Form = ref)}
@@ -447,7 +450,14 @@ class Form extends React.Component<Props, FormState> {
                                 CurrentGroupNum[child.props.groups] = 0;
                             }
 
-                            GroupElement[child.props.groups].push(<React.Fragment key={`form-${index}`}>{React.cloneElement(child, { accessmode, isLoggedIn })}</React.Fragment>);
+                            GroupElement[child.props.groups].push(
+                                <React.Fragment key={`form-${index}`}>
+                                    {React.cloneElement(child, {
+                                        accessmode,
+                                        isLoggedIn,
+                                    })}
+                                </React.Fragment>,
+                            );
                             CurrentGroupNum[child.props.groups]++;
 
                             if (CurrentGroupNum[child.props.groups] === GroupTotal[child.props.groups]) {
@@ -460,14 +470,16 @@ class Form extends React.Component<Props, FormState> {
                                 accessmode,
                                 isLoggedIn,
                                 formData: this.state.formData,
-                                ToggleConfirm: (show: boolean, message: string) => this.ToggleConfirm(show, message),
+                                ToggleConfirm: (show: boolean, message: string, action?: string) => this.ToggleConfirm(show, message, action),
                             });
                         }
                     } else {
                         return <React.Fragment />;
                     }
                 })}
+
                 {this._Mounted && <FormInput />}
+
                 {this.state.showAlert && (
                     <Alert
                         message={this.state.dialogBoxMessage}
@@ -476,12 +488,14 @@ class Form extends React.Component<Props, FormState> {
                         }}
                     />
                 )}
+
                 {this.state.showConfirm && (
                     <Confirm
                         message={this.state.dialogBoxMessage}
+                        action={this.state.dialogBoxAction}
                         closeDialogBox={() => {
                             this.setState((prevState) => {
-                                return { ...prevState, showConfirm: false, dialogBoxMessage: '' };
+                                return { ...prevState, showConfirm: false, dialogBoxMessage: '', dialogBoxAction: '' };
                             });
                         }}
                     />

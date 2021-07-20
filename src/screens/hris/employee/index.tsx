@@ -14,6 +14,7 @@ const EmployeeListScreen = () => {
 
                 <Column label="Employee No" name="employee_no" type="link" link="/employee/details/[employee_no]" linktype="popup" />
                 <Column label="Full Name" name="full_name" />
+                <Column label="Gender" name="gender" width="150" masking="0=Female,1=Male" />
                 <Column label="Position" name="position" />
                 <Column label="Department" name="department" />
                 <Column label="Division" name="division" width="350" />

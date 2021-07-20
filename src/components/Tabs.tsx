@@ -200,11 +200,24 @@ class TabsC extends Component<TabsPropsType & MapStateToPropsType & typeof MapDi
                             X = require(`screens/app/pagenotfound`);
                         }
 
+                        let showClass = '';
+
+                        if (this.props.location.state !== null && this.props.location.state.tab) {
+                            showClass = 'active show';
+                        } else {
+                            if (index === 0) {
+                                showClass = 'active show';
+                            } else {
+                                showClass = '';
+                            }
+                        }
+
                         return (
                             <div
                                 key={index}
                                 id="tab-pane"
-                                className={`fade tab-page-container tab-pane ${this.props.location.state.tab === child.props.link ? 'active show' : ''}`.trim()}
+                                className={`fade tab-page-container tab-pane ${showClass}`.trim()}
+                                // className={`fade tab-page-container tab-pane active show`}
                                 tab-container-number={index}
                                 tab-container-name={child.props.title.toLowerCase().replaceAll(' ', '-')}
                             >
