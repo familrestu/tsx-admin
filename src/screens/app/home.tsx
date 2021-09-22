@@ -10,7 +10,7 @@ import LoadingSuspense from 'components/LoadingSuspense';
 import Modal from 'components/Modal';
 import Page from 'components/Page';
 
-// const Dashboard = lazy(() => import('screens/app/dashboard'));
+const Dashboard = lazy(() => import('screens/app/dashboard'));
 const Login = lazy(() => import('screens/app/login'));
 const ForgotPassword = lazy(() => import('screens/app/forgotpassword'));
 const Notification = lazy(() => import('screens/app/notification'));
@@ -105,7 +105,7 @@ const AuthorizedScreen = (props: AuthorizedScreenPropsType) => {
                     <Suspense fallback={<LoadingSuspense />}>
                         {router ? (
                             <Switch>
-                                {/* <Route exact path="/" component={Dashboard} /> */}
+                                <Route exact path="/" component={Dashboard} />
                                 {/* {DynamicRouter()} */}
                                 {DRouter}
                                 <Route exact path="/notification" component={Notification} />
