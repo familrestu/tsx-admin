@@ -9,6 +9,8 @@ import { UserAccessDetailType } from 'redux/reducers/AccessState';
 import { UserMenuDetailType } from 'redux/reducers/MenuState';
 import { get } from 'libs/fetch';
 
+const finalArrSearchLength = 8;
+
 const GetCurrentTheme = () => {
     const localStorageTheme = localStorage.getItem('themes');
     return localStorageTheme === null ? 'light' : localStorageTheme;
@@ -118,7 +120,7 @@ class HeaderSearchConnect extends Component<PropsHeaderSearch, HandleSearchState
                 });
 
                 const finalArrSearch = tempArr;
-                finalArrSearch.length = 7;
+                finalArrSearch.length = finalArrSearchLength;
 
                 this.setState((prevState) => {
                     return {
@@ -204,6 +206,8 @@ class HeaderSearchConnect extends Component<PropsHeaderSearch, HandleSearchState
                         return regex.test(a.title.toUpperCase());
                     });
 
+                    finalArrSearch.length = finalArrSearchLength;
+
                     window.clearTimeout(this.keyupTimeout);
                     this.setState((prevState) => {
                         return { ...prevState, showSearch: true, loadSearch: false, showedArrSearch: finalArrSearch };
@@ -262,7 +266,7 @@ class HeaderSearchConnect extends Component<PropsHeaderSearch, HandleSearchState
                         onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => this.KeyUpHandler(e)}
                     />
                     <div
-                        className="form-icon"
+                        className="input-group-text"
                         onClick={() => {
                             const searchInput = document.getElementById('header-search-input');
                             if (searchInput) {

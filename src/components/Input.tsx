@@ -1,5 +1,5 @@
 import React, { Fragment, useRef, useState } from 'react';
-import { Row, Col, FormCheck, ColProps } from 'react-bootstrap';
+import { Row, Col, FormCheck, ColProps, InputGroup } from 'react-bootstrap';
 import { get, post } from 'libs/fetch';
 import { FormState } from 'components/Form';
 import CSS from 'csstype';
@@ -67,6 +67,9 @@ type InputPropsType = {
     onDoubleClick?: (e: React.MouseEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement, MouseEvent>) => void;
     onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
     onBlur?: (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+
+    searchClickHandler?: (data: { [key: string]: any }) => void;
+
     ToggleConfirm?: (show: boolean, message: string) => void;
 };
 
@@ -132,7 +135,7 @@ const Input = (props: InputPropsType) => {
         ...props.attributes,
     };
 
-    const setInputSearchValue = (label: string, value: string) => {
+    const setInputSearchValue = (label: string, value: string, data?: any) => {
         if (inputRef.current) {
             inputRef.current.value = label;
 
@@ -143,6 +146,12 @@ const Input = (props: InputPropsType) => {
                 setLoadsearch(false);
                 selectedChildren = 0;
             }, 100);
+
+            if (props.searchClickHandler) {
+                if (data) {
+                    props.searchClickHandler(data);
+                }
+            }
         }
     };
 
@@ -218,10 +227,11 @@ const Input = (props: InputPropsType) => {
                             {props.label !== undefined && (
                                 <React.Fragment>
                                     <label className="form-label">{props.label}</label>
-                                    {props.required !== undefined && props.required && <span className="text-danger ml-1 bold">*</span>}
+                                    {props.required !== undefined && props.required && <span className="text-danger ms-1 bold">*</span>}
                                 </React.Fragment>
                             )}
-                            <div className="row">{arrInput}</div>
+                            {/* <div className="row">{arrInput}</div> */}
+                            <div className="form-inline">{arrInput}</div>
                             {props.textInfo && (
                                 <small id={`form-help-${props.name}`} className="form-text text-muted">
                                     {props.textInfo}
@@ -258,7 +268,7 @@ const Input = (props: InputPropsType) => {
                             {props.label !== undefined && (
                                 <React.Fragment>
                                     <label className="form-label">{props.label}</label>
-                                    {props.required !== undefined && props.required && <span className="text-danger ml-1 bold">*</span>}
+                                    {props.required !== undefined && props.required && <span className="text-danger ms-1 bold">*</span>}
                                 </React.Fragment>
                             )}
                             <select
@@ -394,7 +404,6 @@ const Input = (props: InputPropsType) => {
                                 if (child) {
                                     setInputSearchValue(`${child.getAttribute('search-label')}`, `${child.getAttribute('search-value')}`);
                                 }
-                                // return false;
                             } else {
                                 window.clearTimeout(searchTimeout);
                                 searchTimeout = window.setTimeout(() => {
@@ -441,6 +450,18 @@ const Input = (props: InputPropsType) => {
                         {...Attr}
                     />
                 );
+
+                if (props.type.toUpperCase() === 'SEARCH') {
+                    InpElement = (
+                        <InputGroup>
+                            {InpElement}
+                            <div className="input-group-text">
+                                <i className="fas fa-search" />
+                            </div>
+                        </InputGroup>
+                        // </React.Fragment>
+                    );
+                }
             }
 
             const SearchDropDown = (props: { name: InputPropsType['name'] }) => {
@@ -469,7 +490,7 @@ const Input = (props: InputPropsType) => {
                                         className="dropdown-item pointer"
                                         search-label={item.label}
                                         search-value={item.value}
-                                        onClick={() => setInputSearchValue(item.label, item.value)}
+                                        onClick={() => setInputSearchValue(item.label, item.value, item)}
                                     >
                                         {item.label}
                                     </div>
@@ -490,7 +511,7 @@ const Input = (props: InputPropsType) => {
                                 {props.label !== undefined && (
                                     <React.Fragment>
                                         <label className="form-label">{props.label}</label>
-                                        {props.required !== undefined && props.required && <span className="text-danger ml-1 bold">*</span>}
+                                        {props.required !== undefined && props.required && <span className="text-danger ms-1 bold">*</span>}
                                     </React.Fragment>
                                 )}
                                 {InpElement}
@@ -509,7 +530,7 @@ const Input = (props: InputPropsType) => {
                                         ></i>
                                     </div>
                                 )}
-                                {props.type.toUpperCase() === 'SEARCH' && loadSearch && <SearchDropDown name={props.name} />}
+                                {props.type.toUpperCase() === 'SEARCH' && loadSearch && props.datasource && <SearchDropDown name={props.name} />}
                                 {props.type.toUpperCase() === 'SEARCH' && <input type="hidden" name={props.name} />}
                             </div>
                         </Columns>
