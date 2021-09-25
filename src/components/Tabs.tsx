@@ -118,7 +118,7 @@ class TabsC extends Component<TabsPropsType & MapStateToPropsType & typeof MapDi
                 return a.url === path;
             });
 
-            if (Component) {
+            if (Component && Component.length) {
                 this.props.OpenTab(Component[0].url, Component[0].accessmode);
             }
         }
@@ -171,6 +171,11 @@ class TabsC extends Component<TabsPropsType & MapStateToPropsType & typeof MapDi
 
     componentWillUnmount() {
         this.props.ClearTab();
+
+        history.replaceState(null, this.props.location.pathname);
+        if (this.props.location.state) {
+            this.props.location.state.tab = '';
+        }
     }
 
     render() {
@@ -202,8 +207,26 @@ class TabsC extends Component<TabsPropsType & MapStateToPropsType & typeof MapDi
 
                         let showClass = '';
 
-                        if (this.props.location.state !== null && this.props.location.state.tab) {
-                            showClass = 'active show';
+                        // console.log(index, this.props.location.state);
+
+                        if (this.props.location.state) {
+                            if (this.props.location.state !== null) {
+                                if (this.props.location.state.tab) {
+                                    showClass = 'active show';
+                                } else {
+                                    if (index === 0) {
+                                        showClass = 'active show';
+                                    } else {
+                                        showClass = '';
+                                    }
+                                }
+                            } else {
+                                if (index === 0) {
+                                    showClass = 'active show';
+                                } else {
+                                    showClass = '';
+                                }
+                            }
                         } else {
                             if (index === 0) {
                                 showClass = 'active show';
@@ -217,7 +240,6 @@ class TabsC extends Component<TabsPropsType & MapStateToPropsType & typeof MapDi
                                 key={index}
                                 id="tab-pane"
                                 className={`fade tab-page-container tab-pane ${showClass}`.trim()}
-                                // className={`fade tab-page-container tab-pane active show`}
                                 tab-container-number={index}
                                 tab-container-name={child.props.title.toLowerCase().replaceAll(' ', '-')}
                             >
