@@ -3,13 +3,19 @@ import React from 'react';
 
 const arrTodo: { title: string; status: number; tags: { label: string; variant: string }[] }[] | [] = [
     {
-        title: 'Client ABC - Payroll Optimization',
-        status: 1,
+        title: 'Add Double Box With Filter',
+        status: 0,
         tags: [
             {
-                label: 'Project',
-                variant: 'primary',
+                label: 'Enhancement',
+                variant: 'info',
             },
+        ],
+    },
+    {
+        title: 'Check when submit form, but failed or invalidated and showing alert, always close the modal, should be not',
+        status: 2,
+        tags: [
             {
                 label: 'Bugs',
                 variant: 'danger',
@@ -17,20 +23,54 @@ const arrTodo: { title: string; status: number; tags: { label: string; variant: 
         ],
     },
     {
-        title: 'Client ABC - Wrong Tax Payroll Sep 2021',
+        title: 'Create Employee Information Balance Widget Such As Annual Leave, Reimbursement',
         status: 0,
         tags: [
             {
-                label: 'Project',
-                variant: 'primary',
-            },
-            {
-                label: 'Support',
+                label: 'Enhancement',
                 variant: 'info',
             },
             {
-                label: 'Urgent',
-                variant: 'danger',
+                label: 'Widget',
+                variant: 'info',
+            },
+        ],
+    },
+    {
+        title: 'Add logic to "Record Attendance"',
+        status: 0,
+        tags: [
+            {
+                label: 'Enhancement',
+                variant: 'info',
+            },
+            {
+                label: 'Widget',
+                variant: 'info',
+            },
+        ],
+    },
+    {
+        title: 'Add "Fake" notification using bootstrap TOAST',
+        status: 0,
+        tags: [
+            {
+                label: 'Enhancement',
+                variant: 'info',
+            },
+        ],
+    },
+    {
+        title: 'Create New Carousel, instead of using bootstrap',
+        status: 0,
+        tags: [
+            {
+                label: 'Enhancement',
+                variant: 'info',
+            },
+            {
+                label: 'Widget',
+                variant: 'info',
             },
         ],
     },
@@ -51,12 +91,12 @@ const TodoList = () => {
                             return (
                                 <div className="card" key={`list-${index}`} style={{ height: 'unset' }}>
                                     <div className="card-body">
-                                        <p className="m-0 mb-2">
-                                            {a.title}
-                                            <span style={{ position: 'absolute', right: '1rem', top: '1rem' }}>
-                                                <div className={`badge bg-${a.status === 2 ? 'primary' : 'light'} me-1 text-dark`}>{status[a.status]}</div>
-                                            </span>
-                                        </p>
+                                        {/* <p className="m-0 mb-2"> */}
+                                        <span style={{ float: 'right' }}>
+                                            <div className={`badge bg-${a.status === 2 ? 'primary' : 'light'} me-1 text-dark`}>{status[a.status]}</div>
+                                        </span>
+                                        {a.title}
+                                        {/* </p> */}
 
                                         <div>
                                             {a.tags.map((b, bindex) => {

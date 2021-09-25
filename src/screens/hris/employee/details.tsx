@@ -1,14 +1,15 @@
 import React from 'react';
 import Page from 'components/Page';
 import Form from 'components/Form';
-import Input from 'components/Input';
+// import Input from 'components/Input';
+import { Tabs, Tab } from 'components/Tabs';
 import { Save, Reset, Cancel, Delete, ButtonGroup } from 'components/Button';
 
 const EmployeeListDetailScreen = () => {
     return (
         <Page breadCrumb="Employee|Information|Details">
             <Form datasource="/employee/employeeInformation.ViewData" action="emp/EmpData/Update">
-                <Input type="text" label="Name" size="4" placeholder="Full Name" name="full_name" readOnly />
+                {/* <Input type="text" label="Name" size="4" placeholder="Full Name" name="full_name" readOnly />
                 <Input type="text" label="Position" size="6" placeholder="Position" name="position" readOnly />
                 <Input type="text" label="Department" size="6" placeholder="Department" name="department" readOnly />
                 <Input type="text" label="Division" size="6" placeholder="Division" name="division" readOnly />
@@ -25,7 +26,12 @@ const EmployeeListDetailScreen = () => {
 
                 <Input type="text" label="Phone" placeholder="+62 21 XXX XXXX XXXX" name="phone" size={4} />
                 <Input type="text" label="Mobile Phone" placeholder="+62 21 XXX XXXX XXXX" name="mobile_phone" size={4} />
-                <Input type="textarea" label="Address" name="address" size={6} rows={5} />
+                <Input type="textarea" label="Address" name="address" size={6} rows={5} /> */}
+
+                <Tabs>
+                    <Tab title="Personal" link="/employee/personal" />
+                    <Tab title="Employment" link="/employee/employment" />
+                </Tabs>
 
                 <ButtonGroup>
                     <Save />

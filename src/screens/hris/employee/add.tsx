@@ -10,8 +10,9 @@ const EmpAdd = () => {
         <Page breadCrumb="employee|add">
             <Form action="system/application/Login">
                 <Tabs>
-                    <Tab title="Personal" link="/employee/add-personal" />
-                    <Tab title="Employment" link="/employee/add-employment" />
+                    <Tab title="Personal Data" link="/employee/personal" />
+                    <Tab title="Employment Data" link="/employee/employment" />
+                    <Tab title="Attendance Data" link="/employee/attendance" />
                 </Tabs>
 
                 <ButtonGroup>

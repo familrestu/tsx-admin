@@ -15,8 +15,8 @@ class AddPersonal extends React.Component {
                     <Input type="text" size={3} label="Last name" placeholder="Last name" name="last_name" required groups="name" />
                 </Row>
 
-                {/* <Input type="email" label="Email" size={4} placeholder="email@example.com" name="email" required />
-                <Input type="radio" label="Gender" size={3} name="gender" data="Male=0,Female=1" /> */}
+                <Input type="email" label="Email" size={6} placeholder="email@example.com" name="email" required />
+                <Input type="radio" label="Gender" size={3} name="gender" data="Male=0,Female=1" />
 
                 <Row>
                     <Input type="text" label="Birth Place" placeholder="Birth Place" name="birth_place" required size={4} groups="birth" />
