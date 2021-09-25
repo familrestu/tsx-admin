@@ -45,6 +45,7 @@ export type FormState = {
     formData: { [key: string]: any } | null;
     isSubmiting: boolean;
     showAlert: boolean;
+    alertStatus: boolean | null;
     showConfirm: boolean;
     alertBoxMessage: string;
     confirmBoxMessage: string;
@@ -73,6 +74,7 @@ class Form extends React.Component<Props, FormState> {
         formData: null,
         isSubmiting: false,
         showAlert: false,
+        alertStatus: null,
         showConfirm: false,
         alertBoxMessage: '',
         confirmBoxMessage: '',
@@ -265,7 +267,7 @@ class Form extends React.Component<Props, FormState> {
                             const options = element.children[i] as HTMLOptionElement;
 
                             if (options.selected && options.value === 'none') {
-                                this.ToggleAlert(true, `Field ${formLabel} is required!`);
+                                this.ToggleAlert(true, `Field [${formLabel}] is required!`, false);
                                 element.focus();
                                 this._Form.classList.remove('loading');
                                 return false;
@@ -276,7 +278,7 @@ class Form extends React.Component<Props, FormState> {
                             console.log(element);
                         } else {
                             if (element.value === '') {
-                                this.ToggleAlert(true, `Field ${formLabel} is required!`);
+                                this.ToggleAlert(true, `Field [${formLabel}] is required!`, false);
                                 element.focus();
                                 this._Form.classList.remove('loading');
                                 return false;
@@ -322,7 +324,7 @@ class Form extends React.Component<Props, FormState> {
                         if (res.data && res.data.status) {
                             /* show alert based on return from server */
                             if (res.data.alert !== undefined && res.data.alert) {
-                                this.ToggleAlert(true, res.data.message);
+                                this.ToggleAlert(true, res.data.message, true);
                             }
                         }
                     }
@@ -338,7 +340,7 @@ class Form extends React.Component<Props, FormState> {
 
                 if (this._Form) {
                     if (error.data && !error.data.status) {
-                        this.ToggleAlert(true, error.data.message);
+                        this.ToggleAlert(true, error.data.message, false);
                     }
                     this._Form.classList.remove('loading');
                 }
@@ -383,12 +385,18 @@ class Form extends React.Component<Props, FormState> {
         }
     }
 
-    ToggleAlert(show: boolean, message: string) {
+    ToggleAlert(show: boolean, message: string, alertStatus: boolean | null) {
         this.setState(
             (prevState) => {
-                return { ...prevState, showAlert: show, alertBoxMessage: message };
+                return { ...prevState, showAlert: show, alertBoxMessage: message, alertStatus: alertStatus };
             },
-            () => this.CloseModal(show),
+            () => {
+                /* if (closeModal) {
+                } */
+                if (alertStatus !== null && alertStatus) {
+                    this.CloseModal(show);
+                }
+            },
         );
     }
 
@@ -420,6 +428,8 @@ class Form extends React.Component<Props, FormState> {
         if (this._PrevPath !== this._CurrentPath) {
             this.GetFormData();
         }
+        // console.log(this.state.formData);
+        this.SetFormData();
     }
 
     componentWillUnmount() {
@@ -487,8 +497,9 @@ class Form extends React.Component<Props, FormState> {
                 {this.state.showAlert && (
                     <Alert
                         message={this.state.alertBoxMessage}
+                        alertStatus={this.state.alertStatus}
                         closeDialogBox={() => {
-                            this.ToggleAlert(false, '');
+                            this.ToggleAlert(false, '', this.state.alertStatus);
                         }}
                     />
                 )}
@@ -501,7 +512,7 @@ class Form extends React.Component<Props, FormState> {
                         CloseModal={() => this.CloseModal(false)}
                         showAlert={(message: string) => {
                             this.setState((prevState) => {
-                                return { ...prevState, showAlert: true, alertBoxMessage: message };
+                                return { ...prevState, showAlert: true, alertBoxMessage: message, alertStatus: true };
                             });
                         }}
                         closeDialogBox={() => {

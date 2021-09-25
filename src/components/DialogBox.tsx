@@ -4,7 +4,9 @@ import { post } from 'libs/fetch';
 
 type AlertPropsType = {
     message: string;
+    alertStatus: boolean | null;
     closeDialogBox: () => void;
+    CloseModal?: () => void;
 };
 
 const Alert = (props: AlertPropsType) => {
@@ -28,13 +30,14 @@ const Alert = (props: AlertPropsType) => {
                     <button
                         className="btn btn-primary"
                         onClick={() => {
-                            const arrModal = document.querySelectorAll('.modal-content');
+                            if (props.alertStatus !== null && props.alertStatus) {
+                                const arrModal = document.querySelectorAll('.modal-content');
 
-                            for (let i = 0; i < arrModal.length; i++) {
-                                const element = arrModal[i];
-                                element.classList.add('hidden');
+                                for (let i = 0; i < arrModal.length; i++) {
+                                    const element = arrModal[i];
+                                    element.classList.add('hidden');
+                                }
                             }
-
                             window.setTimeout(() => {
                                 props.closeDialogBox();
                             }, 250);
@@ -85,26 +88,20 @@ const Confirm = (props: ConfirmPropsType) => {
                         <button
                             className="btn btn-primary"
                             onClick={() => {
-                                console.log(props);
                                 if (props.action) {
                                     post(
                                         props.formData,
                                         props.action,
                                         null,
                                         (res) => {
-                                            // console.log(res);
-                                            // window.alert(res.data.message);
                                             props.closeDialogBox();
                                             if (props.showAlert) {
                                                 props.showAlert(res.data.message);
                                             }
                                         },
-                                        (err) => {
-                                            console.log(typeof err);
-                                            // window.alert(err.data.message);
-                                            // props.closeDialogBox();
+                                        (err: any) => {
                                             if (props.showAlert) {
-                                                // props.showAlert(err.data.message);
+                                                props.showAlert(err.data.message);
                                             }
                                         },
                                     );
