@@ -130,3 +130,15 @@ option {
         margin-right: 0.5rem;
     }
 }
+
+.form-inline {
+    .form-check-inline {
+        padding-left: 0;
+    }
+}
+
+.form-control-plaintext {
+    // background-color: var(--grey);
+    // padding: 0.375rem 0.75rem;
+    color: var(--black);
+}
