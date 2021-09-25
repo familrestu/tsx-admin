@@ -169,6 +169,7 @@ const Delete = (props: ButtonPropsType & ButtonDeletePropsType) => {
                             // window.alert('gampangan gini');
                         });
                     } */
+                    // console.log(props);
                     if (props.ToggleConfirm) {
                         props.ToggleConfirm(true, 'Are you sure want to delete this data?', props.action);
                     }

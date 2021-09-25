@@ -17,6 +17,7 @@ const AccessListing = () => {
                 <Column label="Menu Name" name="menu_name" type="link" link="/settings/application/access/user-menu/details/[menu_id]" linktype="popup" />
                 <Column label="Group" name="group_name" />
                 <Column label="Parent" name="parent_name" />
+                <Column label="Icon" name="icon" type="icon" width={100} align="center" />
                 <Column label="Link" name="url" />
                 <Column label="Path" name="pagepath" />
                 <Column label="Menu / Access" name="access_only" masking="0=Access & Menu,1=Access" />

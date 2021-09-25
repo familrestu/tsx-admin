@@ -30,7 +30,10 @@ class Overlay extends Component<OverlayPropsType & MapStateToPropsType & typeof 
 
         this.element.id = this.props.id ? this.props.id : 'overlay';
 
-        this.element.addEventListener('click', (e: MouseEvent) => this.closeModal(e));
+        this.element.addEventListener('mousedown', (e: MouseEvent) => this.closeModal(e));
+        /* this.element.addEventListener('mouseup', (e: MouseEvent) => {
+            console.log(e);
+        }); */
     }
 
     closeModal(e: MouseEvent) {

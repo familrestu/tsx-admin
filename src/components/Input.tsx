@@ -313,10 +313,12 @@ const Input = (props: InputPropsType) => {
                     type = 'text';
                     name = `${props.name}_label`;
 
-                    Events.onFocus = (/* e: React.FocusEvent<HTMLInputElement> */) => {
+                    Events.onFocus = (e: React.FocusEvent<HTMLInputElement>) => {
                         setLoadsearch(true);
+                        const value = e.currentTarget.value;
+                        // console.log(value);
                         if (props.datasource) {
-                            get(props.datasource, null, (res) => {
+                            post({ value }, props.datasource, null, (res) => {
                                 const { data } = res;
                                 setArrSearchData(data.searchData);
                             });

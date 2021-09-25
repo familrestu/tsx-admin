@@ -46,6 +46,7 @@
         .dropdown-menu {
             width: 100%;
             background-color: var(--white);
+            top: 100%;
 
             .dropdown-item {
                 color: var(--black);
@@ -77,9 +78,11 @@
             }
         }
 
-        .header-search-container {
+        /* .header-search-container {
             background-color: var(--white);
-        }
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 0.2rem rgba(104, 190, 130, 30%);
+        } */
     }
 
     .header-right {

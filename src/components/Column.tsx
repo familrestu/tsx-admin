@@ -62,7 +62,7 @@ type ColumnPropsType = {
     label: string;
     name: string;
     width?: number | string;
-    type?: 'date' | 'link' | 'text' | 'number' | 'time';
+    type?: 'date' | 'link' | 'text' | 'number' | 'time' | 'icon';
     link?: string;
     linktype?: 'page' | 'popup';
     format?: string;
@@ -427,6 +427,14 @@ class Column extends Component<ColumnPropsType & RouteComponentProps & MapStateT
                                 } else {
                                     return <React.Fragment>{value}</React.Fragment>;
                                 }
+                            }
+                        };
+                    } else if (this.props.type !== undefined && this.props.type === 'icon') {
+                        ValueElement = () => {
+                            if (value === undefined || value === null) {
+                                return <React.Fragment>&nbsp;</React.Fragment>;
+                            } else {
+                                return <i className={value} title={value} style={{ color: '#6c6c6c' }}></i>;
                             }
                         };
                     } else {

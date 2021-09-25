@@ -1,0 +1,13 @@
+.carousel-hr-info {
+    height: 238px;
+    padding: 0.5rem;
+    .carousel-inner {
+        height: 100%;
+        border-radius: 0.25rem;
+        .carousel-item {
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+    }
+}

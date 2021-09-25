@@ -6,6 +6,7 @@ import Avatar from 'components/Avatar';
 import { AppState } from 'redux/store';
 import Notification from 'components/Notification';
 import { UserAccessDetailType } from 'redux/reducers/AccessState';
+import { UserMenuDetailType } from 'redux/reducers/MenuState';
 import { get } from 'libs/fetch';
 
 const GetCurrentTheme = () => {
@@ -44,30 +45,16 @@ export const ThemeMode = () => {
     );
 };
 
-const GetMenu = (UserAccess: UserAccessDetailType[]) => {
+const GetMenu = (UserMenu: UserMenuDetailType[]) => {
     const arrUserMenu: any = [];
 
-    if (UserAccess.length > 1) {
-        for (let x = 0; x < UserAccess.length; x++) {
-            const access = UserAccess[x];
+    if (UserMenu.length > 1) {
+        for (let x = 0; x < UserMenu.length; x++) {
+            const menu = UserMenu[x];
 
-            // if (element.children) {
-            //     /* when have children, call RouterChildren function */
-            //     const tempArray = GetMenu(element.children);
-            //     arrUserMenu = [...arrUserMenu, ...tempArray];
-            // } else {
-            //     /* if not have children, push to ArrayRouter */
-            //     if (element.url.indexOf(':') < 0) {
-            //         arrUserMenu.push({
-            //             link: element.url,
-            //             title: element.menu_name,
-            //             type: 'menu',
-            //         });
-            //     }
-            // }
             arrUserMenu.push({
-                link: access.url,
-                title: access.name,
+                link: menu.url,
+                title: menu.menu_name,
                 type: 'menu',
             });
         }
@@ -121,7 +108,7 @@ class HeaderSearchConnect extends Component<PropsHeaderSearch, HandleSearchState
         let arrMenu: HandleSearchStateType['arrSearch'] = [];
 
         if (this.props.AccessState) {
-            arrMenu = GetMenu(this.props.AccessState);
+            arrMenu = GetMenu(this.props.MenuState);
 
             get('system/application.GetSearch', { withCredentials: true }, (res) => {
                 tempArr = [...arrMenu, ...res.data.data];
@@ -319,7 +306,7 @@ class HeaderSearchConnect extends Component<PropsHeaderSearch, HandleSearchState
                                             index-number={index}
                                             role="button"
                                             onClick={() => this.CloseSearch(item.title)}
-                                            title={item.type.substr(0, 1).toUpperCase() + item.type.substr(1, item.type.length - 1)}
+                                            title={`${item.type.substr(0, 1).toUpperCase() + item.type.substr(1, item.type.length - 1)}: ${item.title}`}
                                             onMouseEnter={() => this.DropdownMouseEnterHandler(index)}
                                             onMouseLeave={() => this.DropdownMouseLeaveHandler()}
                                         >
@@ -342,11 +329,13 @@ class HeaderSearchConnect extends Component<PropsHeaderSearch, HandleSearchState
 type MapStateToPropsType = {
     UserState: AppState['UserState'];
     AccessState: AppState['AccessState'];
+    MenuState: AppState['MenuState'];
 };
 
 const MapStateToProps = (state: MapStateToPropsType) => ({
     UserState: state.UserState,
     AccessState: state.AccessState,
+    MenuState: state.MenuState,
 });
 
 const HeaderSearch = connect(MapStateToProps)(HeaderSearchConnect);

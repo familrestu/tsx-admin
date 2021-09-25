@@ -50,7 +50,10 @@ const Alert = (props: AlertPropsType) => {
 
 type ConfirmPropsType = {
     message: string;
+    formData: { [key: string]: any } | null;
     action?: string;
+    CloseModal?: () => void;
+    showAlert?: (message: string) => void;
     closeDialogBox: () => void;
 };
 
@@ -82,8 +85,29 @@ const Confirm = (props: ConfirmPropsType) => {
                         <button
                             className="btn btn-primary"
                             onClick={() => {
+                                console.log(props);
                                 if (props.action) {
-                                    post({}, props.action, null);
+                                    post(
+                                        props.formData,
+                                        props.action,
+                                        null,
+                                        (res) => {
+                                            // console.log(res);
+                                            // window.alert(res.data.message);
+                                            props.closeDialogBox();
+                                            if (props.showAlert) {
+                                                props.showAlert(res.data.message);
+                                            }
+                                        },
+                                        (err) => {
+                                            console.log(typeof err);
+                                            // window.alert(err.data.message);
+                                            // props.closeDialogBox();
+                                            if (props.showAlert) {
+                                                // props.showAlert(err.data.message);
+                                            }
+                                        },
+                                    );
                                 }
                             }}
                         >

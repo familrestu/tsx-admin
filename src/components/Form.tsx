@@ -46,7 +46,8 @@ export type FormState = {
     isSubmiting: boolean;
     showAlert: boolean;
     showConfirm: boolean;
-    dialogBoxMessage: string;
+    alertBoxMessage: string;
+    confirmBoxMessage: string;
     dialogBoxAction: string | undefined;
 };
 
@@ -73,7 +74,8 @@ class Form extends React.Component<Props, FormState> {
         isSubmiting: false,
         showAlert: false,
         showConfirm: false,
-        dialogBoxMessage: '',
+        alertBoxMessage: '',
+        confirmBoxMessage: '',
         dialogBoxAction: '',
     };
 
@@ -282,6 +284,8 @@ class Form extends React.Component<Props, FormState> {
                         }
                     }
                 }
+
+                element.blur();
             }
 
             /* push to tempformData */
@@ -382,7 +386,7 @@ class Form extends React.Component<Props, FormState> {
     ToggleAlert(show: boolean, message: string) {
         this.setState(
             (prevState) => {
-                return { ...prevState, showAlert: show, dialogBoxMessage: message };
+                return { ...prevState, showAlert: show, alertBoxMessage: message };
             },
             () => this.CloseModal(show),
         );
@@ -390,7 +394,7 @@ class Form extends React.Component<Props, FormState> {
 
     ToggleConfirm(show: boolean, message: string, action?: string) {
         this.setState((prevState) => {
-            return { ...prevState, showConfirm: show, dialogBoxMessage: message, dialogBoxAction: action };
+            return { ...prevState, showConfirm: show, confirmBoxMessage: message, formData: this.state.formData, dialogBoxAction: action };
         });
     }
 
@@ -482,7 +486,7 @@ class Form extends React.Component<Props, FormState> {
 
                 {this.state.showAlert && (
                     <Alert
-                        message={this.state.dialogBoxMessage}
+                        message={this.state.alertBoxMessage}
                         closeDialogBox={() => {
                             this.ToggleAlert(false, '');
                         }}
@@ -491,11 +495,18 @@ class Form extends React.Component<Props, FormState> {
 
                 {this.state.showConfirm && (
                     <Confirm
-                        message={this.state.dialogBoxMessage}
+                        message={this.state.confirmBoxMessage}
                         action={this.state.dialogBoxAction}
+                        formData={this.state.formData}
+                        CloseModal={() => this.CloseModal(false)}
+                        showAlert={(message: string) => {
+                            this.setState((prevState) => {
+                                return { ...prevState, showAlert: true, alertBoxMessage: message };
+                            });
+                        }}
                         closeDialogBox={() => {
                             this.setState((prevState) => {
-                                return { ...prevState, showConfirm: false, dialogBoxMessage: '', dialogBoxAction: '' };
+                                return { ...prevState, showConfirm: false, alertBoxMessage: '', confirmBoxMessage: '', dialogBoxAction: '' };
                             });
                         }}
                     />
