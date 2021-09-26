@@ -139,8 +139,8 @@ const Input = (props: InputPropsType) => {
         if (inputRef.current) {
             inputRef.current.value = label;
 
-            if (inputRef.current.parentElement) {
-                (inputRef.current.parentElement.lastChild as HTMLInputElement).value = value;
+            if (inputRef.current.parentElement && inputRef.current.parentElement.parentElement) {
+                (inputRef.current.parentElement.parentElement.lastChild as HTMLInputElement).value = value;
             }
             window.setTimeout(() => {
                 setLoadsearch(false);
@@ -326,7 +326,7 @@ const Input = (props: InputPropsType) => {
                     Events.onFocus = (e: React.FocusEvent<HTMLInputElement>) => {
                         setLoadsearch(true);
                         const value = e.currentTarget.value;
-                        // console.log(value);
+
                         if (props.datasource) {
                             post({ value }, props.datasource, null, (res) => {
                                 const { data } = res;
@@ -459,7 +459,6 @@ const Input = (props: InputPropsType) => {
                                 <i className="fas fa-search" />
                             </div>
                         </InputGroup>
-                        // </React.Fragment>
                     );
                 }
             }

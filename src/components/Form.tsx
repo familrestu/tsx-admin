@@ -184,11 +184,13 @@ class Form extends React.Component<Props, FormState> {
 
                                         /* setelah di set value nya, baru getdata */
                                         if (inputType && inputType === 'search') {
+                                            // console.log(formValue);
                                             const inputDatasource = element.getAttribute('datasource');
                                             if (inputDatasource) {
                                                 element.classList.add('loading');
                                                 formValue = formData[`${elementName}`.replaceAll('_label', '')];
                                                 let isSearchSet = false;
+
                                                 get(inputDatasource, null, (res) => {
                                                     const { data } = res;
                                                     for (let l = 0; l < data.searchData.length; l++) {
