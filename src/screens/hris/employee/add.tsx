@@ -12,7 +12,7 @@ const EmpAdd = () => {
                 <Tabs>
                     <Tab title="Personal Data" link="/employee/personal" />
                     <Tab title="Employment Data" link="/employee/employment" />
-                    <Tab title="Attendance Data" link="/employee/attendance" />
+                    <Tab title="Attendance Data" link="/employee/shift" />
                 </Tabs>
 
                 <ButtonGroup>

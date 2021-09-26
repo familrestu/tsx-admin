@@ -18,6 +18,8 @@ const TabClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, childNumbe
 
         e.currentTarget.classList.add('activelink');
 
+        // console.log(e.currentTarget);
+
         const tabPane = navTabParents.nextElementSibling;
 
         if (tabPane) {
@@ -28,6 +30,7 @@ const TabClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, childNumbe
                     element.classList.add('show');
                     element.classList.add('active');
                 } else {
+                    console.log(element.getAttribute('tab-container-number'), childNumber);
                     element.classList.remove('show');
                     element.classList.remove('active');
                 }

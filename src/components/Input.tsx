@@ -39,7 +39,25 @@ const TogglePasswordHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>) => 
 
 type InputPropsType = {
     name: string;
-    type: 'switch' | 'radio' | 'checkbox' | 'select' | 'button' | 'password' | 'date' | 'time' | 'text' | 'email' | 'textarea' | 'suggest' | 'filter' | 'label' | 'file' | 'search' | 'hidden';
+    type:
+        | 'switch'
+        | 'radio'
+        | 'checkbox'
+        | 'select'
+        | 'button'
+        | 'password'
+        | 'date'
+        | 'time'
+        | 'text'
+        | 'email'
+        | 'textarea'
+        | 'suggest'
+        | 'filter'
+        | 'label'
+        | 'file'
+        | 'search'
+        | 'hidden'
+        | 'filter';
     className?: string;
     id?: string;
     label?: string;
@@ -289,6 +307,59 @@ const Input = (props: InputPropsType) => {
                                     {props.textInfo}
                                 </small>
                             )}
+                        </div>
+                    </Columns>
+                </Wrapper>
+            );
+        } else if (props.type.toUpperCase() === 'FILTER') {
+            Element = (
+                <Wrapper>
+                    <Columns size={12}>
+                        {/* khusus filter, sizenya selalu 12 */}
+                        <div className="form-group">
+                            {props.label !== undefined && (
+                                <React.Fragment>
+                                    <label className="form-label">{props.label}</label>
+                                    {props.required !== undefined && props.required && <span className="text-danger ms-1 bold">*</span>}
+                                </React.Fragment>
+                            )}
+                            <div className="row">
+                                <div className="col col-5">
+                                    <select
+                                        id={`inp_${props.name}`}
+                                        className={`form-control inp_${props.name} ${props.className ? props.className : ''}`.trim()}
+                                        name={props.name}
+                                        style={props.style}
+                                        defaultValue={props.defaultValue}
+                                        multiple
+                                        size={10}
+                                        {...Events}
+                                        {...Attr}
+                                    ></select>
+                                </div>
+                                <div className="col col-2" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                                    <button type="button" className="btn btn-light m-2">
+                                        <i className="fas fa-chevron-right"></i>
+                                    </button>
+                                    <button type="button" className="btn btn-light m-2">
+                                        <i className="fas fa-chevron-left"></i>
+                                    </button>
+                                </div>
+                                <div className="col col-5">
+                                    <select
+                                        id={`inp_${props.name}`}
+                                        className={`form-control inp_${props.name} ${props.className ? props.className : ''}`.trim()}
+                                        name={props.name}
+                                        style={props.style}
+                                        multiple
+                                        size={10}
+                                        defaultValue={props.defaultValue}
+                                        {...Events}
+                                        {...Attr}
+                                    ></select>
+                                </div>
+                                <input type="hidden" name={`selected_${props.name}`} />
+                            </div>
                         </div>
                     </Columns>
                 </Wrapper>
