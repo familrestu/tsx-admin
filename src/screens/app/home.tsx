@@ -190,7 +190,7 @@ class Home extends Component<HomeProps, LocalState> {
                         }
                     }
                 } else {
-                    console.error({ code: 'ErrUnknown', data: res.data, message: `Your might have bad data` });
+                    console.error({ code: 'ErrUnknown', data: res.data, message: `You might have bad data` });
                 }
             }
         };
