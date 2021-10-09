@@ -192,7 +192,7 @@ class Table extends Component<TablePropsType & MapStateToPropsType & typeof MapD
                 }
             }
 
-            const onSuccessPost = (res: AxiosResponse) => {
+            const onSuccessPost = (res: any) => {
                 if (res) {
                     if (res.data && res.data.datasets) {
                         const { datasets } = res.data;
@@ -341,7 +341,7 @@ class Table extends Component<TablePropsType & MapStateToPropsType & typeof MapD
                 }
 
                 arrBadges.push(
-                    <Badge key={`badge-${element.label}-${i}`} variant="primary" className="shadow-sm pointer">
+                    <Badge key={`badge-${element.label}-${i}`} className="shadow-sm pointer">
                         <span className="label">
                             {element.label}: {value}
                         </span>

@@ -93,7 +93,7 @@ const Confirm = (props: ConfirmPropsType) => {
                                         props.formData,
                                         props.action,
                                         null,
-                                        (res) => {
+                                        (res: any) => {
                                             props.closeDialogBox();
                                             if (props.showAlert) {
                                                 props.showAlert(res.data.message);

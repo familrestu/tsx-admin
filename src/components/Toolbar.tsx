@@ -70,7 +70,7 @@ const BtnPrintPreview = (props: TableStateType) => {
 };
 
 type BtnLinkPropsType = {
-    link: string;
+    link: string | { pathname: string; state: { [key: string]: string } };
     icon?: string;
     minaccess?: 0 | 1 | 2 | 3 | 'read' | 'write' | 'update' | 'delete';
     linktype?: string;
@@ -90,11 +90,17 @@ const BtnLink = (props: TableStateType & BtnLinkPropsType) => {
     const thisPosition = props.position === undefined ? 'right' : props.position;
     // console.log(props);
 
+    let link = props.link;
+
+    if (typeof props.link === 'object') {
+        link = props.link.pathname;
+    }
+
     /* automatic not showing btn link if didn't get access */
     for (let x = 0; x < AccessState.length; x++) {
         const Access = AccessState[x];
 
-        if (Access.url === props.link) {
+        if (Access.url === link) {
             show = true;
             accessmode = Access.accessmode;
             break;
@@ -126,7 +132,7 @@ const BtnLink = (props: TableStateType & BtnLinkPropsType) => {
             );
         } else if ((ModalState !== undefined && ModalState.isOpened && ModalState.path !== null) || (props.linktype && props.linktype === 'popup')) {
             return (
-                <button className="btn btn-primary" onClick={() => dispatch({ type: 'OPENMODAL', path: props.link, accessmode })}>
+                <button className="btn btn-primary" onClick={() => dispatch({ type: 'OPENMODAL', path: link, modalParams: { state: (props.link as any).state }, accessmode })}>
                     {Icon}
                     {Label}
                 </button>

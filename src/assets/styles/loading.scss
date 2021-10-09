@@ -1,130 +1,139 @@
 @mixin loadingAnimation {
-	animation-duration: 3s;
-	animation-fill-mode: forwards;
-	animation-iteration-count: infinite;
-	animation-name: placeHolderShimmer;
-	animation-timing-function: linear;
-	-webkit-animation-duration: 1s;
-	-webkit-animation-fill-mode: forwards;
-	-webkit-animation-iteration-count: infinite;
-	-webkit-animation-name: placeHolderShimmer;
-	-webkit-animation-timing-function: linear;
-	// background: #ffffff !important;
+    animation-duration: 3s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: placeHolderShimmer;
+    animation-timing-function: linear;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-fill-mode: forwards;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-name: placeHolderShimmer;
+    -webkit-animation-timing-function: linear;
+    // background: #ffffff !important;
     background-color: #ffffff !important;
-	border-color: #bababa !important;
-	border-radius: .25rem;
-	background-image: linear-gradient(to right, #ffffff 0%, #bababa 20%, #ffffff 40%, #ffffff 100%);
-	background-repeat: no-repeat;
-	background-size: 800px 800px;
-	color: transparent;
-	position: relative;
+    border-color: #bababa !important;
+    border-radius: 0.25rem;
+    background-image: linear-gradient(to right, #ffffff 0%, #bababa 20%, #ffffff 40%, #ffffff 100%);
+    background-repeat: no-repeat;
+    background-size: 800px 800px;
+    color: transparent;
+    position: relative;
 }
 
 .table {
-	&.loading {
-		.row-body {
-			span {
-				width: 100%;
-				border-radius: .25rem;
+    &.loading {
+        .row-body {
+            span {
+                width: 100%;
+                border-radius: 0.25rem;
 
-				@include loadingAnimation;
+                @include loadingAnimation;
 
-				a { color: transparent !important; }
-			}
-		}
-	}
+                a {
+                    color: transparent !important;
+                }
+            }
+        }
+    }
 }
 
 .form {
-	&.loading {
-		input, textarea, select, .btn, .btn:focus, .btn:active, .form-check-inline {
-			transition: unset !important;
-			@include loadingAnimation;
-			pointer-events: none;
-			border: 1px;
-			border-style: solid;
-			border-color: #bababa !important;
-			outline: none;
+    &.loading {
+        input,
+        textarea,
+        select,
+        .btn,
+        .btn:focus,
+        .btn:active,
+        .form-check-inline {
+            transition: unset !important;
+            @include loadingAnimation;
+            pointer-events: none;
+            border: 1px;
+            border-style: solid;
+            border-color: #bababa !important;
+            outline: none;
 
-			label {
-				transition: unset !important;
-				color: transparent;
-			}
-			
-			&[type='checkbox'], &[type='radio'] {
-				visibility: hidden;
-			}
-		}
+            label {
+                transition: unset !important;
+                color: transparent;
+            }
 
-		/* WebKit, Blink, Edge */
-		::-webkit-input-placeholder { 
-			color: transparent;
-		}
+            &[type='checkbox'],
+            &[type='radio'],
+            option {
+                visibility: hidden;
+            }
+        }
 
-		/* Mozilla Firefox 4 to 18 */
-		:-moz-placeholder { 
-			color: transparent;
-			opacity:  1;
-		}
+        /* WebKit, Blink, Edge */
+        ::-webkit-input-placeholder {
+            color: transparent;
+        }
 
-		/* Mozilla Firefox 19+ */
-		::-moz-placeholder { 
-			color: transparent;
-			opacity:  1;
-		}
+        /* Mozilla Firefox 4 to 18 */
+        :-moz-placeholder {
+            color: transparent;
+            opacity: 1;
+        }
 
-		/* Internet Explorer 10-11 */
-		:-ms-input-placeholder { 
-			color: transparent;
-		}
+        /* Mozilla Firefox 19+ */
+        ::-moz-placeholder {
+            color: transparent;
+            opacity: 1;
+        }
 
-		/* Microsoft Edge */
-		::-ms-input-placeholder { 
-			color: transparent;
-		}
+        /* Internet Explorer 10-11 */
+        :-ms-input-placeholder {
+            color: transparent;
+        }
 
-		/* Most modern browsers support this now. */
-		::placeholder { 
-			color: transparent;
-		}
-	}
+        /* Microsoft Edge */
+        ::-ms-input-placeholder {
+            color: transparent;
+        }
+
+        /* Most modern browsers support this now. */
+        ::placeholder {
+            color: transparent;
+        }
+    }
 }
 
 .form-control {
-	&.loading {
-		@include loadingAnimation;
-		pointer-events: none;
-	}
-	/* WebKit, Blink, Edge */
-	&::-webkit-input-placeholder { 
-		color: transparent;
-	}
+    &.loading {
+        @include loadingAnimation;
+        pointer-events: none;
+    }
+    /* WebKit, Blink, Edge */
+    &::-webkit-input-placeholder {
+        color: transparent;
+    }
 
-	/* Mozilla Firefox 4 to 18 */
-	&:-moz-placeholder { 
-		color: transparent;
-		opacity:  1;
-	}
+    /* Mozilla Firefox 4 to 18 */
+    &:-moz-placeholder {
+        color: transparent;
+        opacity: 1;
+    }
 
-	/* Mozilla Firefox 19+ */
-	&::-moz-placeholder { 
-		color: transparent;
-		opacity:  1;
-	}
+    /* Mozilla Firefox 19+ */
+    &::-moz-placeholder {
+        color: transparent;
+        opacity: 1;
+    }
 
-	/* Internet Explorer 10-11 */
-	&:-ms-input-placeholder { 
-		color: transparent;
-	}
+    /* Internet Explorer 10-11 */
+    &:-ms-input-placeholder {
+        color: transparent;
+    }
 
-	/* Microsoft Edge */
-	&::-ms-input-placeholder { 
-		color: transparent;
-	}
+    /* Microsoft Edge */
+    &::-ms-input-placeholder {
+        color: transparent;
+    }
 
-	/* Most modern browsers support this now. */
-	&::placeholder { 
-		color: transparent;
-	}
-
+    /* Most modern browsers support this now. */
+    &::placeholder {
+        color: transparent;
+    }
 }

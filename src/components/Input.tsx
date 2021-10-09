@@ -37,27 +37,61 @@ const TogglePasswordHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>) => 
     }
 };
 
+const MoveRight = (name: string) => {
+    const sourceElement = document.getElementById(`inp_unselected_${name}`) as HTMLSelectElement;
+    const targetElement = document.getElementById(`inp_selected_${name}`) as HTMLSelectElement;
+    // const hiddenElement = document.getElementById(`hidden_selected_${name}`) as HTMLInputElement;
+
+    const arrSelectedElement: HTMLElement[] = [];
+    const arrSelectedElementValue: string[] = [];
+
+    if (sourceElement && targetElement) {
+        if (sourceElement.options.length > 0) {
+            for (let i = sourceElement.options.length - 1; i >= 0; i--) {
+                const options = sourceElement.options[i];
+                if (options.selected) {
+                    arrSelectedElement.push(options);
+                    arrSelectedElementValue.push(options.value);
+                }
+            }
+        }
+    }
+
+    for (let i = arrSelectedElement.length - 1; i >= 0; i--) {
+        const options = arrSelectedElement[i];
+        targetElement.append(options);
+    }
+};
+
+const MoveLeft = (name: string) => {
+    const sourceElement = document.getElementById(`inp_selected_${name}`) as HTMLSelectElement;
+    const targetElement = document.getElementById(`inp_unselected_${name}`) as HTMLSelectElement;
+    // const hiddenElement = document.getElementById(`hidden_selected_${name}`) as HTMLInputElement;
+
+    const arrSelectedElement: HTMLElement[] = [];
+    const arrSelectedElementValue: string[] = [];
+
+    if (sourceElement && targetElement) {
+        if (sourceElement.options.length > 0) {
+            for (let i = sourceElement.options.length - 1; i >= 0; i--) {
+                const options = sourceElement.options[i];
+                if (options.selected) {
+                    arrSelectedElement.push(options);
+                    arrSelectedElementValue.push(options.value);
+                }
+            }
+        }
+    }
+
+    for (let i = arrSelectedElement.length - 1; i >= 0; i--) {
+        const options = arrSelectedElement[i];
+        targetElement.append(options);
+    }
+};
+
 type InputPropsType = {
     name: string;
-    type:
-        | 'switch'
-        | 'radio'
-        | 'checkbox'
-        | 'select'
-        | 'button'
-        | 'password'
-        | 'date'
-        | 'time'
-        | 'text'
-        | 'email'
-        | 'textarea'
-        | 'suggest'
-        | 'filter'
-        | 'label'
-        | 'file'
-        | 'search'
-        | 'hidden'
-        | 'filter';
+    type: 'switch' | 'radio' | 'checkbox' | 'select' | 'button' | 'password' | 'date' | 'time' | 'text' | 'email' | 'textarea' | 'suggest' | 'filter' | 'label' | 'file' | 'search' | 'hidden';
     className?: string;
     id?: string;
     label?: string;
@@ -112,7 +146,10 @@ const Input = (props: InputPropsType) => {
     /* search Hooks */
     const [loadSearch, setLoadsearch] = useState(false);
     const [arrSearchData, setArrSearchData] = useState<{ label: string; value: any }[]>([]);
+    const [arrOptions, setArrOptions] = useState<{ label: string; value: any }[]>([]);
+
     const inputRef = useRef<HTMLInputElement>(null);
+    const [LoadingDataSource, setLoadingDataSource] = useState(false);
 
     /* i did this so user wont hardcode accessmode into Input components */
     const TempProps: InputPropsType & { accessmode?: number; loggedIn?: boolean } = props;
@@ -269,10 +306,20 @@ const Input = (props: InputPropsType) => {
                     const optLabel = data[i].split('=')[1];
 
                     arrOpt.push(
-                        <option key={`option-${i}`} value={optValue}>
+                        <option key={`option_data_${i}`} value={optValue}>
                             {optLabel}
                         </option>,
                     );
+                }
+            }
+
+            if (props.datasource !== undefined) {
+                if (arrOptions.length === 0 && !LoadingDataSource) {
+                    setLoadingDataSource(true);
+                    get(props.datasource, null, (res: any) => {
+                        const { data } = res;
+                        setArrOptions(data.arrOptions);
+                    });
                 }
             }
 
@@ -299,8 +346,17 @@ const Input = (props: InputPropsType) => {
                                 {...Events}
                                 {...Attr}
                             >
-                                {props.rows === undefined && <option value="none">-Select-</option>}
+                                {props.rows === undefined && props.required !== undefined && props.required && props.multiple === undefined && <option value="none">-Select-</option>}
+                                {props.required === undefined || (props.required !== undefined && !props.required) ? <option value="">Not Specified</option> : <Fragment />}
                                 {arrOpt}
+                                {arrOptions &&
+                                    arrOptions.map((item, index) => {
+                                        return (
+                                            <option key={`option_${props.name}_${index}`} value={item.value}>
+                                                {item.label}
+                                            </option>
+                                        );
+                                    })}
                             </select>
                             {props.textInfo && (
                                 <small id={`form-help-${props.name}`} className="form-text text-muted">
@@ -312,44 +368,104 @@ const Input = (props: InputPropsType) => {
                 </Wrapper>
             );
         } else if (props.type.toUpperCase() === 'FILTER') {
+            const arrOpt: React.ReactElement[] = [];
+
+            if (props.data !== undefined) {
+                const data = props.data.split(',');
+                for (let i = 0; i < data.length; i++) {
+                    const optValue = data[i].split('=')[0];
+                    const optLabel = data[i].split('=')[1];
+
+                    arrOpt.push(
+                        <option key={`unselected_data_${i}`} value={optValue}>
+                            {optLabel}
+                        </option>,
+                    );
+                }
+            }
+
+            if (props.datasource !== undefined) {
+                if (arrOptions.length === 0 && !LoadingDataSource) {
+                    setLoadingDataSource(true);
+                    get(props.datasource, null, (res: any) => {
+                        const { data } = res;
+                        setArrOptions(data.arrOptions);
+                    });
+                }
+            }
+
             Element = (
                 <Wrapper>
+                    <Columns size={12}>
+                        <div className="form-group"></div>
+                    </Columns>
                     <Columns size={12}>
                         {/* khusus filter, sizenya selalu 12 */}
                         <div className="form-group">
                             {props.label !== undefined && (
                                 <React.Fragment>
-                                    <label className="form-label">{props.label}</label>
+                                    <label className="form-label">
+                                        {props.label} ({arrOptions.length + arrOpt.length})
+                                    </label>
                                     {props.required !== undefined && props.required && <span className="text-danger ms-1 bold">*</span>}
                                 </React.Fragment>
                             )}
-                            <div className="row">
-                                <div className="col col-5">
+
+                            <div className="row" id={`row_search_${props.name}`}>
+                                <div className="col">
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        name={`search_unselected_${props.name}`}
+                                        onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                            const value = e.currentTarget.value;
+                                            console.log(value);
+                                        }}
+                                    />
+                                </div>
+                                <div className="col col-1" />
+                                <div className="col">
+                                    <input type="text" className="form-control" name={`search_selected_${props.name}`} />
+                                </div>
+                            </div>
+                            <div className="row" id={`row_select_${props.name}`}>
+                                <div className="col">
                                     <select
-                                        id={`inp_${props.name}`}
+                                        id={`inp_unselected_${props.name}`}
                                         className={`form-control inp_${props.name} ${props.className ? props.className : ''}`.trim()}
-                                        name={props.name}
+                                        name={`unselected_${props.name}`}
                                         style={props.style}
                                         defaultValue={props.defaultValue}
                                         multiple
                                         size={10}
                                         {...Events}
                                         {...Attr}
-                                    ></select>
+                                    >
+                                        {arrOpt}
+                                        {arrOptions &&
+                                            arrOptions.map((item, index) => {
+                                                return (
+                                                    <option key={`unselected_${props.name}_${index}`} value={item.value}>
+                                                        {item.label}
+                                                    </option>
+                                                );
+                                            })}
+                                    </select>
+                                    {/* <input type="hidden" id={`hidden_unselected_${props.name}`} name={`unselected_${props.name}`} /> */}
                                 </div>
-                                <div className="col col-2" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                                    <button type="button" className="btn btn-light m-2">
+                                <div className="col col-1" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                                    <button type="button" className="btn btn-light m-2" onClick={() => MoveRight(props.name)}>
                                         <i className="fas fa-chevron-right"></i>
                                     </button>
-                                    <button type="button" className="btn btn-light m-2">
+                                    <button type="button" className="btn btn-light m-2" onClick={() => MoveLeft(props.name)}>
                                         <i className="fas fa-chevron-left"></i>
                                     </button>
                                 </div>
-                                <div className="col col-5">
+                                <div className="col">
                                     <select
-                                        id={`inp_${props.name}`}
+                                        id={`inp_selected_${props.name}`}
                                         className={`form-control inp_${props.name} ${props.className ? props.className : ''}`.trim()}
-                                        name={props.name}
+                                        name={`selected_${props.name}`}
                                         style={props.style}
                                         multiple
                                         size={10}
@@ -358,9 +474,13 @@ const Input = (props: InputPropsType) => {
                                         {...Attr}
                                     ></select>
                                 </div>
-                                <input type="hidden" name={`selected_${props.name}`} />
                             </div>
                         </div>
+                        {props.textInfo && (
+                            <small id={`form-help-${props.name}`} className="form-text text-muted">
+                                {props.textInfo}
+                            </small>
+                        )}
                     </Columns>
                 </Wrapper>
             );
@@ -399,7 +519,7 @@ const Input = (props: InputPropsType) => {
                         const value = e.currentTarget.value;
 
                         if (props.datasource) {
-                            post({ value }, props.datasource, null, (res) => {
+                            post({ value }, props.datasource, null, (res: any) => {
                                 const { data } = res;
                                 setArrSearchData(data.searchData);
                             });
@@ -479,12 +599,12 @@ const Input = (props: InputPropsType) => {
                                 window.clearTimeout(searchTimeout);
                                 searchTimeout = window.setTimeout(() => {
                                     if (value !== '') {
-                                        post({ value }, props.datasource, null, (res) => {
+                                        post({ value }, props.datasource, null, (res: any) => {
                                             const { data } = res;
                                             setArrSearchData(data.searchData);
                                         });
                                     } else {
-                                        get(props.datasource, null, (res) => {
+                                        get(props.datasource, null, (res: any) => {
                                             const { data } = res;
                                             setArrSearchData(data.searchData);
                                         });

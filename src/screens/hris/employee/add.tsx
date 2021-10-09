@@ -8,7 +8,7 @@ import { Submit, Reset, Cancel, ButtonGroup } from 'components/Button';
 const EmpAdd = () => {
     return (
         <Page breadCrumb="employee|add">
-            <Form action="system/application/Login">
+            <Form action="/employee/employeeInformation.Save">
                 <Tabs>
                     <Tab title="Personal Data" link="/employee/personal" />
                     <Tab title="Employment Data" link="/employee/employment" />

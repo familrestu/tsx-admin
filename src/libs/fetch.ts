@@ -21,7 +21,7 @@ export const post = (data: any, link: string | undefined, config: AxiosRequestCo
 
     axios
         .post(apiPath, data, axiosConfig)
-        .then((res: AxiosResponse) => {
+        .then((res: any) => {
             if (onSucess) {
                 if (res.data.status) {
                     onSucess(res);
@@ -30,7 +30,7 @@ export const post = (data: any, link: string | undefined, config: AxiosRequestCo
                 }
             }
         })
-        .catch((err: AxiosError) => {
+        .catch((err: any) => {
             if (onError) {
                 onError(err);
             }
@@ -68,7 +68,7 @@ export const get = (link: string | undefined, config: AxiosRequestConfig | null,
 
     axios
         .get(apiPath, axiosConfig)
-        .then((res: AxiosResponse) => {
+        .then((res: any) => {
             if (onSucess) {
                 if (res.data.status) {
                     onSucess(res);
@@ -77,7 +77,7 @@ export const get = (link: string | undefined, config: AxiosRequestConfig | null,
                 }
             }
         })
-        .catch((err: AxiosError) => {
+        .catch((err: any) => {
             if (onError) {
                 onError(err);
             }

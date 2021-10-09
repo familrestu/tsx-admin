@@ -18,19 +18,19 @@ const TabClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, childNumbe
 
         e.currentTarget.classList.add('activelink');
 
-        // console.log(e.currentTarget);
-
         const tabPane = navTabParents.nextElementSibling;
 
         if (tabPane) {
             const tabChild = tabPane.children;
+            console.log(tabChild);
             for (let i = 0; i < tabChild.length; i++) {
                 const element = tabChild[i];
-                if (element.getAttribute('tab-container-number') === childNumber.toString()) {
+                console.log(element.getAttribute('tab-container-number')?.toString() === childNumber.toString());
+                if (element.getAttribute('tab-container-number')?.toString() === childNumber.toString()) {
                     element.classList.add('show');
                     element.classList.add('active');
                 } else {
-                    console.log(element.getAttribute('tab-container-number'), childNumber);
+                    // console.log(element.getAttribute('tab-container-number'), childNumber);
                     element.classList.remove('show');
                     element.classList.remove('active');
                 }
@@ -74,6 +74,8 @@ const Tab = (props: TabPropsType) => {
             accessmode = 0;
         }
     }
+
+    console.log(props.link);
 
     let Element = <React.Fragment />;
 
@@ -209,8 +211,6 @@ class TabsC extends Component<TabsPropsType & MapStateToPropsType & typeof MapDi
                         }
 
                         let showClass = '';
-
-                        // console.log(index, this.props.location.state);
 
                         if (this.props.location.state) {
                             if (this.props.location.state !== null) {

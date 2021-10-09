@@ -63,6 +63,7 @@ type MapStateToPropsType = {
 type Props = FormProps & MapStateToPropsType & typeof MapDispatch & RouteComponentProps;
 
 class Form extends React.Component<Props, FormState> {
+    _Debug = true;
     _Form: HTMLFormElement | null | undefined;
     _CurrentPath: string = window.location.pathname;
     _PrevPath: string | undefined;
@@ -101,7 +102,7 @@ class Form extends React.Component<Props, FormState> {
                             this.props.submitCallBack(res);
                         }
 
-                        const formData = res.data;
+                        const formData: any = res.data;
                         delete formData.status;
 
                         if (JSON.stringify(this.state.formData) !== JSON.stringify(formData)) {
@@ -191,7 +192,7 @@ class Form extends React.Component<Props, FormState> {
                                                 formValue = formData[`${elementName}`.replaceAll('_label', '')];
                                                 let isSearchSet = false;
 
-                                                get(inputDatasource, null, (res) => {
+                                                get(inputDatasource, null, (res: any) => {
                                                     const { data } = res;
                                                     for (let l = 0; l < data.searchData.length; l++) {
                                                         const searchData = data.searchData[l];
@@ -256,63 +257,89 @@ class Form extends React.Component<Props, FormState> {
             const tempFormData: { [key: string]: string | number | Date | null } = {};
 
             /* validate required */
-            for (let i = 0; i < arrInputs.length; i++) {
-                const element = arrInputs[i] as HTMLInputElement;
-                const tagName = element.tagName;
-                const elementType = element.getAttribute('type');
-                const formRequired = element.getAttribute('form-required');
-                const formLabel = element.getAttribute('form-label');
+            if (!this._Debug) {
+                for (let i = 0; i < arrInputs.length; i++) {
+                    const element = arrInputs[i] as HTMLInputElement;
+                    const tagName = element.tagName;
+                    const elementType = element.getAttribute('type');
+                    const formRequired = element.getAttribute('form-required');
+                    const formLabel = element.getAttribute('form-label');
 
-                if (formRequired === 'true') {
-                    if (tagName.toUpperCase() === 'SELECT') {
-                        for (let i = 0; i < element.children.length; i++) {
-                            const options = element.children[i] as HTMLOptionElement;
+                    if (formRequired === 'true') {
+                        if (tagName.toUpperCase() === 'SELECT') {
+                            for (let i = 0; i < element.children.length; i++) {
+                                const options = element.children[i] as HTMLOptionElement;
 
-                            if (options.selected && options.value === 'none') {
-                                this.ToggleAlert(true, `Field [${formLabel}] is required!`, false);
-                                element.focus();
-                                this._Form.classList.remove('loading');
-                                return false;
+                                if (options.selected && options.value === 'none') {
+                                    this.ToggleAlert(true, `Field [${formLabel}] is required!`, false);
+                                    element.focus();
+                                    this._Form.classList.remove('loading');
+                                    return false;
+                                }
                             }
-                        }
-                    } else {
-                        if (elementType === 'radio' || elementType === 'checkbox') {
-                            console.log(element);
                         } else {
-                            if (element.value === '') {
-                                this.ToggleAlert(true, `Field [${formLabel}] is required!`, false);
-                                element.focus();
-                                this._Form.classList.remove('loading');
-                                return false;
+                            if (elementType === 'radio' || elementType === 'checkbox') {
+                                console.log(element);
+                            } else {
+                                if (element.value === '') {
+                                    this.ToggleAlert(true, `Field [${formLabel}] is required!`, false);
+                                    element.focus();
+                                    this._Form.classList.remove('loading');
+                                    return false;
+                                }
                             }
                         }
                     }
-                }
 
-                element.blur();
+                    element.blur();
+                }
+            } else {
+                this._Form.classList.remove('loading');
             }
 
             /* push to tempformData */
             for (let i = 0; i < arrInputs.length; i++) {
                 const element = arrInputs[i] as HTMLInputElement;
                 const elementType = element.getAttribute('type');
+                const tagName = element.tagName;
+
                 let value: string | number | Date = element.value;
 
                 if (!isNaN(parseInt(value))) {
                     value = parseInt(value);
                 }
 
-                if (elementType !== null && (elementType === 'checkbox' || elementType === 'radio')) {
-                    tempFormData[element.name] = '';
-                    if (element.checked) {
+                if (tagName.toUpperCase() === 'SELECT') {
+                    // console.log(element);
+                    const isMultiple = element.getAttribute('multiple');
+
+                    if (isMultiple === '') {
+                        const arrSelect = element as unknown as HTMLSelectElement;
+                        const arrSelected: string[] = [];
+
+                        for (let i = 0; i < arrSelect.options.length; i++) {
+                            const options = arrSelect.options[i];
+                            options.selected = true;
+                            arrSelected.push(options.value);
+                        }
+
+                        tempFormData[element.name] = arrSelected.join(',');
+                    } else {
                         tempFormData[element.name] = value;
                     }
                 } else {
-                    tempFormData[element.name] = value;
+                    if (elementType !== null && (elementType === 'checkbox' || elementType === 'radio')) {
+                        tempFormData[element.name] = '';
+                        if (element.checked) {
+                            tempFormData[element.name] = value;
+                        }
+                    } else {
+                        tempFormData[element.name] = value;
+                    }
                 }
             }
 
-            const onSuccessPost = (res: AxiosResponse) => {
+            const onSuccessPost = (res: any) => {
                 if (res) {
                     if (this.props.submitCallBack) {
                         this.props.submitCallBack(res);

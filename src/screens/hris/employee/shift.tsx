@@ -6,7 +6,7 @@ class AddPersonal extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <Input type="filter" label="Leave" name="leave" required />
+                <Input type="filter" label="Leave" name="leave" required datasource="/employee/employeeInformation.GetShift" data="Yes=1,No=2" />
             </React.Fragment>
         );
     }

@@ -2,7 +2,7 @@ import React, { Suspense, lazy, Component, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import { connect, useSelector } from 'react-redux';
 import { AppState } from 'redux/store';
-import { AxiosResponse } from 'axios';
+// import { AxiosResponse } from 'axios';
 import { get } from 'libs/fetch';
 import Header from 'components/Header';
 import Navbar from 'components/Navbar';
@@ -156,7 +156,7 @@ class Home extends Component<HomeProps, LocalState> {
     };
 
     CheckLoginState() {
-        const onSuccessPost = (res: AxiosResponse) => {
+        const onSuccessPost = (res: any) => {
             if (res) {
                 if (res.data) {
                     if (res.data.loginStatus) {
@@ -177,7 +177,7 @@ class Home extends Component<HomeProps, LocalState> {
     }
 
     GetMenu() {
-        const onSuccessPost = (res: AxiosResponse) => {
+        const onSuccessPost = (res: any) => {
             if (res) {
                 // console.log(res);
                 if (res.data) {
@@ -203,7 +203,7 @@ class Home extends Component<HomeProps, LocalState> {
     }
 
     SignOutHandler() {
-        const onSuccessPost = (res: AxiosResponse) => {
+        const onSuccessPost = (res: any) => {
             if (res) {
                 if (res.data) {
                     if (!res.data.loginStatus) {

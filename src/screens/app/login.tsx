@@ -7,7 +7,6 @@ import Input from 'components/Input';
 import Form from 'components/Form';
 import { ButtonGroup } from 'components/Button';
 import packagejson from '../../../package.json';
-import { AxiosResponse } from 'axios';
 
 type LoginScreenState = {
     useAccountCode: boolean;
@@ -18,7 +17,7 @@ class LoginScreen extends React.Component<AppState & typeof MapDispatch, LoginSc
         useAccountCode: false,
     };
 
-    Login(res?: AxiosResponse) {
+    Login(res?: any) {
         if (res && res.data) {
             // this.props.Login(res.data);
             if (res.data.loginStatus) {

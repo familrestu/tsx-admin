@@ -112,7 +112,7 @@ class HeaderSearchConnect extends Component<PropsHeaderSearch, HandleSearchState
         if (this.props.AccessState) {
             arrMenu = GetMenu(this.props.MenuState);
 
-            get('system/application.GetSearch', { withCredentials: true }, (res) => {
+            get('system/application.GetSearch', { withCredentials: true }, (res: any) => {
                 tempArr = [...arrMenu, ...res.data.data];
 
                 tempArr.sort((a, b) => {

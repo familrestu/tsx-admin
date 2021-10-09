@@ -169,8 +169,9 @@ class Column extends Component<ColumnPropsType & RouteComponentProps & MapStateT
         }
     }
 
-    OnChangeSearchHandler(e: React.ChangeEvent<HTMLSelectElement>) {
-        const value = e.target.options[e.target.options.selectedIndex].value;
+    OnChangeSearchHandler(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
+        const target = e.target as HTMLSelectElement;
+        const value = target.options[target.options.selectedIndex].value;
         if (this.props.masking && this.props.SearchClickHandler && value && value !== '') {
             this.props.SearchClickHandler(this.props.name, this.props.label, value, this.props.masking);
             this.ToggleSearch();
@@ -231,7 +232,7 @@ class Column extends Component<ColumnPropsType & RouteComponentProps & MapStateT
                         type={type}
                         autoFocus={true}
                         onBlur={() => this.ToggleSearch()}
-                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => this.OnChangeSearchHandler(e)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => this.OnChangeSearchHandler(e)}
                         as="select"
                     >
                         <option value="">Please Select</option>
@@ -294,11 +295,11 @@ class Column extends Component<ColumnPropsType & RouteComponentProps & MapStateT
                                 }}
                                 maxLength={5}
                             />
-                            <InputGroup.Append>
+                            <InputGroup.Text>
                                 <Button size="sm">
                                     <i className="fas fa-clock"></i>
                                 </Button>
-                            </InputGroup.Append>
+                            </InputGroup.Text>
                         </InputGroup>
                     );
                 } else {

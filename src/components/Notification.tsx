@@ -21,7 +21,15 @@ type NotificationStateType = {
 
 class Notification extends Component<NotificationPropsType, NotificationStateType> {
     state = {
-        data: [],
+        data: [
+            {
+                type: 'leave',
+                icon: '',
+                date: '',
+                title: 'test',
+                details: '',
+            },
+        ],
     };
 
     ShowDetailHandler(element: React.MouseEvent) {
@@ -119,7 +127,7 @@ class Notification extends Component<NotificationPropsType, NotificationStateTyp
         return (
             <div id="notification" className="notification icon-groups mx-2 pointer btn-open-dropdown" tabIndex={0} /* add tabIndex for adding focus */>
                 {this.state.data.length > 0 && (
-                    <Badge className="position-absolute badge-counter" variant="danger">
+                    <Badge className="position-absolute badge-counter text-white" bg="danger">
                         {this.state.data.length > 99 ? '99+' : this.state.data.length}
                     </Badge>
                 )}

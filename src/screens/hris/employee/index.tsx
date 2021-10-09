@@ -9,7 +9,17 @@ const EmployeeListScreen = () => {
         <Page breadCrumb="Employee|Information">
             <Table datasource="/employee/employeeInformation.TableData">
                 <Toolbar>
-                    <BtnLink link="/employee/add" linktype="popup" icon="fas fa-user-plus" label="Add Employee" />
+                    <BtnLink
+                        link={{
+                            pathname: '/employee/add',
+                            state: {
+                                tab: '/employee/personal',
+                            },
+                        }}
+                        linktype="popup"
+                        icon="fas fa-user-plus"
+                        label="Add Employee"
+                    />
                 </Toolbar>
 
                 <Column label="Employee No" name="employee_no" type="link" link="/employee/details/[employee_no]" linktype="popup" />
